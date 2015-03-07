@@ -1,0 +1,49 @@
+extends ./layouts/login.jade
+
+block boxContent
+  div(id='login-box', class='login-box visible widget-box no-border')
+    div(class='widget-body')
+      div(class='widget-main')
+        h4(class='header blue lighter bigger')
+          i(class='ace-icon fa fa-cogs green')
+          | Please Enter Your Information
+        div(class='space-6')
+        
+        if errors
+          div(class='alert alert-danger')
+            strong Whoops!
+            | There were some problems with your input.
+            br
+            br
+            ul
+              for error in errors
+                li error
+        form(method='POST', action='/auth/login')
+          fieldset
+            input(type='hidden', name='_csrf', value=csrftoken)
+            label(class='block clearfix')
+              span(class='block input-icon input-icon-right')
+                input(type='text', class='form-control', placeholder='Username', name='username', value=username)
+                i(class='ace-icon fa fa-user')
+            label(class='block clearfix')
+              span(class='block input-icon input-icon-right')
+                input(type='password', class='form-control', placeholder='password', name='password')
+                i(class='ace-icon fa fa-lock')
+            div(class='space')
+            div(class='clearfix')
+              label(class='inline')
+                input(type='checkbox', class='ace', name='remember')
+                span(class='lbl') &nbsp;Remember Me
+              button(type='submit', class='width-35 pull-right btn btn-sm btn-primary')
+                i(class='ace-icon fa fa-key')
+                span(class='bigger-110') Login
+            div(class='space-4')
+      div(class='toolbar clearfix')
+        div
+          a(href='/auth/forgot-password', data-target='#forgot-box', class='forgot-password-link')
+            i(class='ace-icon fa fa-comments-o')
+            | Forgot Password?
+      
+append scripts
+  script(type='text/javascript')
+    | window.jQuery || document.write("<script src='assets/js/jquery.js'>"+"<"+"/script>");
