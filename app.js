@@ -1,12 +1,19 @@
 var express = require('express');
 var path = require('path');
+var socket = require('socket.io');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var redisStore = require('connect-redis')(session);
+var helmet = require('helmet');
+var csrf = require('csurf');
+var validator = require('express-validator');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var auth = require('./routes/auth');
 
 var app = express();
 
@@ -19,11 +26,51 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(validator());
 app.use(cookieParser());
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  store: new redisStore({
+    host: 'localhost',
+    port: 6379
+  }),
+  secret: 'r00t-b1tr13nt',
+  cookie: { path: '/', maxAge: 3600000 }
+}));
+app.use(csrf());
+app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var authenticated = function(request, response, next) {
+  if (request.session && request.session.authenticated) {
+    return next();
+  } else {
+    return response.redirect('/auth/login');
+  }
+}
+
+app.use(function(request, response, next) {
+  response.locals.csrftoken = request.csrfToken();
+  next();
+});
+
 app.use('/', routes);
-app.use('/users', users);
+// app.get('/', function(request, response){
+//   if(!request.session) {
+//     console.log('something is wrong...');
+//   }
+//   console.log('Session ID: ', request.sessionID);
+// if (request.session.counter) {
+//   request.session.counter = request.session.counter +1;
+// } else {
+//   request.session.counter = 1;
+// }
+// response.send('Counter: ' + request.session.counter);
+// });
+app.use('/users', authenticated, users);
+app.use('/auth', auth);
+// app.use('/auth/login', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
