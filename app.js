@@ -12,6 +12,19 @@ var colors = require('colors');
 var methodOverride = require('method-override');
 var csrf = require('csurf');
 var validator = require('express-validator');
+var mongoose = require('mongoose');
+  mongoose.connect('mongodb://localhost/hrtc');
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'Connection Error:'.red));
+db.once('open', function(callback) {
+  console.log("connected.....".green.underline);
+
+  app.use(function(request, response, next){
+    request.db = db;
+    next();
+  });
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -49,6 +62,12 @@ var authenticated = function(request, response, next) {
   if (request.session && request.session.authenticated) {
     return next();
   } else {
+    var errors = {
+      error: {
+        msg: 'Permission Error, Please Login'
+      }
+    };
+    app.locals.errors = errors;
     return response.redirect('/auth/login');
   }
 }
