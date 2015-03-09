@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var redisStore = require('connect-redis')(session);
 var helmet = require('helmet');
+var colors = require('colors');
+var methodOverride = require('method-override');
 var csrf = require('csurf');
 var validator = require('express-validator');
 
@@ -38,6 +40,7 @@ app.use(session({
   secret: 'r00t-b1tr13nt',
   cookie: { path: '/', maxAge: 3600000 }
 }));
+app.use(methodOverride());
 app.use(csrf());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
