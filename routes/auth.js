@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+var User = require('../models/user');
+
 /* GET users listing. */
 router.get('/', function(request, response, next) {
   response.redirect('/auth/login');
@@ -28,15 +30,46 @@ router.post('/login', function(request, response, next) {
   var errors = request.validationErrors();
   if (errors) {
     // console.log(errors);
-    response.render('login', { errors: errors, username: request.body.username });
+    response.render('login', { errors: errors, username: username });
   } else {
-    response.send('form processing ...' + username+ '@' + password + ':' + remember);
+    // var data = User.findOne({username: username, password: password});
+    // response.send('form processing ...' + username+ '@' + password + ':' + remember);
+    User.findOne({username: username}, function(error, user) {
+      if(error){
+        console.log(error.red);
+      }
+
+      if(user) {
+        if (user.validatePassword(password)) {
+          request.session.authenticated = true;
+          request.session.userId = user._id;
+          return response.redirect('/dashboard');
+        }
+        return response.render('login',
+          { errors: {
+              error: { msg: 'Invalide login credentials.'}
+            },
+            username: username
+          });
+
+      } else {
+        return response.render('login',
+          { errors: {
+              error: { msg: 'User not found.'}
+            },
+            username: username
+          });
+      }
+
+    });
+    // response.send('form request');
   }
   // response.rend('form request');
 });
 
 router.get('/logout', function(request, response, next) {
   //clear the session and redirect to login page.
+  request.session.destroy();
   response.redirect('/auth/login');
 });
 
