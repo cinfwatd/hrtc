@@ -17,7 +17,10 @@ var UserSchema = new Schema({
   },
   email: String,
   lastLogin: Date,
-  passwordResetToken: String,
+  resetPassword: {
+    token: String,
+    expiration: Date
+  },
   dateCreated: {type: Date, default: Date.now},
   dateUpdated: Date,
   admin: {
