@@ -9,6 +9,8 @@ router.get('/', function(request, response, next) {
 });
 
 router.get('/login', function(request, response, next) {
+  if (request.session && request.session.authenticated)
+    return response.redirect('/dashboard');
   response.render('login', { title: 'Express' });
 });
 
