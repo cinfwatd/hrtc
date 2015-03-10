@@ -1,6 +1,9 @@
 var mongoose = require('mongoose'),
+  bcrypt = require('bcrypt'),
   Schema = mongoose.Schema,
   ObjectId = Schema.Types.ObjectId;
+
+
 
 // var user = function(){
 var UserSchema = new Schema({
@@ -36,7 +39,7 @@ var UserSchema = new Schema({
   hospital: [{type: ObjectId, ref: 'Hospital'}]
 });
 
-var User = mongoose.model('User', UserSchema);
+// var User = mongoose.model('User', UserSchema);
 
 UserSchema.virtual('name.full').get(function() {
   var name = this.name.last;
@@ -56,5 +59,16 @@ UserSchema.virtual('bioData.age').get(function() {
   return age;
 });
 
+UserSchema.methods.generateHash = function(password) {
+  var salt = bcrypt.genSaltSync(10);
+  var hash = bcrypt.hashSync(password, salt);
+  return hash;
+}
+
+UserSchema.methods.validatePassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+}
+
+var User = mongoose.model('User', UserSchema);
 
 module.exports = User;
