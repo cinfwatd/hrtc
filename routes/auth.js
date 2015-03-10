@@ -1,5 +1,7 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express'),
+  router = express.Router(),
+  nodemailer = require('nodemailer'),
+  crypto = require('crypto');
 
 var User = require('../models/user');
 
@@ -83,13 +85,15 @@ router.get('/forgot-password', function(request, response, next) {
 router.post('/forgot-password', function(request, response, next) {
   var email = request.body.email;
 
-  request.checkBody('email', 'The Email field is required').notEmpty();
+  request.checkBody('email', 'The Email field is required.').notEmpty();
   if (email)
     request.checkBody('email', 'The Email provided seems to be invalid.').isEmail();
 
   var errors = request.validationErrors();
 
   if (errors) {
+    // console.log(errors);
+    request.flash('error', errors[0].msg);
     response.render('forgot-password', {errors: errors, email: email});
   } else {
     User.findOne({email: email}, function(error, user) {
@@ -98,24 +102,68 @@ router.post('/forgot-password', function(request, response, next) {
       }
 
       if (user) {
-        // send token through email and notify the user.
-        return response.render('forgot-passord',
-          { success: 'Please check your Inbox for the email.'});
+        crypto.randomBytes(20, function(error, buffer) {
+          if (error) {
+            console.log("An error occured  with crypto".red);
+          }
+          var token = buffer.toString('hex');
+
+          user.resetPassword.token = token;
+          user.resetPassword.expiration = Date.now() + 3600000; //1hr
+
+          user.save(function(error, user) {
+            var smtpTransport = nodemailer.createTransport({
+              service: 'mandrill',
+              auth: {
+                user: 'czprobity@gmail.com',
+                pass: 'jhCGwCscVOcZonkYgUqZBg'
+              }
+            });
+
+            var mailOptions = {
+              to: user.email,
+              from: 'passwordreset@telemonitor.com',
+              subject: 'Password Reset',
+              text: 'You are receiving this because you (or someone else) '
+              + 'have requested the reset of the password for your account.\n\n'
+              + 'Please click on the following link, or paste this into your browser '
+              + 'to complete the process: \n\nhttp://' + request.headers.host
+              + '/auth/reset/' + token + '\n\nIf you did not request this, please '
+              + 'ignore this email and your password will remain unchanged.\n'
+            };
+
+            smtpTransport.sendMail(mailOptions, function(error) {
+              if (error) {
+                console.log('An error occured in sendMail'.red);
+                console.error(error);
+              }
+
+              request.flash('info', 'An e-mail has been sent to <b>' + user.email + '</b> with further instructions.');
+              return response.render('forgot-password');
+            });
+          });
+        });
+        // remember to redirect back on any errro
+        // return response.render('forgot-passord',
+        //   { error: 'Please check your Inbox for the email.'});
 
       } else {
-        return response.render('forgot-password',
-          { errors: {
-            error: { msg: 'User ['+ email+'] not found.'}
-          },
-          email: email
-        });
+        request.flash('error', 'No account with this email [' + email + '] exist.');
+        return response.render('forgot-password', {email: email});
       }
     });
   }
 })
 
-router.get('/reset-password', function(request, response, next) {
-  response.send('reset password page..');
+router.get('/reset/:token', function(request, response, next) {
+  // response.send('reset password page..');
+  User.findOne({'resetPassword.token': request.params.token,
+    'resetPassword.expiration': {$gt: Date.now()}}, function(error, user) {
+      if (!user) {
+        request.flash('error', 'Password reset token is invalid or has expired.');
+        return response.redirect('/auth/forgot-password');
+      }
+    });
 });
 
 module.exports = router;
