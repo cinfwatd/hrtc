@@ -29,6 +29,7 @@ db.once('open', function(callback) {
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
+var dashboard = require('./routes/dashboard');
 
 var app = express();
 
@@ -90,7 +91,7 @@ app.use('/', routes);
 // }
 // response.send('Counter: ' + request.session.counter);
 // });
-app.use('/users', authenticated, users);
+app.use('/dashboard', authenticated, dashboard);
 app.use('/auth', auth);
 // app.use('/auth/login', auth);
 
