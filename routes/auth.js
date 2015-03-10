@@ -76,8 +76,43 @@ router.get('/logout', function(request, response, next) {
 });
 
 router.get('/forgot-password', function(request, response, next) {
-  response.send('forgot password page..');
+  // response.send('forgot password page..');
+  response.render('forgot-password');
 });
+
+router.post('/forgot-password', function(request, response, next) {
+  var email = request.body.email;
+
+  request.checkBody('email', 'The Email field is required').notEmpty();
+  if (email)
+    request.checkBody('email', 'The Email provided seems to be invalid.').isEmail();
+
+  var errors = request.validationErrors();
+
+  if (errors) {
+    response.render('forgot-password', {errors: errors, email: email});
+  } else {
+    User.findOne({email: email}, function(error, user) {
+      if (error) {
+        console.log('An error occured when checking for user to reset password.');
+      }
+
+      if (user) {
+        // send token through email and notify the user.
+        return response.render('forgot-passord',
+          { success: 'Please check your Inbox for the email.'});
+
+      } else {
+        return response.render('forgot-password',
+          { errors: {
+            error: { msg: 'User ['+ email+'] not found.'}
+          },
+          email: email
+        });
+      }
+    });
+  }
+})
 
 router.get('/reset-password', function(request, response, next) {
   response.send('reset password page..');
