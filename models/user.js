@@ -17,6 +17,7 @@ var UserSchema = new Schema({
   },
   email: String,
   lastLogin: Date,
+  passwordResetToken: String,
   dateCreated: {type: Date, default: Date.now},
   dateUpdated: Date,
   admin: {
