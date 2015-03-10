@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var redisStore = require('connect-redis')(session);
+var flash = require('express-flash');
 var helmet = require('helmet');
 var colors = require('colors');
 var methodOverride = require('method-override');
@@ -54,6 +55,7 @@ app.use(session({
   secret: 'r00t-b1tr13nt',
   cookie: { path: '/', maxAge: 3600000 }
 }));
+app.use(flash());
 app.use(methodOverride());
 app.use(csrf());
 app.use(helmet());
