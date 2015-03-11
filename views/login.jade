@@ -9,6 +9,11 @@ block boxContent
           | Please Enter Your Information
         div(class='space-6')
         
+        if messages.success
+          div(class='alert alert-success')
+            i(class='ace-icon fa fa-comments-o')
+            span &nbsp; !{messages.success}
+        
         if errors
           div(class='alert alert-danger')
             strong Whoops!
