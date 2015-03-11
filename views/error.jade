@@ -1,6 +1,45 @@
-extends layout
+extends ./layouts/login.jade
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+block boxContent
+  //- h1= message
+  //- h2= error.status
+  //- pre #{error.stack}
+  div(class='error-container center')
+    div(class='well')
+      h1(class='grey lighter smaller')
+        span(class='blue bigger-125')
+          i(class='ace-icon fa fa-sitemap')
+          | &nbsp;#{error.status}
+        | &nbsp;#{message}
+      hr
+      h3(class='lighter smaller') 
+        if error.status == 404
+          | We looked everywhere but couldn't find it!
+        else
+          | :-( This is embarrasing. Please try again and if it persist, 
+          | contact us.
+        
+      div
+        div.space
+        if error.status == 404
+          h4.smaller Try one of the following:
+          ul(class='list-unstyled spaced inline bigger-110 margin-15')
+            li
+              i(class='ace-icon fa fa-hand-o-right blue')
+              | Re-check the URL for typos.
+              
+            li
+              i(class='ace-icon fa fa-hand-o-right blue')
+              | Tell us about it.
+        else
+          pre #{error.stack}
+      hr
+      div.space
+      div.center
+        a(href= error.status == 404 ? 'javascript:history.back()' : 'javascript:window.location.replace(document.referrer)', class='btn btn-grey')
+          i(class='ace-icon fa fa-arrow-left')
+          | Go Back
+        a(href='/', class='btn btn-primary')
+          i(class='ace-icon fa fa-home')
+          | Home
+      
