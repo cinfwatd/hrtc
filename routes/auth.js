@@ -5,6 +5,14 @@ var express = require('express'),
 
 var User = require('../models/user');
 
+var smtpTransport = nodemailer.createTransport({
+  service: 'mandrill',
+  auth: {
+    user: 'czprobity@gmail.com',
+    pass: 'jhCGwCscVOcZonkYgUqZBg'
+  }
+});
+
 /* GET users listing. */
 router.get('/', function(request, response, next) {
   response.redirect('/auth/login');
@@ -112,14 +120,6 @@ router.post('/forgot-password', function(request, response, next) {
           user.resetPassword.expiration = Date.now() + 3600000; //1hr
 
           user.save(function(error, user) {
-            var smtpTransport = nodemailer.createTransport({
-              service: 'mandrill',
-              auth: {
-                user: 'czprobity@gmail.com',
-                pass: 'jhCGwCscVOcZonkYgUqZBg'
-              }
-            });
-
             var mailOptions = {
               to: user.email,
               from: 'passwordreset@telemonitor.com',
@@ -136,6 +136,8 @@ router.post('/forgot-password', function(request, response, next) {
               if (error) {
                 console.log('An error occured in sendMail'.red);
                 console.error(error);
+                request.flash('error',  'An error occured while trying to send the email. Please try again.');
+                return response.render('forgot-password', {email: user.email});
               }
 
               request.flash('info', 'An e-mail has been sent to <b>' + user.email + '</b> with further instructions.');
@@ -162,8 +164,57 @@ router.get('/reset/:token', function(request, response, next) {
       if (!user) {
         request.flash('error', 'Password reset token is invalid or has expired.');
         return response.redirect('/auth/forgot-password');
+      } else {
+        request.flash('token', request.params.token);
+        return response.render('reset-password');
       }
     });
+});
+
+router.post('/reset/:token', function(request, response, next) {
+  var password = request.body.password;
+  var confirmation = request.body.confirmation;
+
+  request.checkBody('password', 'The Password and Password Confirmation field are required.').notEmpty();
+  request.checkBody('password', 'The Password must be at least 4 characters.').len(4);
+  request.checkBody('password', 'The Password Confirmation did not match the Password entered.').equals(confirmation);
+
+  var errors = request.validationErrors();
+  if (errors) {
+    request.flash('error', errors[0].msg);
+    response.render('reset-password');
+  } else {
+    User.findOne({'resetPassword.token': request.params.token,
+      'resetPassword.expiration': {$gt: Date.now()}}, function(error, user) {
+      if (!user) {
+        request.flash('error', 'Password request token is invalid or has expired.');
+        return response.redirect('back');
+      }
+
+      user.password = user.generateHash(password);
+      user.resetPassword.token = undefined;
+      user.resetPassword.expiration = undefined;
+
+      user.save(function(error) {
+        // response.redirect('/auth/login');
+        var mailOptions = {
+          to: user.email,
+          from: 'passwordreset@telemonitor.com',
+          subject: 'Your Password Has Been Changed',
+          text: 'Hello '+ user.name.full +',\n\nThis is a confirmation that the password for your account '
+            + user.email + ' has been changed.\n'
+        };
+
+        smtpTransport.sendMail(mailOptions, function(error) {
+          if (error) {
+            console.log('An error occured while sending the confirmation mail.'.red);
+          }
+          request.flash('success', '<b>Success!</b> Your password has been changed.');
+          response.redirect('/auth/login');
+        })
+      });
+    });
+  }
 });
 
 module.exports = router;
