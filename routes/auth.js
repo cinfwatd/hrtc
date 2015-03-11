@@ -21,7 +21,7 @@ router.get('/', function(request, response, next) {
 router.get('/login', function(request, response, next) {
   if (request.session && request.session.authenticated)
     return response.redirect('/dashboard');
-  response.render('login', { title: 'Express' });
+  response.render('auth/login', { title: 'Express' });
 });
 
 router.post('/login', function(request, response, next) {
@@ -42,7 +42,7 @@ router.post('/login', function(request, response, next) {
   var errors = request.validationErrors();
   if (errors) {
     // console.log(errors);
-    response.render('login', { errors: errors, username: username });
+    response.render('auth/login', { errors: errors, username: username });
   } else {
     // var data = User.findOne({username: username, password: password});
     // response.send('form processing ...' + username+ '@' + password + ':' + remember);
@@ -57,7 +57,7 @@ router.post('/login', function(request, response, next) {
           request.session.userId = user._id;
           return response.redirect('/dashboard');
         }
-        return response.render('login',
+        return response.render('auth/login',
           { errors: {
               error: { msg: 'Invalide login credentials.'}
             },
@@ -65,7 +65,7 @@ router.post('/login', function(request, response, next) {
           });
 
       } else {
-        return response.render('login',
+        return response.render('auth/login',
           { errors: {
               error: { msg: 'User not found.'}
             },
@@ -87,7 +87,7 @@ router.get('/logout', function(request, response, next) {
 
 router.get('/forgot-password', function(request, response, next) {
   // response.send('forgot password page..');
-  response.render('forgot-password');
+  response.render('auth/forgot-password');
 });
 
 router.post('/forgot-password', function(request, response, next) {
@@ -102,7 +102,7 @@ router.post('/forgot-password', function(request, response, next) {
   if (errors) {
     // console.log(errors);
     request.flash('error', errors[0].msg);
-    response.render('forgot-password', {errors: errors, email: email});
+    response.render('auth/forgot-password', {errors: errors, email: email});
   } else {
     User.findOne({email: email}, function(error, user) {
       if (error) {
@@ -137,11 +137,11 @@ router.post('/forgot-password', function(request, response, next) {
                 console.log('An error occured in sendMail'.red);
                 console.error(error);
                 request.flash('error',  'An error occured while trying to send the email. Please try again.');
-                return response.render('forgot-password', {email: user.email});
+                return response.render('auth/forgot-password', {email: user.email});
               }
 
               request.flash('info', 'An e-mail has been sent to <b>' + user.email + '</b> with further instructions.');
-              return response.render('forgot-password');
+              return response.render('auth/forgot-password');
             });
           });
         });
@@ -151,7 +151,7 @@ router.post('/forgot-password', function(request, response, next) {
 
       } else {
         request.flash('error', 'No account with this email [' + email + '] exist.');
-        return response.render('forgot-password', {email: email});
+        return response.render('auth/forgot-password', {email: email});
       }
     });
   }
@@ -166,7 +166,7 @@ router.get('/reset/:token', function(request, response, next) {
         return response.redirect('/auth/forgot-password');
       } else {
         request.flash('token', request.params.token);
-        return response.render('reset-password');
+        return response.render('auth/reset-password');
       }
     });
 });
@@ -182,7 +182,7 @@ router.post('/reset/:token', function(request, response, next) {
   var errors = request.validationErrors();
   if (errors) {
     request.flash('error', errors[0].msg);
-    response.render('reset-password');
+    response.render('auth/reset-password');
   } else {
     User.findOne({'resetPassword.token': request.params.token,
       'resetPassword.expiration': {$gt: Date.now()}}, function(error, user) {
