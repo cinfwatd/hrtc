@@ -19,6 +19,7 @@ router.get('/', function(request, response, next) {
 });
 
 router.get('/login', function(request, response, next) {
+  console.log(request.get('referrer'));
   if (request.session && request.session.authenticated)
     return response.redirect('/dashboard');
   response.render('auth/login', { title: 'Express' });
@@ -42,7 +43,8 @@ router.post('/login', function(request, response, next) {
   var errors = request.validationErrors();
   if (errors) {
     // console.log(errors);
-    response.render('auth/login', { errors: errors, username: username });
+    request.flash('error', errors);
+    response.render('auth/login', {username: username });
   } else {
     // var data = User.findOne({username: username, password: password});
     // response.send('form processing ...' + username+ '@' + password + ':' + remember);
@@ -57,18 +59,16 @@ router.post('/login', function(request, response, next) {
           request.session.userId = user._id;
           return response.redirect('/dashboard');
         }
+        request.flash('error', errors);
         return response.render('auth/login',
-          { errors: {
-              error: { msg: 'Invalide login credentials.'}
-            },
+          {
             username: username
           });
 
       } else {
+        request.flash('error', errors);
         return response.render('auth/login',
-          { errors: {
-              error: { msg: 'User not found.'}
-            },
+          {
             username: username
           });
       }
@@ -101,8 +101,8 @@ router.post('/forgot-password', function(request, response, next) {
 
   if (errors) {
     // console.log(errors);
-    request.flash('error', errors[0].msg);
-    response.render('auth/forgot-password', {errors: errors, email: email});
+    request.flash('error', errors);
+    response.render('auth/forgot-password', { email: email});
   } else {
     User.findOne({email: email}, function(error, user) {
       if (error) {
