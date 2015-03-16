@@ -14,16 +14,16 @@ block boxContent
             i(class='ace-icon fa fa-comments-o')
             span &nbsp; !{messages.success}
         
-        if errors
+        if messages.error
           div(class='alert alert-danger')
             strong Whoops!
             | &nbsp;Problems with your request.
             div(class='space-4')
             div
-              each error in errors
+              each error in messages.error
                 span(class='block')
                   i(class='ace-icon fa fa-comments-o')
-                  span &nbsp; #{error.msg}
+                  span &nbsp; #{error}
         form(method='POST', action='/auth/login')
           fieldset
             input(type='hidden', name='_csrf', value=csrftoken)
