@@ -43,7 +43,18 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(validator());
+app.use(validator({
+  errorFormatter: function(param, msg, value) {
+    // var namespace = param.split('.'),
+    // root = namespace.shift(),
+    // formParam = root;
+    // 
+    // while(namespace.length) {
+    //   formParam += '[' + namespace.shift() + ']';
+    // }
+    return msg;
+  }
+}));
 app.use(cookieParser());
 app.use(session({
   resave: true,
@@ -65,12 +76,14 @@ var authenticated = function(request, response, next) {
   if (request.session && request.session.authenticated) {
     return next();
   } else {
-    var errors = {
-      error: {
-        msg: 'Permission Error, Please Login'
-      }
-    };
-    app.locals.errors = errors;
+    // var errors = {
+    //   error: {
+    //     msg: 'Permission Error, Please Login'
+    //   }
+    // };
+    // not a good idea use flash
+    console.log('setting flash message');
+    request.flash('error', 'Permission Error, Please login');
     return response.redirect('/auth/login');
   }
 }
@@ -95,7 +108,7 @@ app.use('/', routes);
 // });
 app.use('/dashboard', authenticated, dashboard);
 app.use('/auth', auth);
-// app.use('/auth/login', auth);
+app.use('/user', authenticated, users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
