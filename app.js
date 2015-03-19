@@ -31,6 +31,8 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
 var dashboard = require('./routes/dashboard');
+var calendar = require('./routes/calendar');
+var chat = require('./routes/chat');
 
 var app = express();
 
@@ -48,7 +50,7 @@ app.use(validator({
     // var namespace = param.split('.'),
     // root = namespace.shift(),
     // formParam = root;
-    // 
+    //
     // while(namespace.length) {
     //   formParam += '[' + namespace.shift() + ']';
     // }
@@ -109,6 +111,8 @@ app.use('/', routes);
 app.use('/dashboard', authenticated, dashboard);
 app.use('/auth', auth);
 app.use('/user', authenticated, users);
+app.use('/chat', authenticated, chat);
+app.use('/calendar', authenticated, calendar);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
