@@ -1,5 +1,7 @@
 extends ./layouts/default
-
+append pagespecificstyles
+  link(rel='stylesheet', href='/assets/css/jquery-ui.custom.css')
+  link(rel='stylesheet', href='/assets/css/fullcalendar.css')
 block settings
 block sidebar
 block topbar
@@ -11,66 +13,7 @@ append scripts
   script(src='/assets/js/date-time/moment.js')
   script(src='/assets/js/fullcalendar.js')
   script(src='/assets/js/bootbox.js')
-    
-  script(type='text/javascript').
-    $('#external-events div.external-event').each(function() {
-      //- create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-      //- it doesn't need to have a start or end.
-      var eventObject = {
-        title: $.trim($(this).text()), 
-        description: "Description: " + $.trim($(this).text())
-      };
-      
-      //- store the Event Object in the DOM element so we can get to it later
-      $(this).data('eventObject', eventObject);
-      
-      //- make the Event draggable using jQuery UI
-      $(this).draggable({
-        zIndex: 999,
-        revert: true, 
-        revertDuration: 300
-      });
-    });
-    
-    //- Initialize the calendar
-    var date = new Date(),
-      d = date.getDate(),
-      m = date.getMonth(),
-      y = date.getFullYear();
-      
-    var calendar = $('#calendar').fullCalendar({
-      buttonHtml: {
-        prev: '<i class="ace-icon fa fa-chevron-left"></i>',
-        next: '<i class="ace-icon fa fa-chevron-right"></i>'
-      },
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-      },
-      weekNumbers: true,
-      businessHours: {
-        start: '10:00',
-        end: '18:00',
-        //- days of week. an array of zero-based day of week intgers (0 = Sunday)
-        dow: [1, 2, 3, 4, 5]
-        
-      },
-      events: [
-        {
-          title: 'All Day Event',
-          start: new Date(y, m, 1),
-          className: 'label-important'
-        },
-        {
-          title: 'Long Event',
-          start: moment().subtract(5, 'days').format('YYYY-MM-DD'),
-          end: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-          className: 'label-success'
-        }
-      ]
-    })
-      
+  script(src='/javascripts/calendar.js')
 block content
   .row
     .col-sm-9
@@ -87,7 +30,6 @@ block content
               .external-event.label-grey(data-class='label-grey')
                 i.ace-icon.fa.fa-arrows
                 |My Event 1
-              
               .external-event.label-success(data-class='label-success')
                 i.ace-icon.fa.fa-arrows
                 |My Event 2
