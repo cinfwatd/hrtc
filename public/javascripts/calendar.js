@@ -299,7 +299,7 @@ var calendar = $('#calendar').fullCalendar({
       $.ajax({
           type: "POST",
           url: "/calendar/save/" + calEvent.id,
-          data: "title="+title+"&description="+desc+"&start="+start+"&end="+end+"&className="+className+"&allDay="+calEvent.allDay,//+"&_csrf=dafasf57677dd",
+          data: "title="+title+"&description="+desc+"&start="+start+"&end="+end+"&className="+className+"&allDay="+calEvent.allDay+"&_csrf="+TOKEN,
           success: function(id) {
             calEvent.id = id;
             calEvent.title = title;
