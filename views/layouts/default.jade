@@ -30,6 +30,8 @@ html(lang='en')
     <script src="/assets/js/html5shiv.js"></script>
     <script src="/assets/js/respond.js"></script>
     <![endif]-->
+    script(type='text/javascript')
+      |var TOKEN = "#{csrftoken}"
   body.no-skin
     // #section:basics/navbar.layout
     block navbar
