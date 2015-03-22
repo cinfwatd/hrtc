@@ -43,52 +43,12 @@
             .tabbable
               ul.nav.nav-tabs
                 li.active
-                  a(data-toggle='tab', href='#navbar-tasks')
-                    | Tasks
-                    span.badge.badge-danger 4
-                li
                   a(data-toggle='tab', href='#navbar-messages')
                     | Messages
                     span.badge.badge-danger 5
               // .nav-tabs
               .tab-content
-                #navbar-tasks.tab-pane.in.active
-                  ul.dropdown-menu-right.dropdown-navbar.dropdown-menu
-                    li.dropdown-content
-                      ul.dropdown-menu.dropdown-navbar
-                        li
-                          a(href='#')
-                            .clearfix
-                              span.pull-left Software Update
-                              span.pull-right 65%
-                            .progress.progress-mini
-                              .progress-bar(style='width:65%')
-                        li
-                          a(href='#')
-                            .clearfix
-                              span.pull-left Hardware Upgrade
-                              span.pull-right 35%
-                            .progress.progress-mini
-                              .progress-bar.progress-bar-danger(style='width:35%')
-                        li
-                          a(href='#')
-                            .clearfix
-                              span.pull-left Unit Testing
-                              span.pull-right 15%
-                            .progress.progress-mini
-                              .progress-bar.progress-bar-warning(style='width:15%')
-                        li
-                          a(href='#')
-                            .clearfix
-                              span.pull-left Bug Fixes
-                              span.pull-right 90%
-                            .progress.progress-mini.progress-striped.active
-                              .progress-bar.progress-bar-success(style='width:90%')
-                    li.dropdown-footer
-                      a(href='#')
-                        | See tasks with details
-                        i.ace-icon.fa.fa-arrow-right
-                #navbar-messages.tab-pane
+                #navbar-messages.tab-pane.in.active
                   ul.dropdown-menu-right.dropdown-navbar.dropdown-menu
                     li.dropdown-content
                       ul.dropdown-menu.dropdown-navbar
@@ -159,10 +119,10 @@
               | #{name}
             i.ace-icon.fa.fa-caret-down
           ul.user-menu.dropdown-menu-right.dropdown-menu.dropdown-yellow.dropdown-caret.dropdown-close
-            li
-              a(href='/user/settings')
-                i.ace-icon.fa.fa-cog
-                |Settings
+            //- li
+            //-   a(href='/user/settings')
+            //-     i.ace-icon.fa.fa-cog
+            //-     |Settings
             li
               a(href='/user/profile')
                 i.ace-icon.fa.fa-user
