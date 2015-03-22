@@ -107,7 +107,7 @@ var calendar = $('#calendar').fullCalendar({
   },
   eventResize: function(event, delta, revertFunc) {
 
-    if (typeof event.id === 'undefined'){ } else {
+    if (typeof event.id !== 'undefined') {
 
   //         bootbox.confirm("Extend '" + event.title + "' end date/time to " + event.end.format() +"?", function(result) {
      // if(result) {
@@ -122,8 +122,8 @@ var calendar = $('#calendar').fullCalendar({
 
        $.ajax({
            type: "POST",
-           url: "/calendar/update/" + event.id,
-           data: "start="+start+"&end="+end+"&allDay="+event.allDay,
+           url: "/calendar/save/" + event.id,
+           data: "start="+start+"&end="+end+"&allDay="+event.allDay+"&_csrf="+TOKEN+"&update=true",
            success: function(id) {
              calendar.fullCalendar('updateEvent', event);
            },
@@ -155,8 +155,8 @@ var calendar = $('#calendar').fullCalendar({
 
           $.ajax({
               type: "POST",
-              url: "/calendar/update/" + event.id,
-              data: "start="+start+"&end="+end+"&allDay="+event.allDay,
+              url: "/calendar/save/" + event.id,
+              data: "start="+start+"&end="+end+"&allDay="+event.allDay+"&_csrf="+TOKEN+"&update=true",
               success: function(id) {
                 calendar.fullCalendar('updateEvent', event);
               },
@@ -196,6 +196,7 @@ var calendar = $('#calendar').fullCalendar({
       placement: "top"
     });
   },
+  allDaydefault: true,
   eventClick: function(calEvent, jsEvent, view) {
 
     //display a modal
@@ -226,7 +227,7 @@ var calendar = $('#calendar').fullCalendar({
                  <input type="radio" value="label-primary" />\
                  <i class="icon-only ace-icon fa-fire"></i>\
                </label>\
-               <label class="btn btn-info active">\
+               <label class="btn btn-info">\
                  <input type="radio" value="label-info" />\
                  <i class="icon-only ace-icon fa-fire"></i>\
                </label>\
@@ -276,7 +277,12 @@ var calendar = $('#calendar').fullCalendar({
      </div>\
     </div>';
 
+    //get event color and autoselect the color.
     var modal = $(modal).appendTo('body');
+    var cname = calEvent.className.toString().replace("label", "btn");;
+    var string = '.btn-group .' + cname;
+    $(string).addClass('active');
+
     modal.find('form').on('submit', function(ev){
       ev.preventDefault();
 
@@ -327,6 +333,7 @@ var calendar = $('#calendar').fullCalendar({
             $.ajax({
                 type: "POST",
                 url: "/calendar/delete/" + calEvent.id,
+                data: "_csrf=" + TOKEN,
                 success: function(id) {
                   calendar.fullCalendar('removeEvents' , function(ev){
                     return (ev._id == calEvent._id);
