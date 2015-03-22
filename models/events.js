@@ -9,7 +9,8 @@ var EventSchema = new Schema({
   end: Date,
   allDay: Boolean,
   className: String,
-  user: {type: ObjectId, ref: 'User'}
+  user: {type: ObjectId, ref: 'User'},
+  dateCreated: {type: Date, default: Date.now}
 });
 
 var Events = mongoose.model('Events', EventSchema);
