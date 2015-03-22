@@ -1,6 +1,6 @@
 var express = require('express'),
   router = express.Router(),
-  Event = require('../models/event');
+  Events = require('../models/events');
 
 
 router.get('/', function(request, response, next) {
@@ -20,39 +20,39 @@ router.post('/save/:id', function(request, response, next) {
   var update = request.body.update; // used to tell dat its a positional update
 
     if (id != 'undefined') {
-      // event = Event
-      // find the event
+      // event = Events
+      // find the events
       // console.log(typeof id);
       // console.log('check me out'.red);
-      Event.findOne({id: id}, function(error, evt) {
+      Events.findOne({_id: id}, function(error, evt) {
         if (error) {
           return console.log(error.red);
         }
 
         if (evt){
-          event = evt;
+          events = evt;
         }
       });
     } else {
-      event = new Event();
-      // get user id and add to event
-      event.user = request.session.userId;
+      events = new Events();
+      // get user id and add to events
+      events.user = request.session.userId;
     }
 
     if (!update) {
-      event.title = title;
-      event.description = description;
-      event.className = className;
+      events.title = title;
+      events.description = description;
+      events.className = className;
     }
-    event.start = start;
-    event.end = end;
-    event.allDay = allDay;
+    events.start = start;
+    events.end = end;
+    events.allDay = allDay;
 
-    event.save(function(error, event) {
+    events.save(function(error, events) {
       if (error) return console.error(error.red);
       else{
-        // console.log('saved new Event'.green);
-        response.send(event.id);
+        // console.log('saved new Events'.green);
+        response.send(events.id);
       }
     });
 });
@@ -63,15 +63,15 @@ router.get('/fetch', function(request, response, next) {
 
 router.post('/delete/:id', function(request, response, next) {
   var id = request.params.id;
-  // Event.remove({id: id}, function(error) {
+  // Events.remove({id: id}, function(error) {
   //   if (error) {
-  //     return console.log('Error trying to remove event'.red);
+  //     return console.log('Error trying to remove events'.red);
   //   }
   //   response.send("done");
   // });
-  Event.findOne({id: id}, function(error, evt) {
+  Events.findOne({_id: id}, function(error, evt) {
     if (error) {
-      console.log('error finding event.'.red)
+      console.log('error finding events.'.red)
     }
 
     if (evt) {
