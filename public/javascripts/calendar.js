@@ -107,7 +107,7 @@ var calendar = $('#calendar').fullCalendar({
   },
   eventResize: function(event, delta, revertFunc) {
 
-    if (typeof event.id !== 'undefined') {
+    if (typeof event.dateCreated !== 'undefined') {
 
   //         bootbox.confirm("Extend '" + event.title + "' end date/time to " + event.end.format() +"?", function(result) {
      // if(result) {
@@ -122,7 +122,7 @@ var calendar = $('#calendar').fullCalendar({
 
        $.ajax({
            type: "POST",
-           url: "/calendar/save/" + event.id,
+           url: "/calendar/save/" + event._id,
            data: "start="+start+"&end="+end+"&allDay="+event.allDay+"&_csrf="+TOKEN+"&update=true",
            success: function(id) {
              calendar.fullCalendar('updateEvent', event);
@@ -140,7 +140,7 @@ var calendar = $('#calendar').fullCalendar({
     },
   eventDrop: function(event, delta, revertFunc) {
 
-    if (typeof event.id === 'undefined'){ } else {
+    if (typeof event.dateCreated !== 'undefined') {
 
       // bootbox.confirm("Move '"+ event.title +"' start date to "+ event.start.format() , function(result) {
       // 	if (result) {
@@ -155,7 +155,7 @@ var calendar = $('#calendar').fullCalendar({
 
           $.ajax({
               type: "POST",
-              url: "/calendar/save/" + event.id,
+              url: "/calendar/save/" + event._id,
               data: "start="+start+"&end="+end+"&allDay="+event.allDay+"&_csrf="+TOKEN+"&update=true",
               success: function(id) {
                 calendar.fullCalendar('updateEvent', event);
@@ -304,13 +304,14 @@ var calendar = $('#calendar').fullCalendar({
 
       $.ajax({
           type: "POST",
-          url: "/calendar/save/" + calEvent.id,
+          url: "/calendar/save/" + calEvent._id,
           data: "title="+title+"&description="+desc+"&start="+start+"&end="+end+"&className="+className+"&allDay="+calEvent.allDay+"&_csrf="+TOKEN,
-          success: function(id) {
-            calEvent.id = id;
+          success: function(data) {
+            calEvent._id = data.id;
             calEvent.title = title;
             calEvent.description = desc;
             calEvent.className = className;
+            calEvent.dateCreated = data.dateCreated;
             calendar.fullCalendar('updateEvent', calEvent);
           }
       });
@@ -322,7 +323,7 @@ var calendar = $('#calendar').fullCalendar({
 
       modal.modal("hide");
 
-      if (typeof calEvent.id === 'undefined') {
+      if (typeof calEvent.dateCreated === 'undefined') {
         calendar.fullCalendar('removeEvents' , function(ev){
           return (ev._id == calEvent._id);
         });
@@ -332,7 +333,7 @@ var calendar = $('#calendar').fullCalendar({
 
             $.ajax({
                 type: "POST",
-                url: "/calendar/delete/" + calEvent.id,
+                url: "/calendar/delete/" + calEvent._id,
                 data: "_csrf=" + TOKEN,
                 success: function(id) {
                   calendar.fullCalendar('removeEvents' , function(ev){
