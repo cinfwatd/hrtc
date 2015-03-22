@@ -57,7 +57,7 @@ router.post('/login', function(request, response, next) {
         if (user.validatePassword(password)) {
           request.session.authenticated = true;
           request.session.userId = user._id;
-          return response.redirect('/dashboard');
+          return response.redirect('/calendar');
         }
         request.flash('error', errors);
         return response.render('auth/login',
