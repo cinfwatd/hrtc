@@ -6,21 +6,23 @@ html(lang='en')
     title= title
     meta(name='description', content='')
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0')
-    // bootstrap & fontawesome
-    link(rel='stylesheet', href='/assets/css/bootstrap.css')
-    link(rel='stylesheet', href='/assets/css/font-awesome.css')
-    // page specific plugin styles
-    // text fonts
-    link(rel='stylesheet', href='/assets/css/ace-fonts.css')
-    // ace styles
-    link#main-ace-style.ace-main-stylesheet(rel='stylesheet', href='/assets/css/ace.css')
-    <!--[if lte IE 9]>
-    <link rel="stylesheet" href="/assets/css/ace-part2.css" class="ace-main-stylesheet" />
-    <![endif]-->
-    <!--[if lte IE 9]>
-    <link rel="stylesheet" href="/assets/css/ace-ie.css" />
-    <![endif]-->
-    // inline styles related to this page
+    block styles
+      // bootstrap & fontawesome
+      link(rel='stylesheet', href='/assets/css/bootstrap.css')
+      link(rel='stylesheet', href='/assets/css/font-awesome.css')
+      // page specific plugin styles
+      block pagespecificstyles
+      // text fonts
+      link(rel='stylesheet', href='/assets/css/ace-fonts.css')
+      // ace styles
+      link#main-ace-style.ace-main-stylesheet(rel='stylesheet', href='/assets/css/ace.css')
+      <!--[if lte IE 9]>
+      <link rel="stylesheet" href="/assets/css/ace-part2.css" class="ace-main-stylesheet" />
+      <![endif]-->
+      <!--[if lte IE 9]>
+      <link rel="stylesheet" href="/assets/css/ace-ie.css" />
+      <![endif]-->
+      // inline styles related to this page
     // ace settings handler
     script(src='/assets/js/ace-extra.js')
     // HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries
@@ -28,6 +30,8 @@ html(lang='en')
     <script src="/assets/js/html5shiv.js"></script>
     <script src="/assets/js/respond.js"></script>
     <![endif]-->
+    script(type='text/javascript')
+      |var TOKEN = "#{csrftoken}"
   body.no-skin
     // #section:basics/navbar.layout
     block navbar

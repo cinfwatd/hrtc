@@ -18,7 +18,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 	window['ace'].vars['.icon'] = '.ace-icon';
 
 	ace.vars['touch']	= ('ontouchstart' in window);//(('ontouchstart' in document.documentElement) || (window.DocumentTouch && document instanceof DocumentTouch));
-	
+
 	//sometimes the only good way to work around browser's pecularities is to detect them using user-agents
 	//though it's not accurate
 	var agent = navigator.userAgent
@@ -26,12 +26,12 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 	ace.vars['safari'] = !!agent.match(/Safari/i) && !agent.match(/Chrome/i);
 	ace.vars['android'] = ace.vars['safari'] && !!agent.match(/Android/i)
 	ace.vars['ios_safari'] = !!agent.match(/OS ([4-9])(_\d)+ like Mac OS X/i) && !agent.match(/CriOS/i)
-	
+
 	ace.vars['ie'] = window.navigator.msPointerEnabled || (document.all && document.querySelector);//8-11
 	ace.vars['old_ie'] = document.all && !document.addEventListener;//8 and below
 	ace.vars['very_old_ie']	= document.all && !document.querySelector;//7 and below
 	ace.vars['firefox'] = 'MozAppearance' in document.documentElement.style;
-	
+
 	ace.vars['non_auto_fixed'] = ace.vars['android'] || ace.vars['ios_safari'];
 })();
 
@@ -49,22 +49,22 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 jQuery(function($) {
 	basics();
 	enableSidebar();
-	
+
 	enableDemoAjax();
 	handleScrollbars();
-	
+
 	dropdownAutoPos();
-	
+
 	navbarHelpers();
 	sidebarTooltips();
-	
+
 	scrollTopBtn();
-	
+
 	someBrowserFix();
-	
+
 	bsCollapseToggle();
 	smallDeviceDropdowns();
-	
+
 	////////////////////////////
 
 	function basics() {
@@ -75,7 +75,7 @@ jQuery(function($) {
 
 		ace.vars['transition'] = !!$.support.transition.end
 	}
-	
+
 	function enableSidebar() {
 		//initiate sidebar function
 		var $sidebar = $('.sidebar');
@@ -90,11 +90,11 @@ jQuery(function($) {
 		});
 	}
 
-	
+
 	//Load content via ajax
-	function enableDemoAjax() {		
+	function enableDemoAjax() {
 		if(!$.fn.ace_ajax) return;
- 
+
 		if(window.Pace) {
 			window.paceOptions = {
 				ajax: true,
@@ -106,7 +106,7 @@ jQuery(function($) {
 
 		var demo_ajax_options = {
 			 'close_active': true,
-			 
+
 			 'default_url': 'page/index',//default hash
 			 'content_url': function(hash) {
 				//***NOTE***
@@ -122,9 +122,9 @@ jQuery(function($) {
 
 				//for example in Ace PHP demo version we convert "ajax.php#page/dashboard" to "ajax.php?page=dashboard" and load it
 				return path + "?" + hash.replace(/\//, "=");
-			  }			  
+			  }
 		}
-		   
+
 		//for IE9 and below we exclude PACE loader (using conditional IE comments)
 		//for other browsers we use the following extra ajax loader options
 		if(window.Pace) {
@@ -171,15 +171,15 @@ jQuery(function($) {
 			var offset = $(this).offset();
 			var parent = $(this.parentNode);
 
-			if ( parseInt(offset.top + $(this).height()) + 50 
+			if ( parseInt(offset.top + $(this).height()) + 50
 					>
-				(ace.helper.scrollTop() + ace.helper.winHeight() - parent.find('.dropdown-menu').eq(0).height()) 
+				(ace.helper.scrollTop() + ace.helper.winHeight() - parent.find('.dropdown-menu').eq(0).height())
 				) parent.addClass('dropup');
 			else parent.removeClass('dropup');
 		});
 	}
 
-	
+
 	function navbarHelpers() {
 		//prevent dropdowns from hiding when a from is clicked
 		/**$(document).on('click', '.dropdown-navbar form', function(e){
@@ -208,7 +208,7 @@ jQuery(function($) {
 		});
 	}
 
-	
+
 	function sidebarTooltips() {
 		//tooltip in sidebar items
 		$('.sidebar .nav-list .badge[title],.sidebar .nav-list .badge[title]').each(function() {
@@ -225,7 +225,7 @@ jQuery(function($) {
 				template: '<div class="tooltip '+tooltip_class+'"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
 			});
 		});
-		
+
 		//or something like this if items are dynamically inserted
 		/**
 		$('.sidebar').tooltip({
@@ -241,8 +241,8 @@ jQuery(function($) {
 		});
 		*/
 	}
-	
-	
+
+
 
 	function scrollTopBtn() {
 		//the scroll to top button
@@ -275,7 +275,7 @@ jQuery(function($) {
 	}
 
 
-	
+
 	function someBrowserFix() {
 		//chrome and webkit have a problem here when resizing from 479px to more
 		//we should force them redraw the navbar!
@@ -285,8 +285,8 @@ jQuery(function($) {
 				ace.helper.redraw(ace_nav);
 			});
 		}
-		
-		
+
+
 		//fix an issue with ios safari, when an element is fixed and an input receives focus
 		if(ace.vars['ios_safari']) {
 		  $(document).on('ace.settings.ios_fix', function(e, event_name, event_val) {
@@ -307,8 +307,8 @@ jQuery(function($) {
 		}
 	}
 
-	
-	
+
+
 	function bsCollapseToggle() {
 		//bootstrap collapse component icon toggle
 		$(document).on('hide.bs.collapse show.bs.collapse', function (ev) {
@@ -334,20 +334,20 @@ jQuery(function($) {
 				if($icon_down) {
 					if(ev.type == 'show') $icon.removeClass($icon_down).addClass($icon_up)
 						else $icon.removeClass($icon_up).addClass($icon_down)
-						
+
 					return false;//ignore other icons that match, one is enough
 				}
 
 			});
 		})
 	}
-	
 
-	
+
+
 	//in small devices display navbar dropdowns like modal boxes
 	function smallDeviceDropdowns() {
 	  if(ace.vars['old_ie']) return;
-	  
+
 	  $('.ace-nav > li')
 	  .on('shown.bs.dropdown.navbar', function(e) {
 		adjustNavbarDropdown.call(this);
@@ -356,7 +356,7 @@ jQuery(function($) {
 		$(window).off('resize.navbar.dropdown');
 		resetNavbarDropdown.call(this);
 	  })
-	 
+
 	  function adjustNavbarDropdown() {
 		var $sub = $(this).find('> .dropdown-menu');
 
@@ -365,7 +365,7 @@ jQuery(function($) {
 			var offset_w = win_width > 320 ? 60 : (win_width > 240 ? 40 : 30);
 			var avail_width = parseInt(win_width) - offset_w;
 			var avail_height = parseInt($(window).height()) - 30;
-			
+
 			var width = parseInt(Math.min(avail_width , 320));
 			//we set 'width' here for text wrappings and spacings to take effect before calculating scrollHeight
 			$sub.css('width', width);
@@ -384,23 +384,23 @@ jQuery(function($) {
 				if(content) {
 					scrollHeight = content.scrollHeight;
 				}
-			
+
 				extra_parts += parent_menu.find('.dropdown-header').outerHeight();
 				extra_parts += parent_menu.find('.dropdown-footer').outerHeight();
-				
+
 				var tab_content = parent_menu.closest('.tab-content');
 				if( tab_content.length != 0 ) {
 					extra_parts += tab_content.siblings('.nav-tabs').eq(0).height();
 				}
 			}
-			
 
-			
+
+
 			var height = parseInt(Math.min(avail_height , 480, scrollHeight + extra_parts));
 			var left = parseInt(Math.abs((avail_width + offset_w - width)/2));
 			var top = parseInt(Math.abs((avail_height + 30 - height)/2));
 
-			
+
 			var zindex = parseInt($sub.css('z-index')) || 0;
 
 			$sub.css({'height': height, 'left': left, 'right': 'auto', 'top': top - (!tabbed ? 1 : 3)});
@@ -414,11 +414,11 @@ jQuery(function($) {
 				}
 			}
 			$sub.css('height', height + (!tabbed ? 2 : 7));//for bottom border adjustment and tab content paddings
-			
-			
+
+
 			if($sub.hasClass('user-menu')) {
 				$sub.css('height', '');//because of user-info hiding/showing at different widths, which changes above 'scrollHeight', so we remove it!
-				
+
 				//user menu is re-positioned in small widths
 				//but we need to re-position again in small heights as well (modal mode)
 				var user_info = $(this).find('.user-info');
@@ -427,7 +427,7 @@ jQuery(function($) {
 				}
 				else user_info.css({'left': '', 'right': '', 'top': '', 'width': '', 'max-width': '', 'z-index': ''});
 			}
-			
+
 			//dropdown's z-index is limited by parent .navbar's z-index (which doesn't make sense because dropdowns are fixed!)
 			//so for example when in 'content-slider' page, fixed modal toggle buttons go above are dropdowns
 			//so we increase navbar's z-index to fix this!
@@ -436,7 +436,7 @@ jQuery(function($) {
 		else {
 			if($sub.length != 0) resetNavbarDropdown.call(this, $sub);
 		}
-		
+
 		var self = this;
 		$(window)
 		.off('resize.navbar.dropdown')
@@ -448,7 +448,7 @@ jQuery(function($) {
 	  //reset scrollbars and user menu
 	  function resetNavbarDropdown($sub) {
 		$sub = $sub || $(this).find('> .dropdown-menu');
-	  
+
 	    if($sub.length > 0) {
 			$sub
 			.css({'width': '', 'height': '', 'left': '', 'right': '', 'top': ''})
@@ -460,14 +460,14 @@ jQuery(function($) {
 				var size = parseInt($(this).attr('data-size') || 0) || $.fn.ace_scroll.defaults.size;
 				$(this).ace_scroll('update', {size: size}).ace_scroll('enable').ace_scroll('reset');
 			})
-			
+
 			if( $sub.hasClass('user-menu') ) {
-				var user_info = 
+				var user_info =
 				$(this).find('.user-info')
 				.css({'left': '', 'right': '', 'top': '', 'width': '', 'max-width': '', 'z-index': ''});
 			}
 		}
-		
+
 		$(this).closest('.navbar').css('z-index', '');
 	  }
 	}
@@ -490,7 +490,7 @@ jQuery(function($) {
 	if(res) {
 		if(res[1]) val = true;
 		else if(res[2]) val = false;
-		else if(res[3]) val = null;	
+		else if(res[3]) val = null;
 		else if(res[4]) val = parseFloat(str);
 		else if(res[5]) {
 			try { val = JSON.parse(str) }
@@ -549,7 +549,7 @@ jQuery(function($) {
 		var $contentArea = $(contentArea);
 		var self = this;
 		$contentArea.attr('data-ajax-content', 'true');
-		
+
 		//get a list of 'data-*' attributes that override 'defaults' and 'settings'
 		var attrib_values = ace.helper.getAttrSettings(contentArea, $.fn.ace_ajax.defaults);
 		this.settings = $.extend({}, $.fn.ace_ajax.defaults, settings, attrib_values);
@@ -562,27 +562,27 @@ jQuery(function($) {
 		this.loadUrl = function(hash, cache) {
 			var url = false;
 			hash = hash.replace(/^(\#\!)?\#/, '');
-			
+
 			this.force_reload = (cache === false)
-			
+
 			if(typeof this.settings.content_url === 'function') url = this.settings.content_url(hash);
 			if(typeof url === 'string') this.getUrl(url, hash, false);
 		}
-		
+
 		this.loadAddr = function(url, hash, cache) {
 			this.force_reload = (cache === false);
 			this.getUrl(url, hash, false);
 		}
-		
+
 		this.getUrl = function(url, hash, manual_trigger) {
 			if(working) {
 				return;
 			}
-		
+
 			var event
 			$contentArea.trigger(event = $.Event('ajaxloadstart'), {url: url, hash: hash})
 			if (event.isDefaultPrevented()) return;
-			
+
 			self.startLoading();
 
 			$.ajax({
@@ -591,12 +591,12 @@ jQuery(function($) {
 			})
 			.error(function() {
 				$contentArea.trigger('ajaxloaderror', {url: url, hash: hash});
-				
+
 				self.stopLoading(true);
 			})
 			.done(function(result) {
 				$contentArea.trigger('ajaxloaddone', {url: url, hash: hash});
-				
+
 				var link_element = null, link_text = '';;
 				if(typeof self.settings.update_active === 'function') {
 					link_element = self.settings.update_active.call(null, hash, url);
@@ -609,13 +609,13 @@ jQuery(function($) {
 							nav.find('.active').each(function(){
 								var $class = 'active';
 								if( $(this).hasClass('hover') || self.settings.close_active ) $class += ' open';
-								
-								$(this).removeClass($class);							
+
+								$(this).removeClass($class);
 								if(self.settings.close_active) {
 									$(this).find(' > .submenu').css('display', '');
 								}
 							})
-							
+
 							var active_li = link_element.closest('li').addClass('active').parents('.nav li').addClass('active open');
 							nav.closest('.sidebar[data-sidebar-scroll=true]').each(function() {
 								var $this = $(this);
@@ -639,13 +639,13 @@ jQuery(function($) {
 				result = String(result)
 					.replace(/<(title|link)([\s\>])/gi,'<div class="hidden ajax-append-$1"$2')
 					.replace(/<\/(title|link)\>/gi,'</div>')
-			
-				
+
+
 				$overlay.addClass('content-loaded').detach();
 				$contentArea.empty().html(result);
-				
+
 				$(self.settings.loading_overlay || $contentArea).append($overlay);
-	
+
 				//remove previous stylesheets inserted via ajax
 				setTimeout(function() {
 					$('head').find('link.ace-ajax-stylesheet').remove();
@@ -656,7 +656,7 @@ jQuery(function($) {
 						ace_style = $('head').find(main_selectors[m]).first();
 						if(ace_style.length > 0) break;
 					}
-					
+
 					$contentArea.find('.ajax-append-link').each(function(e) {
 						var $link = $(this);
 						if ( $link.attr('href') ) {
@@ -677,7 +677,7 @@ jQuery(function($) {
 				else if(self.settings.update_title === true) {
 					updateTitle(link_text);
 				}
-				
+
 
 				if( !manual_trigger ) {
 					$('html,body').animate({scrollTop: 0}, 250);
@@ -686,24 +686,24 @@ jQuery(function($) {
 				//////////////////////
 				$contentArea.trigger('ajaxloadcomplete', {url: url, hash: hash});
 				//////////////////////
-				
+
 				self.stopLoading();
 			})
 		}
-		
-		
+
+
 		///////////////////////
 		var fixPos = false;
 		var loadTimer = null;
 		this.startLoading = function() {
 			if(working) return;
 			working = true;
-			
+
 			if(!this.settings.loading_overlay && $contentArea.css('position') == 'static') {
 				$contentArea.css('position', 'relative');//for correct icon positioning
 				fixPos = true;
 			}
-				
+
 			$overlay.remove();
 			$overlay = $('<div class="ajax-loading-overlay"><i class="ajax-loading-icon '+(this.settings.loading_icon || '')+'"></i> '+this.settings.loading_text+'</div>')
 
@@ -711,30 +711,30 @@ jQuery(function($) {
 			else if(this.settings.loading_overlay) $(this.settings.loading_overlay).append($overlay);
 			else $contentArea.append($overlay);
 
-			
-			if(this.settings.max_load_wait !== false) 
+
+			if(this.settings.max_load_wait !== false)
 			 loadTimer = setTimeout(function() {
 				loadTimer = null;
 				if(!working) return;
-				
+
 				var event
 				$contentArea.trigger(event = $.Event('ajaxloadlong'))
 				if (event.isDefaultPrevented()) return;
-				
+
 				self.stopLoading(true);
 			 }, this.settings.max_load_wait * 1000);
 		}
-		
+
 		this.stopLoading = function(stopNow) {
 			if(stopNow === true) {
 				working = false;
-				
+
 				$overlay.remove();
 				if(fixPos) {
 					$contentArea.css('position', '');//restore previous 'position' value
 					fixPos = false;
 				}
-				
+
 				if(loadTimer != null) {
 					clearTimeout(loadTimer);
 					loadTimer = null;
@@ -742,7 +742,7 @@ jQuery(function($) {
 			}
 			else {
 				$overlay.addClass('almost-loaded');
-				
+
 				$contentArea.one('ajaxscriptsloaded.inner_call', function() {
 					self.stopLoading(true);
 					/**
@@ -755,31 +755,31 @@ jQuery(function($) {
 				})
 			}
 		}
-		
+
 		this.working = function() {
 			return working;
 		}
 		///////////////////////
-		
-		
-		
+
+
+
 		function updateBreadcrumbs(link_element) {
 			var link_text = '';
-		 
+
 			//update breadcrumbs
 			var breadcrumbs = $('.breadcrumb');
 			if(breadcrumbs.length > 0 && breadcrumbs.is(':visible')) {
 				breadcrumbs.find('> li:not(:first-child)').remove();
 
-				var i = 0;		
+				var i = 0;
 				link_element.parents('.nav li').each(function() {
 					var link = $(this).find('> a');
-					
+
 					var link_clone = link.clone();
 					link_clone.find('i,.fa,.glyphicon,.ace-icon,.menu-icon,.badge,.label').remove();
 					var text = link_clone.text();
 					link_clone.remove();
-					
+
 					var href = link.attr('href');
 
 					if(i == 0) {
@@ -794,10 +794,10 @@ jQuery(function($) {
 					i++;
 				})
 			}
-			
+
 			return link_text;
 		 }
-		 
+
 		 function updateTitle(link_text) {
 			var $title = $contentArea.find('.ajax-append-title');
 			if($title.length > 0) {
@@ -810,20 +810,20 @@ jQuery(function($) {
 				link_text = $.trim(link_text) + extra;
 			}
 		 }
-		 
-		 
+
+
 		 this.loadScripts = function(scripts, callback) {
 			$.ajaxPrefilter('script', function(opts) {opts.cache = true});
 			setTimeout(function() {
 				//let's keep a list of loaded scripts so that we don't load them more than once!
-				
+
 				function finishLoading() {
 					if(typeof callback === 'function') callback();
 					$('.btn-group[data-toggle="buttons"] > .btn').button();
-					
+
 					$contentArea.trigger('ajaxscriptsloaded');
 				}
-				
+
 				//var deferreds = [];
 				var deferred_count = 0;//deferreds count
 				var resolved = 0;
@@ -833,7 +833,7 @@ jQuery(function($) {
 						if( ajax_loaded_scripts[script_name] !== true )	deferred_count++;
 					})()
 				}
-				
+
 
 				function nextScript(index) {
 					index += 1;
@@ -842,13 +842,13 @@ jQuery(function($) {
 						finishLoading();
 					}
 				}
-				
+
 				function loadScript(index) {
 					index = index || 0;
 					if(!scripts[index]) {//could be null sometimes
 						return nextScript(index);
 					}
-				
+
 					var script_name = "js-"+scripts[index].replace(/[^\w\d\-]/g, '-').replace(/\-\-/g, '-');
 					//only load scripts that are not loaded yet!
 					if( ajax_loaded_scripts[script_name] !== true ) {
@@ -872,8 +872,8 @@ jQuery(function($) {
 						nextScript(index);
 					}
 				}
-				
-				
+
+
 				if (deferred_count > 0) {
 					loadScript();
 				}
@@ -883,19 +883,19 @@ jQuery(function($) {
 
 			}, 10)
 		}
-		
-		
-		
+
+
+
 		/////////////////
 		$(window)
 		.off('hashchange.ace_ajax')
 		.on('hashchange.ace_ajax', function(e, manual_trigger) {
 			var hash = $.trim(window.location.hash);
 			if(!hash || hash.length == 0) return;
-			
+
 			self.loadUrl(hash);
 		}).trigger('hashchange.ace_ajax', [true]);
-		
+
 		var hash = $.trim(window.location.hash);
 		if(!hash && this.settings.default_url) window.location.hash = this.settings.default_url;
 
@@ -921,9 +921,9 @@ jQuery(function($) {
 
 		return (method_call === undefined) ? $set : method_call;
 	}
-	
-	
-	
+
+
+
 	$.fn.aceAjax.defaults = $.fn.ace_ajax.defaults = {
 		content_url: false,
 		default_url: false,
@@ -966,9 +966,9 @@ jQuery(function($) {
 	$.event.special.ace_drag = {
 		setup: function() {
 			var min_threshold = 0;
-		
+
 			var $this = $(this);
-			$this.on(touchStartEvent, function(event) {		
+			$this.on(touchStartEvent, function(event) {
 				var data = event.originalEvent.touches ?
 					event.originalEvent.touches[ 0 ] :
 					event,
@@ -979,7 +979,7 @@ jQuery(function($) {
 					},
 					stop;
 					//start.origin.trigger({'type' : 'ace_dragStart', 'start':(start || [-1,-1])});
-					
+
 					var direction = false, dx = 0, dy = 0;
 
 				function moveHandler(event) {
@@ -992,7 +992,7 @@ jQuery(function($) {
 					stop = {
 						coords: [ data.pageX, data.pageY ]
 					};
-					
+
 					// prevent scrolling
 					//if ( Math.abs(start.coords[1] - stop.coords[1]) > 0 || Math.abs(start.coords[0] - stop.coords[01]) > 0 ) {
 						//event.preventDefault();
@@ -1003,25 +1003,25 @@ jQuery(function($) {
 						dx = 0;
 						dy = 0;
 
-						direction = 
+						direction =
 							(
 							 Math.abs(dy = start.coords[ 1 ] - stop.coords[ 1 ]) > min_threshold
-								&& 
+								&&
 							 Math.abs(dx = start.coords[ 0 ] - stop.coords[ 0 ]) <= Math.abs(dy)
 							)
-							? 
+							?
 							(dy > 0 ? 'up' : 'down')
 							:
 							(
 							 Math.abs(dx = start.coords[ 0 ] - stop.coords[ 0 ]) > min_threshold
-								&& 
+								&&
 							 Math.abs( dy ) <= Math.abs(dx)
 							)
 							?
 							(dx > 0 ? 'left' : 'right')
 							:
 							false;
-							
+
 
 							if( direction !== false ) {
 							 var retval = {cancel: false}
@@ -1048,9 +1048,9 @@ jQuery(function($) {
 				.one(touchStopEvent, function(event) {
 					$this.off(touchMoveEvent, moveHandler);
 					//start.origin.trigger({'type' : 'ace_dragEnd', 'stop':(stop || [-1,-1])});
-					
+
 					start = stop = undefined;
-				
+
 				});
 			});
 		}
@@ -1069,7 +1069,7 @@ jQuery(function($) {
 		this.$sidebar.attr('data-sidebar', 'true');
 		if( !this.$sidebar.attr('id') ) this.$sidebar.attr( 'id' , 'id-sidebar-'+(++sidebar_count) )
 
-		
+
 		//get a list of 'data-*' attributes that override 'defaults' and 'settings'
 		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar.defaults, 'sidebar-');
 		this.settings = $.extend({}, $.fn.ace_sidebar.defaults, settings, attrib_values);
@@ -1091,7 +1091,7 @@ jQuery(function($) {
 		this.set = function(name, value) {
 			if(this.hasOwnProperty(name)) this[name] = value;
 		}
-		
+
 
 		this.ref = function() {
 			//return a reference to self
@@ -1112,24 +1112,24 @@ jQuery(function($) {
 					icon.toggleClass(icon1).toggleClass(icon2);
 				}
 			}
-		}		
-		
+		}
+
 		var findToggleBtn = function() {
 			var toggle_btn = self.$sidebar.find('.sidebar-collapse');
 			if(toggle_btn.length == 0) toggle_btn = $('.sidebar-collapse[data-target="#'+(self.$sidebar.attr('id')||'')+'"]');
 			if(toggle_btn.length != 0) toggle_btn = toggle_btn[0];
 			else toggle_btn = null;
-			
+
 			return toggle_btn;
 		}
-		
+
 		//collapse/expand button
 		this.toggleMenu = function(toggle_btn, save) {
 			if(this.collapsible) return;
 
 			//var minimized = this.$sidebar.hasClass('menu-min');
 			this.minimized = !this.minimized;
-			
+
 			try {
 				//toggle_btn can also be a param to indicate saving to cookie or not?! if toggle_btn === false, it won't be saved
 				ace.settings.sidebar_collapsed(sidebar, this.minimized, !(toggle_btn === false || save === false));//@ ace-extra.js
@@ -1138,7 +1138,7 @@ jQuery(function($) {
 					this.$sidebar.addClass('menu-min');
 				else this.$sidebar.removeClass('menu-min');
 			}
-	
+
 			if( !toggle_btn ) {
 				toggle_btn = findToggleBtn();
 			}
@@ -1152,22 +1152,22 @@ jQuery(function($) {
 		this.collapse = function(toggle_btn, save) {
 			if(this.collapsible) return;
 			this.minimized = false;
-			
+
 			this.toggleMenu(toggle_btn, save);
 		}
 		this.expand = function(toggle_btn, save) {
 			if(this.collapsible) return;
 			this.minimized = true;
-			
+
 			this.toggleMenu(toggle_btn, save);
 		}
-		
 
-		
+
+
 		//collapse/expand in 2nd mobile style
 		this.toggleResponsive = function(toggle_btn) {
 			if(!this.mobile_view || this.mobile_style != 3) return;
-		
+
 			if( this.$sidebar.hasClass('menu-min') ) {
 				//remove menu-min because it interferes with responsive-max
 				this.$sidebar.removeClass('menu-min');
@@ -1186,7 +1186,7 @@ jQuery(function($) {
 				if(toggle_btn.length != 0) toggle_btn = toggle_btn[0];
 				else toggle_btn = null;
 			}
-			
+
 			if(toggle_btn) {
 				var icon = $(toggle_btn).find(ace.vars['.icon']), icon1, icon2;
 				if(icon.length > 0) {
@@ -1199,7 +1199,7 @@ jQuery(function($) {
 
 			$(document).triggerHandler('settings.ace', ['sidebar_collapsed' , this.minimized]);
 		}
-		
+
 		//some helper functions
 		this.is_collapsible = function() {
 			var toggle
@@ -1226,7 +1226,7 @@ jQuery(function($) {
 
 			var minimized  = self.minimized && !self.collapsible;
 			//if .sidebar is .navbar-collapse and in small device mode, then let minimized be uneffective
-	
+
 			if( !link_element.hasClass('dropdown-toggle') ) {//it doesn't have a submenu return
 				//just one thing before we return
 				//if sidebar is collapsed(minimized) and we click on a first level menu item
@@ -1260,10 +1260,10 @@ jQuery(function($) {
 
 				return;
 			}
-			
+
 			ev.preventDefault();
-			
-			
+
+
 
 
 			var sub = link_element.siblings('.submenu').get(0);
@@ -1276,14 +1276,14 @@ jQuery(function($) {
 			if
 			(
 				( minimized && parent_ul == nav_list )
-				 || 
+				 ||
 				( ( $sub.parent().hasClass('hover') && $sub.css('position') == 'absolute' ) && !self.collapsible )
 			)
 			{
 				return false;
 			}
 
-			
+
 			var sub_hidden = (sub.scrollHeight == 0)
 
 			//if not open and visible, let's open it and make it visible
@@ -1312,7 +1312,7 @@ jQuery(function($) {
 			//do this almost before submenu hiding begins
 			//but when minimized submenu's toggle should have no effect
 			if (height_change != 0) {
-				if(self.$sidebar.attr('data-sidebar-scroll') == 'true' && !self.minimized) 
+				if(self.$sidebar.attr('data-sidebar-scroll') == 'true' && !self.minimized)
 					self.$sidebar.ace_sidebar_scroll('prehide', height_change)
 			}
 
@@ -1324,19 +1324,19 @@ jQuery(function($) {
 			//'shouldWait' indicates whether to wait for previous transition (submenu toggle) to be complete or not?
 			shouldWait = (shouldWait !== false);
 			if(shouldWait && submenu_working) return false;
-					
+
 			var $sub = $(sub);
 			var event;
 			$sub.trigger(event = $.Event('show.ace.submenu'))
 			if (event.isDefaultPrevented()) {
 				return false;
 			}
-			
+
 			if(shouldWait) submenu_working = true;
 
 
 			$duration = $duration || this.settings.duration;
-			
+
 			$sub.css({
 				height: 0,
 				overflow: 'hidden',
@@ -1344,7 +1344,7 @@ jQuery(function($) {
 			})
 			.removeClass('nav-hide').addClass('nav-show')//only for window < @grid-float-breakpoint and .navbar-collapse.menu-min
 			.parent().addClass('open');
-			
+
 			sub.scrollTop = 0;//this is for submenu_hover when sidebar is minimized and a submenu is scrollTop'ed using scrollbars ...
 
 			if( $duration > 0 ) {
@@ -1360,15 +1360,15 @@ jQuery(function($) {
 				//if(ace.vars['webkit']) ace.helper.redraw(sub);//little Chrome issue, force redraw ;)
 
 				if(trigger !== false) $sub.trigger($.Event('shown.ace.submenu'))
-				
+
 				if(shouldWait) submenu_working = false;
 			}
-			
+
 			if( $duration > 0 && !!$.support.transition.end ) {
 			  $sub.one($.support.transition.end, complete);
 			}
 			else complete();
-			
+
 			//there is sometimes a glitch, so maybe retry
 			if(ace.vars['android']) {
 				setTimeout(function() {
@@ -1379,26 +1379,26 @@ jQuery(function($) {
 
 			return true;
 		 }
-		 
-		 
+
+
 		 this.hide = function(sub, $duration, shouldWait) {
 			//'shouldWait' indicates whether to wait for previous transition (submenu toggle) to be complete or not?
 			shouldWait = (shouldWait !== false);
 			if(shouldWait && submenu_working) return false;
-		 
-			
+
+
 			var $sub = $(sub);
 			var event;
 			$sub.trigger(event = $.Event('hide.ace.submenu'))
 			if (event.isDefaultPrevented()) {
 				return false;
 			}
-			
+
 			if(shouldWait) submenu_working = true;
-			
+
 
 			$duration = $duration || this.settings.duration;
-			
+
 			$sub.css({
 				height: sub.scrollHeight,
 				overflow: 'hidden',
@@ -1423,7 +1423,7 @@ jQuery(function($) {
 				.removeClass('nav-show').addClass('nav-hide')//only for window < @grid-float-breakpoint and .navbar-collapse.menu-min
 
 				if(trigger !== false) $sub.trigger($.Event('hidden.ace.submenu'))
-				
+
 				if(shouldWait) submenu_working = false;
 			}
 
@@ -1446,7 +1446,7 @@ jQuery(function($) {
 
 		 this.toggle = function(sub, $duration) {
 			$duration = $duration || self.settings.duration;
-		 
+
 			if( sub.scrollHeight == 0 ) {//if an element is hidden scrollHeight becomes 0
 				if( this.show(sub, $duration) ) return 1;
 			} else {
@@ -1469,12 +1469,12 @@ jQuery(function($) {
 			  else if(this.$sidebar.hasClass('navbar-collapse')) this.mobile_style = 4;//collapsible (bootstrap style)
 		}
 		sidebar_mobile_style.call(self);
-		  
+
 		function update_vars() {
 			this.mobile_view = this.mobile_style < 4 && this.is_mobile_view();
 			this.collapsible = !this.mobile_view && this.is_collapsible();
 
-			this.minimized = 
+			this.minimized =
 			(!this.collapsible && this.$sidebar.hasClass(minimized_menu_class))
 			 ||
 			(this.mobile_style == 3 && this.mobile_view && this.$sidebar.hasClass(responsive_min_class))
@@ -1488,22 +1488,22 @@ jQuery(function($) {
 		}).triggerHandler('resize.sidebar.vars')
 
 	}//end of Sidebar
-	
+
 
 	//sidebar events
-	
+
 	//menu-toggler
 	$(document)
 	.on(ace.click_event+'.ace.menu', '.menu-toggler', function(e){
 		var btn = $(this);
 		var sidebar = $(btn.attr('data-target'));
 		if(sidebar.length == 0) return;
-		
+
 		e.preventDefault();
-				
+
 		sidebar.toggleClass('display');
 		btn.toggleClass('display');
-		
+
 		var click_event = ace.click_event+'.ace.autohide';
 		var auto_hide = sidebar.attr('data-auto-hide') === 'true';
 
@@ -1532,7 +1532,7 @@ jQuery(function($) {
 	})
 	//sidebar collapse/expand button
 	.on(ace.click_event+'.ace.menu', '.sidebar-collapse', function(e){
-		
+
 		var target = $(this).attr('data-target'), $sidebar = null;
 		if(target) $sidebar = $(target);
 		if($sidebar == null || $sidebar.length == 0) $sidebar = $(this).closest('.sidebar');
@@ -1546,12 +1546,12 @@ jQuery(function($) {
 		var target = $(this).attr('data-target'), $sidebar = null;
 		if(target) $sidebar = $(target);
 		if($sidebar == null || $sidebar.length == 0) $sidebar = $(this).closest('.sidebar');
-		if($sidebar.length == 0) return;	
-	
+		if($sidebar.length == 0) return;
+
 		var btn = this;
 		e.preventDefault();
 		$sidebar.ace_sidebar('toggleResponsive', this);
-		
+
 		var click_event = ace.click_event+'.ace.autohide';
 		if($sidebar.attr('data-auto-hide') === 'true') {
 			if( $sidebar.hasClass('responsive-max') ) {
@@ -1571,7 +1571,7 @@ jQuery(function($) {
 		}
 	})
 
-	
+
 	$.fn.ace_sidebar = function (option, value) {
 		var method_call;
 
@@ -1589,8 +1589,8 @@ jQuery(function($) {
 
 		return (method_call === undefined) ? $set : method_call;
 	};
-	
-	
+
+
 	$.fn.ace_sidebar.defaults = {
 		'duration': 300
     }
@@ -1618,8 +1618,8 @@ jQuery(function($) {
 	function(el, pos) { el.offsetHeight; return window.getComputedStyle(el).position == pos }
 	:
 	function(el, pos) { el.offsetHeight; return $(el).css('position') == pos }
-	
-		
+
+
 	function Sidebar_Scroll(sidebar , settings) {
 		var self = this;
 
@@ -1628,20 +1628,20 @@ jQuery(function($) {
 			$nav = $sidebar.find('.nav-list'),
 			$toggle = $sidebar.find('.sidebar-toggle').eq(0),
 			$shortcuts = $sidebar.find('.sidebar-shortcuts').eq(0);
-			
+
 		var nav = $nav.get(0);
 		if(!nav) return;
-		
-		
+
+
 		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar_scroll.defaults);
 		this.settings = $.extend({}, $.fn.ace_sidebar_scroll.defaults, settings, attrib_values);
 		var scroll_to_active = self.settings.scroll_to_active;
-	
-	
+
+
 		var ace_sidebar = $sidebar.ace_sidebar('ref');
 		$sidebar.attr('data-sidebar-scroll', 'true');
-			
-		
+
+
 		var scroll_div = null,
 			scroll_content = null,
 			scroll_content_div = null,
@@ -1653,10 +1653,10 @@ jQuery(function($) {
 		this.is_scrolling = false;
 		var _initiated = false;
 		this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
-		
+
 		var $avail_height, $content_height;
 
-		
+
 		var available_height = function() {
 			//available window space
 			var offset = $nav.parent().offset();//because `$nav.offset()` considers the "scrolled top" amount as well
@@ -1668,8 +1668,8 @@ jQuery(function($) {
 			return nav.clientHeight;//we don't use nav.scrollHeight here, because hover submenus are considered in calculating scrollHeight despite position=absolute!
 		}
 
-		
-		
+
+
 		var initiate = function(on_page_load) {
 			if( _initiated ) return;
 			if( !self.sidebar_fixed ) return;//eligible??
@@ -1694,12 +1694,12 @@ jQuery(function($) {
 				touchDrag: false//disable touch drag event on scrollbars, we'll add a custom one later
 			})
 			.closest('.ace-scroll').addClass('nav-scroll');
-			
+
 			ace_scroll = scroll_div.data('ace_scroll');
 
 			scroll_content = scroll_div.find('.scroll-content').eq(0);
 			scroll_content_div = scroll_content.find(' > div').eq(0);
-			
+
 			track = $(ace_scroll.get_track());
 			bar = track.find('.scroll-bar').eq(0);
 
@@ -1714,13 +1714,13 @@ jQuery(function($) {
 
 			$nav.css({position: 'relative'});
 			if( self.settings.scroll_outside == true ) scroll_div.addClass('scrollout');
-			
+
 			nav = $nav.get(0);
 			nav.style.top = 0;
 			scroll_content.on('scroll.nav', function() {
 				nav.style.top = (-1 * this.scrollTop) + 'px';
 			});
-			
+
 			//mousewheel library available?
 			$nav.on(!!$.event.special.mousewheel ? 'mousewheel.ace_scroll' : 'mousewheel.ace_scroll DOMMouseScroll.ace_scroll', function(event){
 				if( !self.is_scrolling || !ace_scroll.is_active() ) {
@@ -1729,7 +1729,7 @@ jQuery(function($) {
 				//transfer $nav's mousewheel event to scrollbars
 				return scroll_div.trigger(event);
 			});
-			
+
 			$nav.on('mouseenter.ace_scroll', function() {
 				track.addClass('scroll-hover');
 			}).on('mouseleave.ace_scroll', function() {
@@ -1753,7 +1753,7 @@ jQuery(function($) {
 					event.retval.cancel = true;
 					return;
 				}
-				
+
 				//if submenu hover is being scrolled let's cancel sidebar scroll!
 				if( $(event.target).closest('.can-scroll').length != 0 ) {
 					event.retval.cancel = true;
@@ -1761,21 +1761,21 @@ jQuery(function($) {
 				}
 
 				if(event.direction == 'up' || event.direction == 'down') {
-					
+
 					ace_scroll.move_bar(true);
-					
+
 					var distance = event.dy;
-					
+
 					distance = parseInt(Math.min($avail_height, distance))
 					if(Math.abs(distance) > 2) distance = distance * 2;
-					
+
 					if(distance != 0) {
 						content.scrollTop = content.scrollTop + distance;
 						nav.style.top = (-1 * content.scrollTop) + 'px';
 					}
 				}
 			});
-			
+
 
 			//for drag only
 			if(self.settings.smooth_scroll) {
@@ -1789,8 +1789,8 @@ jQuery(function($) {
 					bar.css('transition-property', 'top');
 				});
 			}
-			
-			
+
+
 
 			if(old_safari && !self.settings.include_toggle) {
 				var toggle = $toggle.get(0);
@@ -1811,13 +1811,13 @@ jQuery(function($) {
 				}
 				scroll_to_active = false;
 			}
-			
-			
-			
+
+
+
 			if( typeof self.settings.smooth_scroll === 'number' && self.settings.smooth_scroll > 0) {
 				$nav.css({'transition-property': 'top', 'transition-duration': (self.settings.smooth_scroll / 1000).toFixed(2)+'s'})
 				bar.css({'transition-property': 'top', 'transition-duration': (self.settings.smooth_scroll / 1500).toFixed(2)+'s'})
-				
+
 				scroll_div
 				.on('drag.start', function(e) {
 					e.stopPropagation();
@@ -1828,7 +1828,7 @@ jQuery(function($) {
 					$nav.css('transition-property', 'top')
 				});
 			}
-			
+
 			if(ace.vars['android']) {
 				//force hide address bar, because its changes don't trigger window resize and become kinda ugly
 				var val = ace.helper.scrollTop();
@@ -1838,7 +1838,7 @@ jQuery(function($) {
 						self.reset();
 					}, 20 );
 				}
-				
+
 				var last_height = ace.helper.winHeight() , new_height;
 				$(window).on('scroll.ace_scroll', function() {
 					if(self.is_scrolling && ace_scroll.is_active()) {
@@ -1851,16 +1851,16 @@ jQuery(function($) {
 				});
 			}
 		}
-		
-		
-		
-		
+
+
+
+
 		this.scroll_to_active = function() {
 			if( !ace_scroll || !ace_scroll.is_active() ) return;
 			try {
 				//sometimes there's no active item or not 'offsetTop' property
 				var $active;
-				
+
 				var vars = ace_sidebar['vars']()
 
 				var nav_list = $sidebar.find('.nav-list')
@@ -1872,7 +1872,7 @@ jQuery(function($) {
 					if($active.length == 0)	$active = $nav.find('.active:not(.open)')
 				}
 
-			
+
 				var top = $active.outerHeight();
 				nav_list = nav_list.get(0);
 				var active = $active.get(0);
@@ -1888,14 +1888,14 @@ jQuery(function($) {
 				}
 			}catch(e){}
 		}
-		
-		
-		
+
+
+
 		this.reset = function(recalc) {
 			if(recalc === true) {
 				this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
 			}
-			
+
 			if( !this.sidebar_fixed ) {
 				this.disable();
 				return;//eligible??
@@ -1905,21 +1905,21 @@ jQuery(function($) {
 
 			if( !_initiated ) initiate();
 			//initiate scrollbars if not yet
-			
+
 			var vars = ace_sidebar['vars']();
-			
+
 
 			//enable if:
 			//menu is not collapsible mode (responsive navbar-collapse mode which has default browser scrollbar)
 			//menu is not horizontal or horizontal but mobile view (which is not navbar-collapse)
 			//and available height is less than nav's height
-			
+
 
 			var enable_scroll = !vars['collapsible'] && !vars['horizontal']
 								&& ($avail_height = available_height()) < ($content_height = nav.clientHeight);
 								//we don't use nav.scrollHeight here, because hover submenus are considered in calculating scrollHeight despite position=absolute!
 
-								
+
 			this.is_scrolling = true;
 			if( enable_scroll ) {
 				scroll_content_div.css({height: $content_height, width: 8});
@@ -1934,12 +1934,12 @@ jQuery(function($) {
 			else {
 				$sidebar.addClass('sidebar-scroll');
 			}
-			
+
 			//return this.is_scrolling;
 		}
-		
-		
-		
+
+
+
 		this.disable = function() {
 			this.is_scrolling = false;
 			if(scroll_div) {
@@ -1960,10 +1960,10 @@ jQuery(function($) {
 
 			nav.style.top = 0;
 		}
-		
+
 		this.prehide = function(height_change) {
 			if(!this.is_scrolling || ace_sidebar.get('minimized')) return;//when minimized submenu's toggle should have no effect
-			
+
 			if(content_height() + height_change < available_height()) {
 				this.disable();
 			}
@@ -1976,23 +1976,23 @@ jQuery(function($) {
 				nav.style.top = (-1 * scroll_top) + 'px';
 			}
 		}
-		
-		
+
+
 		this._reset = function(recalc) {
 			if(recalc === true) {
 				this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
 			}
-			
-			if(ace.vars['webkit']) 
+
+			if(ace.vars['webkit'])
 				setTimeout(function() { self.reset() } , 0);
 			else this.reset();
 		}
-		
-		
+
+
 		this.set_hover = function() {
 			if(track) track.addClass('scroll-hover');
 		}
-		
+
 		this.get = function(name) {
 			if(this.hasOwnProperty(name)) return this[name];
 		}
@@ -2003,13 +2003,13 @@ jQuery(function($) {
 			//return a reference to self
 			return this;
 		}
-		
+
 		this.updateStyle = function(styleClass) {
 			if(ace_scroll == null) return;
 			ace_scroll.update({styleClass: styleClass});
 		}
 
-		
+
 		//change scrollbar size after a submenu is hidden/shown
 		//but don't change if sidebar is minimized
 		$sidebar.on('hidden.ace.submenu.sidebar_scroll shown.ace.submenu.sidebar_scroll', '.submenu', function(e) {
@@ -2022,12 +2022,12 @@ jQuery(function($) {
 			}
 		});
 
-		
+
 		initiate(true);//true = on_page_load
 	}
-	
 
-	
+
+
 	//reset on document and window changes
 	$(document).on('settings.ace.sidebar_scroll', function(ev, event_name, event_val){
 		$('.sidebar[data-sidebar-scroll=true]').each(function() {
@@ -2050,26 +2050,26 @@ jQuery(function($) {
 					sidebar_scroll.disable();
 				}
 			}
-		
+
 		});
 	});
-	
+
 	$(window).on('resize.ace.sidebar_scroll', function(){
 		$('.sidebar[data-sidebar-scroll=true]').each(function() {
 			var $this = $(this);
 			if( $this.attr('data-sidebar-hover') == 'true' ) $this.ace_sidebar_hover('reset');
 			/////////////
 			var sidebar_scroll = $(this).ace_sidebar_scroll('ref');
-			
+
 			var sidebar_fixed = is_element_pos(this, 'fixed')
 			sidebar_scroll.set('sidebar_fixed', sidebar_fixed);
 			sidebar_scroll._reset();
 		});
 	})
-	
 
-	
-	
+
+
+
 	 /////////////////////////////////////////////
 	 if(!$.fn.ace_sidebar_scroll) {
 	  $.fn.ace_sidebar_scroll = function (option, value) {
@@ -2088,8 +2088,8 @@ jQuery(function($) {
 
 		return (method_call === undefined) ? $set : method_call;
 	 }
-	 
-	 
+
+
 	 $.fn.ace_sidebar_scroll.defaults = {
 		'scroll_to_active': true,
 		'include_shortcuts': true,
@@ -2099,7 +2099,7 @@ jQuery(function($) {
 		'scroll_style': '',
 		'lock_anyway': false
      }
-	 
+
 	}
 
 })(window.jQuery);;/**
@@ -2111,10 +2111,10 @@ jQuery(function($) {
 
  if( ace.vars['very_old_ie'] ) return;
  //ignore IE7 & below
- 
+
  var hasTouch = ace.vars['touch'];
  var nativeScroll = ace.vars['old_ie'] || hasTouch;
- 
+
 
  var is_element_pos =
 	'getComputedStyle' in window ?
@@ -2133,29 +2133,29 @@ jQuery(function($) {
 	if(event_name == 'sidebar_collapsed') $('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset');
 	else if(event_name == 'navbar_fixed') $('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('update_vars');
  })
- 
+
  var sidebars = [];
 
  function Sidebar_Hover(sidebar , settings) {
 	var self = this, that = this;
-	
+
 	var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar_hover.defaults);
 	this.settings = $.extend({}, $.fn.ace_sidebar_hover.defaults, settings, attrib_values);
-	
+
 
 	var $sidebar = $(sidebar), nav_list = $sidebar.find('.nav-list').get(0);
 	$sidebar.attr('data-sidebar-hover', 'true');
-	
+
 	sidebars.push($sidebar);
 
 	var sidebar_vars = {};
 	var old_ie = ace.vars['old_ie'];
 
-	
-	
+
+
 	var scroll_right = false;
 	//scroll style class
-	
+
 	if(hasTouch) self.settings.sub_hover_delay = parseInt(Math.max(self.settings.sub_hover_delay, 2500));//for touch device, delay is at least 2.5sec
 
 	var $window = $(window);
@@ -2172,18 +2172,18 @@ jQuery(function($) {
 	this.reset = function() {
 		if( self.dirty == false ) return;
 		self.dirty = false;//so don't reset is not called multiple times in a row!
-	
+
 		$sidebar.find('.submenu').each(function() {
 			var $sub = $(this), li = $sub.parent();
 			$sub.css({'top': '', 'bottom': '', 'max-height': ''});
-			
+
 			if($sub.hasClass('ace-scroll')) {
 				$sub.ace_scroll('disable');
 			}
 			else {
 				$sub.removeClass('sub-scroll');
 			}
-			 
+
 			if( is_element_pos(this, 'absolute') ) $sub.addClass('can-scroll');
 			else $sub.removeClass('can-scroll');
 
@@ -2192,7 +2192,7 @@ jQuery(function($) {
 
 		$sidebar.find('.hover-show').removeClass('hover-show hover-shown hover-flip');
 	}
-	
+
 	this.updateStyle = function(newStyle) {
 		sub_scroll_style = newStyle;
 		$sidebar.find('.submenu.ace-scroll').ace_scroll('update', {styleClass: newStyle});
@@ -2200,8 +2200,8 @@ jQuery(function($) {
 	this.changeDir = function(dir) {
 		scroll_right = (dir === 'right');
 	}
-	
-	
+
+
 	//update submenu scrollbars on submenu hide & show
 
 	var lastScrollHeight = -1;
@@ -2219,19 +2219,19 @@ jQuery(function($) {
 		}
 	});
 
-	
-	
-	
-	//reset scrollbars 
+
+
+
+	//reset scrollbars
 	if(!nativeScroll)
 	$sidebar.on('shown.ace.submenu.sidebar_hover hidden.ace.submenu.sidebar_hover', '.submenu', function(e) {
 		if(lastScrollHeight < 1) return;
-	
+
 		var $sub = $(this).closest('.ace-scroll.can-scroll');
 		if($sub.length == 0 || !is_element_pos($sub[0], 'absolute') ) return;
-		
+
 		var sub_h = $sub[0].scrollHeight;
-		
+
 		if(lastScrollHeight > 14 && sub_h - lastScrollHeight > 4) {
 			$sub.ace_scroll('enable').ace_scroll('reset');//don't update track position
 		}
@@ -2249,26 +2249,26 @@ jQuery(function($) {
 	//some mobile browsers don't have mouseenter
 	var event_1 = !hasTouch ? 'mouseenter.sub_hover' : 'touchstart.sub_hover';// pointerdown.sub_hover';
 	var event_2 = !hasTouch ? 'mouseleave.sub_hover' : 'touchend.sub_hover touchcancel.sub_hover';// pointerup.sub_hover pointercancel.sub_hover';
-	
+
 	$sidebar.on(event_1, '.nav-list li, .sidebar-shortcuts', function (e) {
 		sidebar_vars = $sidebar.ace_sidebar('vars');
-		
-	
+
+
 		//ignore if collapsible mode (mobile view .navbar-collapse) so it doesn't trigger submenu movements
 		//or return if horizontal but not mobile_view (style 1&3)
 		if( sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/ ) return;
-		
+
 		var $this = $(this);
 
 		var shortcuts = false;
 		var has_hover = $this.hasClass('hover');
-		
+
 		var sub = $this.find('> .submenu').get(0);
 		if( !(sub || ((this.parentNode == nav_list || has_hover || (shortcuts = $this.hasClass('sidebar-shortcuts'))) /**&& sidebar_vars['minimized']*/)) ) {
 			if(sub) $(sub).removeClass('can-scroll');
 			return;//include .compact and .hover state as well?
 		}
-		
+
 		var target_element = sub, is_abs = false;
 		if( !target_element && this.parentNode == nav_list ) target_element = $this.find('> a > .menu-text').get(0);
 		if( !target_element && shortcuts ) target_element = $this.find('.sidebar-shortcuts-large').get(0);
@@ -2276,15 +2276,15 @@ jQuery(function($) {
 			if(sub) $(sub).removeClass('can-scroll');
 			return;
 		}
-		
-		
+
+
 		var sub_hide = getSubHide(this);
 		//var show_sub = false;
 
 		if(sub) {
 		 if(is_abs) {
 			self.dirty = true;
-			
+
 			var newScroll = ace.helper.scrollTop();
 			//if submenu is becoming visible for first time or document has been scrolled, then adjust menu
 			if( !sub_hide.is_visible() || (!hasTouch && newScroll != currentScroll) || old_ie ) {
@@ -2307,28 +2307,28 @@ jQuery(function($) {
 			$(sub).removeClass('can-scroll');
 		 }
 		}
-		//if(show_sub) 
+		//if(show_sub)
 		sub_hide.show();
-		
+
 	 }).on(event_2, '.nav-list li, .sidebar-shortcuts', function (e) {
 		sidebar_vars = $sidebar.ace_sidebar('vars');
-		
+
 		if( sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/ ) return;
 
 		if( !$(this).hasClass('hover-show') ) return;
 
 		getSubHide(this).hideDelay();
 	 });
-	 
-	
+
+
 	function subHide(li_sub) {
 		var self = li_sub, $self = $(self);
 		var timer = null;
 		var visible = false;
-		
+
 		this.show = function() {
 			if(timer != null) clearTimeout(timer);
-			timer = null;		
+			timer = null;
 
 			$self.addClass('hover-show hover-shown');
 			visible = true;
@@ -2341,36 +2341,36 @@ jQuery(function($) {
 			  })
 			}
 		}
-		
+
 		this.hide = function() {
 			visible = false;
-			
+
 			$self.removeClass('hover-show hover-shown hover-flip');
-			
+
 			if(timer != null) clearTimeout(timer);
 			timer = null;
-			
+
 			var sub = $self.find('> .submenu').get(0);
 			if(sub) getSubScroll(sub, 'hide');
 		}
-		
+
 		this.hideDelay = function(callback) {
 			if(timer != null) clearTimeout(timer);
-			
+
 			$self.removeClass('hover-shown');//somehow marked for hiding
-			
+
 			timer = setTimeout(function() {
 				visible = false;
 				$self.removeClass('hover-show hover-flip');
 				timer = null;
-				
+
 				var sub = $self.find('> .submenu').get(0);
 				if(sub) getSubScroll(sub, 'hide');
-				
+
 				if(typeof callback === 'function') callback.call(this);
 			}, that.settings.sub_hover_delay);
 		}
-		
+
 		this.is_visible = function() {
 			return visible;
 		}
@@ -2380,8 +2380,8 @@ jQuery(function($) {
 		if(!sub_hide) $(el).data('subHide', (sub_hide = new subHide(el)));
 		return sub_hide;
 	}
-	
-	
+
+
 	function getSubScroll(el, func) {
 		var sub_scroll = $(el).data('ace_scroll');
 		if(!sub_scroll) return false;
@@ -2390,8 +2390,8 @@ jQuery(function($) {
 			return true;
 		}
 		return sub_scroll;
-	}	
-	
+	}
+
 	function adjust_submenu(sub) {
 		var $li = $(this);
 		var $sub = $(sub);
@@ -2409,7 +2409,7 @@ jQuery(function($) {
 		var navbar_height = 0;
 
 		var $scroll = scroll;
-		
+
 		if( navbar_fixed ) {
 			navbar_height = sidebar.offsetTop;//$navbar.height();
 			$scroll += navbar_height + 1;
@@ -2422,9 +2422,9 @@ jQuery(function($) {
 
 		var off = $li.offset();
 		off.top = parseInt(off.top);
-		
+
 		var extra = 0, parent_height;
-		
+
 		sub.style.maxHeight = '';//otherwise scrollHeight won't be consistent in consecutive calls!?
 		var sub_h = sub.scrollHeight;
 		var parent_height = $li.height();
@@ -2442,7 +2442,7 @@ jQuery(function($) {
 
 		var top_space = parseInt(off.top - $scroll - extra);//available space on top
 		var win_space = winh;//available window space
-		
+
 		var horizontal = sidebar_vars['horizontal'], horizontal_sub = false;
 		if(horizontal && this.parentNode == nav_list) {
 			move_up = 0;//don't move up first level submenu in horizontal mode
@@ -2474,14 +2474,14 @@ jQuery(function($) {
 			}
 		}
 		if(move_up < 0) move_up = 0;//when it goes below
-		
+
 		var pull_up = move_up > 0 && move_up > parent_height - 20;
 		if(pull_up) {
 			$li.addClass('pull_up');
 		}
 		else $li.removeClass('pull_up');
-		
-		
+
+
 		//flip submenu if out of window width
 		if(horizontal) {
 			if($li.parent().parent().hasClass('hover-flip')) $li.addClass('hover-flip');//if a parent is already flipped, flip it then!
@@ -2500,7 +2500,7 @@ jQuery(function($) {
 		var has_hover = $li.hasClass('hover') && !sidebar_vars['mobile_view'];
 		if(has_hover && $sub.find('> li > .submenu').length > 0) return;
 
-	
+
 		//if(  ) {
 			var scroll_height = (win_space - (off.top - scroll)) + (move_up);
 			//if after scroll, the submenu is above parent LI, then move it down
@@ -2508,11 +2508,11 @@ jQuery(function($) {
 			if(tmp > 0 && tmp < parent_height) scroll_height += parseInt(Math.max(parent_height, parent_height - tmp));
 
 			scroll_height -= 5;
-			
+
 			if(scroll_height < 90) {
 				return;
 			}
-			
+
 			var ace_scroll = false;
 			if(!nativeScroll) {
 				ace_scroll = getSubScroll(sub);
@@ -2527,14 +2527,14 @@ jQuery(function($) {
 						styleClass: self.settings.sub_scroll_style
 					});
 					ace_scroll = getSubScroll(sub);
-					
+
 					var track = ace_scroll.get_track();
 					if(track) {
 						//detach it from body and insert it after submenu for better and cosistent positioning
 						$sub.after(track);
 					}
 				}
-				
+
 				ace_scroll.update({size: scroll_height});
 			}
 			else {
@@ -2549,7 +2549,7 @@ jQuery(function($) {
 				if(scroll_height > 14 && sub_h - scroll_height > 4) {
 					ace_scroll.enable()
 					ace_scroll.reset();
-				}			
+				}
 				else {
 					ace_scroll.disable();
 				}
@@ -2558,9 +2558,9 @@ jQuery(function($) {
 				var track = ace_scroll.get_track();
 				if(track) {
 					track.style.top = -(move_up - extra - 1) + 'px';
-					
+
 					var off = $sub.position();
-					var left = off.left 
+					var left = off.left
 					if( !scroll_right ) {
 						left += ($sub.outerWidth() - ace_scroll.track_size());
 					}
@@ -2568,7 +2568,7 @@ jQuery(function($) {
 						left += 2;
 					}
 					track.style.left = parseInt(left) + 'px';
-					
+
 					if(horizontal_sub) {//first level submenu
 						track.style.left = parseInt(left - 2) + 'px';
 						track.style.top = parseInt(off.top) + (menu_text ? extra - 2 : 0) + 'px';
@@ -2585,9 +2585,9 @@ jQuery(function($) {
    }
 
 }
- 
- 
- 
+
+
+
  /////////////////////////////////////////////
  $.fn.ace_sidebar_hover = function (option, value) {
 	var method_call;
@@ -2605,12 +2605,12 @@ jQuery(function($) {
 
 	return (method_call === undefined) ? $set : method_call;
  }
- 
+
   $.fn.ace_sidebar_hover.defaults = {
 	'sub_sub_hover_delay': 750,
 	'sub_scroll_style': 'no-track scroll-thin'
  }
- 
+
 
 })(window.jQuery);
 
@@ -2648,12 +2648,12 @@ jQuery(function($) {
 				}
 			)
 		}
-		
+
 		this.toggle = function(type, button) {
 			var $box = this.$box;
 			var $body = $box.find('.widget-body').eq(0);
 			var $icon = null;
-			
+
 			var event_name = typeof type !== 'undefined' ? type : ($box.hasClass('collapsed') ? 'show' : 'hide');
 			var event_complete_name = event_name == 'show' ? 'shown' : 'hidden';
 
@@ -2698,15 +2698,15 @@ jQuery(function($) {
 				);
 			}
 		}
-		
+
 		this.hide = function() {
 			this.toggle('hide');
 		}
 		this.show = function() {
 			this.toggle('show');
 		}
-		
-		
+
+
 		this.fullscreen = function() {
 			var $icon = this.$box.find('> .widget-header a[data-action=fullscreen]').find(ace.vars['.icon']).eq(0);
 			var $icon_expand = null
@@ -2718,26 +2718,26 @@ jQuery(function($) {
 				$icon_expand = 'fa-expand';
 				$icon_compress = 'fa-compress';
 			}
-			
-			
+
+
 			if(!this.$box.hasClass('fullscreen')) {
 				$icon.removeClass($icon_expand).addClass($icon_compress);
 				this.$box.addClass('fullscreen');
-				
+
 				applyScrollbars(this.$box, true);
 			}
 			else {
 				$icon.addClass($icon_expand).removeClass($icon_compress);
 				this.$box.removeClass('fullscreen');
-				
+
 				applyScrollbars(this.$box, false);
 			}
-			
+
 			this.$box.trigger('fullscreened.ace.widget')
 		}
 
 	}
-	
+
 	$.fn.widget_box = function (option, value) {
 		var method_call;
 
@@ -2795,7 +2795,7 @@ jQuery(function($) {
 			var event
 			$box.trigger(event = $.Event('fullscreen.ace.widget'))
 			if (event.isDefaultPrevented()) return
-		
+
 			$widget_box.fullscreen();
 		}
 		else if($action == 'settings') {
@@ -2803,24 +2803,24 @@ jQuery(function($) {
 		}
 
 	});
-	
-		
+
+
 	function applyScrollbars($widget, enable) {
 		var $main = $widget.find('.widget-main').eq(0);
 		$(window).off('resize.widget.scroll');
-		
+
 		//IE8 has an unresolvable issue!!! re-scrollbaring with unknown values?!
 		var nativeScrollbars = ace.vars['old_ie'] || ace.vars['touch'];
-		
+
 		if(enable) {
 			var ace_scroll = $main.data('ace_scroll');
 			if( ace_scroll ) {
 				$main.data('save_scroll', {size: ace_scroll['size'], lock: ace_scroll['lock'], lock_anyway: ace_scroll['lock_anyway']});
 			}
-			
+
 			var size = $widget.height() - $widget.find('.widget-header').height() - 10;//extra paddings
 			size = parseInt(size);
-			
+
 			$main.css('min-height', size);
 			if( !nativeScrollbars ) {
 				if( ace_scroll ) {
@@ -2835,13 +2835,13 @@ jQuery(function($) {
 				if( ace_scroll ) $main.ace_scroll('disable');
 				$main.css('max-height', size).addClass('overflow-scroll');
 			}
-			
-			
+
+
 			$(window)
 			.on('resize.widget.scroll', function() {
 				var size = $widget.height() - $widget.find('.widget-header').height() - 10;//extra paddings
 				size = parseInt(size);
-				
+
 				$main.css('min-height', size);
 				if( !nativeScrollbars ) {
 					$main.ace_scroll('update', {'size': size}).ace_scroll('reset');
@@ -2851,7 +2851,7 @@ jQuery(function($) {
 				}
 			});
 		}
-		
+
 		else  {
 			$main.css('min-height', '');
 			var saved_scroll = $main.data('save_scroll');
@@ -2861,9 +2861,9 @@ jQuery(function($) {
 				.ace_scroll('enable')
 				.ace_scroll('reset');
 			}
-			
-			if( !nativeScrollbars ) {				
-				if(!saved_scroll) $main.ace_scroll('disable');				
+
+			if( !nativeScrollbars ) {
+				if(!saved_scroll) $main.ace_scroll('disable');
 			}
 			else {
 				$main.css('max-height', '').removeClass('overflow-scroll');
@@ -2923,7 +2923,7 @@ jQuery(function($) {
 		$('#sidebar').removeClass('compact');
 		$('#sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset')
 	}
-	
+
 	if(ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0], true);
  })/*.removeAttr('checked')*/
 
@@ -2931,7 +2931,7 @@ jQuery(function($) {
  $('#ace-settings-highlight').on('click', function(){
 	if(this.checked) $('#sidebar .nav-list > li').addClass('highlight');
 	else $('#sidebar .nav-list > li').removeClass('highlight');
-	
+
 	if(ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0]);
  })/*.removeAttr('checked')*/
 
@@ -2951,10 +2951,10 @@ jQuery(function($) {
 			compact.trigger('click');
 		}
 	}
-	
+
 	$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset')
 	$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset')
-	
+
 	if(ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0]);
  })/*.removeAttr('checked')*/
 
@@ -2972,8 +2972,8 @@ Please refer to documentation for more info.
  $('#ace-settings-rtl').removeAttr('checked').on('click', function(){
 	switch_direction();
  });
- 
- 
+
+
  //>>> you should hard code changes inside HTML for RTL direction
  //you shouldn't use this function to switch direction
  //this is only for dynamically switching for demonstration
@@ -2989,7 +2989,7 @@ Please refer to documentation for more info.
 				ace_style = $('head').find('link[href*="/ace.css"],link[href*="/ace-part2.css"]');
 			}
 		}
-		
+
 		var ace_skins = $('head').find('link#ace-skins-stylesheet');
 		var stylesheet_url = ace_style.first().attr('href').replace(/(\.min)?\.css$/i , '-rtl$1.css');
 		$.ajax({
@@ -3003,18 +3003,18 @@ Please refer to documentation for more info.
 				new_link.insertAfter(ace_style.last());
 			}
 			else new_link.appendTo('head');
-		
+
 			new_link.attr('href', stylesheet_url);
 			//we set "href" after insertion, for IE to work
-			
+
 			applyChanges();
 			if(window.Pace && Pace.running)	Pace.stop();
-		})		
+		})
 	}
 	else {
 		applyChanges();
 	}
-	
+
 	//in ajax when new content is loaded, we dynamically apply RTL changes again
 	//please note that this is only for Ace demo
 	//for info about RTL see Ace's docs
@@ -3029,7 +3029,7 @@ Please refer to documentation for more info.
 		var $body = $(document.body);
 		if(!el) $body.toggleClass('rtl');//el is 'body'
 
-		el = el || document.body;		
+		el = el || document.body;
 		var $container = $(el);
 		$container
 		//toggle pull-right class on dropdown-menu
@@ -3042,9 +3042,9 @@ Please refer to documentation for more info.
 		.end()
 		.find('.tmp-rtl-pull-right').removeClass('tmp-rtl-pull-right').addClass('pull-left')
 		.end()
-		
+
 		.find('.chosen-select').toggleClass('chosen-rtl').next().toggleClass('chosen-rtl');
-		
+
 
 		function swap_classes(class1, class2) {
 			$container
@@ -3061,10 +3061,10 @@ Please refer to documentation for more info.
 		swap_classes('arrowed-in', 'arrowed-in-right');
 		swap_classes('tabs-left', 'tabs-right');
 		swap_classes('messagebar-item-left', 'messagebar-item-right');//for inbox page
-		
+
 		$('.modal.aside-vc').ace_aside('flip').ace_aside('insideContainer');
-		
-		
+
+
 		//mirror all icons and attributes that have a "fa-*-right|left" attrobute
 		$container.find('.fa').each(function() {
 			if(this.className.match(/ui-icon/) || $(this).closest('.fc-button').length > 0) return;
@@ -3073,13 +3073,13 @@ Please refer to documentation for more info.
 			var l = this.attributes.length;
 			for(var i = 0 ; i < l ; i++) {
 				var val = this.attributes[i].value;
-				if(val.match(/fa\-(?:[\w\-]+)\-left/)) 
+				if(val.match(/fa\-(?:[\w\-]+)\-left/))
 					this.attributes[i].value = val.replace(/fa\-([\w\-]+)\-(left)/i , 'fa-$1-right')
-				 else if(val.match(/fa\-(?:[\w\-]+)\-right/)) 
+				 else if(val.match(/fa\-(?:[\w\-]+)\-right/))
 					this.attributes[i].value = val.replace(/fa\-([\w\-]+)\-(right)/i , 'fa-$1-left')
 			}
 		});
-		
+
 		//browsers are incosistent with horizontal scroll and RTL
 		//so let's make our scrollbars LTR and wrap the content inside RTL
 		var rtl = $body.hasClass('rtl');
@@ -3105,8 +3105,8 @@ Please refer to documentation for more info.
 				placeholder.data('draw').call(placeholder.get(0) , placeholder, placeholder.data('chart'), pos);
 			}
 		}catch(e) {}
-		
-		
+
+
 		ace.helper.redraw(el, true);
 	}
  }
@@ -3136,7 +3136,7 @@ Please refer to documentation for more info.
 				ace_style = $('head').find('link[href*="/ace.css"],link[href*="/ace-part2.css"]');
 			}
 		}
-		
+
 		var stylesheet_url = ace_style.first().attr('href').replace(/(\.min)?\.css$/i , '-skins$1.css');
 		$.ajax({
 			'url': stylesheet_url
@@ -3146,10 +3146,10 @@ Please refer to documentation for more info.
 				new_link.insertAfter(ace_style.last());
 			}
 			else new_link.appendTo('head');
-	
+
 			new_link.attr('href', stylesheet_url);
 			//we set "href" after insertion, for IE to work
-			
+
 			applyChanges(skin_class);
 			if(window.Pace && Pace.running)	Pace.stop();
 		})
@@ -3170,20 +3170,20 @@ Please refer to documentation for more info.
 			//which can later be used by your server side app to set the skin
 			//for example: <body class="<?php echo $_COOKIE['ace_skin']; ?>"
 		//} else ace.data.remove('skin');
-		
+
 		var skin3_colors = ['red', 'blue', 'green', ''];
 
-		
+
 			//undo skin-1
 			$('.ace-nav > li.grey').removeClass('dark');
-			
+
 			//undo skin-2
 			$('.ace-nav > li').removeClass('no-border margin-1');
 			$('.ace-nav > li:not(:last-child)').removeClass('light-pink').find('> a > '+ace.vars['.icon']).removeClass('pink').end().eq(0).find('.badge').removeClass('badge-warning');
 			$('.sidebar-shortcuts .btn')
 			.removeClass('btn-pink btn-white')
 			.find(ace.vars['.icon']).removeClass('white');
-			
+
 			//undo skin-3
 			$('.ace-nav > li.grey').removeClass('red').find('.badge').removeClass('badge-yellow');
 			$('.sidebar-shortcuts .btn').removeClass('btn-primary btn-white')
@@ -3191,17 +3191,17 @@ Please refer to documentation for more info.
 			$('.sidebar-shortcuts .btn').each(function() {
 				$(this).find(ace.vars['.icon']).removeClass(skin3_colors[i++]);
 			})
-		
-		
 
-		
+
+
+
 		var skin0_buttons = ['btn-success', 'btn-info', 'btn-warning', 'btn-danger'];
 		if(skin_class == 'no-skin') {
 			var i = 0;
 			$('.sidebar-shortcuts .btn').each(function() {
 				$(this).attr('class', 'btn ' + skin0_buttons[i++%4]);
 			})
-			
+
 			$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', '');
 			$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin');
 		}
@@ -3213,7 +3213,7 @@ Please refer to documentation for more info.
 			.find('.btn').each(function() {
 				$(this).attr('class', 'btn ' + skin0_buttons[i++%4]);
 			})
-			
+
 			$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-white no-track');
 			$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin scroll-white');
 		}
@@ -3221,10 +3221,10 @@ Please refer to documentation for more info.
 		else if(skin_class == 'skin-2') {
 			$('.ace-nav > li').addClass('no-border margin-1');
 			$('.ace-nav > li:not(:last-child)').addClass('light-pink').find('> a > '+ace.vars['.icon']).addClass('pink').end().eq(0).find('.badge').addClass('badge-warning');
-			
+
 			$('.sidebar-shortcuts .btn').attr('class', 'btn btn-white btn-pink')
 			.find(ace.vars['.icon']).addClass('white');
-			
+
 			$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-white no-track');
 			$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin scroll-white');
 		}
@@ -3233,15 +3233,15 @@ Please refer to documentation for more info.
 		//change shortcut buttons classes, this should be hard-coded if you want to choose this skin
 		else if(skin_class == 'skin-3') {
 			body.addClass('no-skin');//because skin-3 has many parts of no-skin as well
-			
+
 			$('.ace-nav > li.grey').addClass('red').find('.badge').addClass('badge-yellow');
-			
+
 			var i = 0;
 			$('.sidebar-shortcuts .btn').each(function() {
 				$(this).attr('class', 'btn btn-primary btn-white');
 				$(this).find(ace.vars['.icon']).addClass(skin3_colors[i++]);
 			})
-			
+
 			$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-dark no-track');
 			$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin');
 		}
@@ -3249,7 +3249,7 @@ Please refer to documentation for more info.
 		//some sizing differences may be there in skins, so reset scrollbar size
 		$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset')
 		//$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset')
-		
+
 		if(ace.vars['old_ie']) ace.helper.redraw(document.body, true);
 	}
 
@@ -3266,7 +3266,7 @@ Please refer to documentation for more info.
 	//when data is finished loading or processing is done you can call $box.trigger('reloaded.ace.widget')
 	$(document).on('reload.ace.widget', '.widget-box', function (ev) {
 		var $box = $(this);
-		
+
 		//trigger the reloaded event to remove the spinner icon after 1-2 seconds
 		setTimeout(function() {
 			$box.trigger('reloaded.ace.widget');
