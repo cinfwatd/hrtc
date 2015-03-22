@@ -12,5 +12,5 @@ var EventSchema = new Schema({
   user: {type: ObjectId, ref: 'User'}
 });
 
-var Event = mongoose.model('Event', EventSchema);
-module.exports = Event;
+var Events = mongoose.model('Events', EventSchema);
+module.exports = Events;
