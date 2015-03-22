@@ -19,14 +19,12 @@ router.post('/save/:id', function(request, response, next) {
 
   var update = request.body.update; // used to tell dat its a positional update
 
-    if (id != 'undefined') {
-      // event = Events
+    // var events = new Events();
+    if (id.length > 20) {
       // find the events
-      // console.log(typeof id);
-      // console.log('check me out'.red);
       Events.findOne({_id: id}, function(error, evt) {
         if (error) {
-          return console.log(error.red);
+          return console.log("error".red);
         }
 
         if (evt){
@@ -52,23 +50,24 @@ router.post('/save/:id', function(request, response, next) {
       if (error) return console.error(error.red);
       else{
         // console.log('saved new Events'.green);
-        response.send(events.id);
+        response.send({"id": events.id, "dateCreated" : events.dateCreated});
       }
     });
 });
 
 router.get('/fetch', function(request, response, next) {
-  response.send('fetch');
+  var user = request.session.userId;
+  var start = request.query.start;
+  var end = request.query.end;
+  Events.find({user: user, start: {$gte: start}, end: {$lte: end}}, function(error, events) {
+    if (error) return console.log('Error trying to fetch events for user.'.red);
+    // console.log(events);
+    response.send(events);
+  });
 });
 
 router.post('/delete/:id', function(request, response, next) {
   var id = request.params.id;
-  // Events.remove({id: id}, function(error) {
-  //   if (error) {
-  //     return console.log('Error trying to remove events'.red);
-  //   }
-  //   response.send("done");
-  // });
   Events.findOne({_id: id}, function(error, evt) {
     if (error) {
       console.log('error finding events.'.red)
