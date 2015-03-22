@@ -55,30 +55,30 @@ var calendar = $('#calendar').fullCalendar({
    // days of week. an array of zero-based day of week integers (0=Sunday)
    // (Monday-Thursday in this example)
   },
-            events: [
-    {
-  	title: 'All Day Event',
-  	start: new Date(y, m, 1),
-  	className: 'label-important'
-    },
-    {
-  	title: 'Long Event',
-  	start: moment().subtract(5, 'days').format('YYYY-MM-DD'),
-  	end: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-  	className: 'label-success'
-    },
-    {
-  	title: 'Some Event',
-  	start: new Date(y, m, d-3, 15, 20),
-  	allDay: false,
-  	className: 'label-info'
-    }
-  ]
-  // events: {
-  //   url :'calendar/fetch',
-  //   // durationEditable: false,
-  //   // startEditable: false
-  // }	//url
+  //           events: [
+  //   {
+  // 	title: 'All Day Event',
+  // 	start: new Date(y, m, 1),
+  // 	className: 'label-important'
+  //   },
+  //   {
+  // 	title: 'Long Event',
+  // 	start: moment().subtract(5, 'days').format('YYYY-MM-DD'),
+  // 	end: moment().subtract(1, 'days').format('YYYY-MM-DD'),
+  // 	className: 'label-success'
+  //   },
+  //   {
+  // 	title: 'Some Event',
+  // 	start: new Date(y, m, d-3, 15, 20),
+  // 	allDay: false,
+  // 	className: 'label-info'
+  //   }
+  // ]
+  events: {
+    url :'calendar/fetch',
+    // durationEditable: false,
+    // startEditable: false
+  }	//url
   ,
   editable: true,
   droppable: true, // this allows things to be dropped onto the calendar !!!
