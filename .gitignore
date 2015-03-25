@@ -1,3 +1,7 @@
+#uploaded images
+public/uploads/*.png
+public/uploads/*jpg
+public/uploads/*.jpeg
 # Logs
 logs
 *.log
