@@ -99,6 +99,7 @@ var authenticated = function(request, response, next) {
 
 app.use(function(request, response, next) {
   response.locals.csrftoken = request.csrfToken();
+  response.locals.session = request.session;
   next();
 });
 
