@@ -17,6 +17,7 @@ var validator = require('express-validator');
 var mongoose = require('mongoose');
   mongoose.connect('mongodb://localhost/hrtc');
 var db = mongoose.connection;
+var moment =  require('moment');
 
 db.on('error', console.error.bind(console, 'Connection Error:'.red));
 db.once('open', function(callback) {
@@ -100,6 +101,7 @@ var authenticated = function(request, response, next) {
 app.use(function(request, response, next) {
   response.locals.csrftoken = request.csrfToken();
   response.locals.session = request.session;
+  response.locals.moment = moment;
   next();
 });
 
