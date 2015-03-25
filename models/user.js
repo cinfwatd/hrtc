@@ -35,11 +35,12 @@ var UserSchema = new Schema({
     hospitals: [{type: ObjectId, ref: 'Hospital'}],
     patients: [{type: ObjectId, ref: 'User'}]
   },
+  picture: String,
   bioData: {
     dob: Date,
     gender: String,
   },
-  medicalRecord: [{type: ObjectId, ref: 'MedicalRecord'}],
+  // medicalRecord: [{type: ObjectId, ref: 'MedicalRecord'}],
   hospital: [{type: ObjectId, ref: 'Hospital'}]
 });
 
