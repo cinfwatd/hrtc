@@ -370,10 +370,21 @@ append scripts
                   $(avatar).get(0).src = res.url;
                   $('#profile-foto').attr("src", res.url);
                 } 
-              	else alert(res.message);
+              	else {
+                  last_gritter = $.gritter.add({
+                    title: 'Error Uploading file!',
+                    text: 'Seems your session has expired.<br>Please try again! <hr>If it persist, logout and login.',
+                    class_name: 'gritter-error gritter-right'
+                  });
+                }
               })
               .fail(function(result) {//failure
-              	alert("There was an error");
+              	//- alert("There was an error");
+                last_gritter = $.gritter.add({
+                  title: 'Error Uploading file!',
+                  text: 'Seems your session has expired.<br>Please try again! <hr>If it persist, logout and login.',
+                  class_name: 'gritter-error gritter-right'
+                });
               })
               .always(function() {//called on both success and failure
               	if(ie_timeout) clearTimeout(ie_timeout)
