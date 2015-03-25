@@ -18949,6 +18949,10 @@ input.typeahead.scrollable ~ .tt-dropdown-menu {
   float: left;
   max-width: 100%;
 }
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
 .col-xs-reset {
   width: auto;
   padding-left: 0;
