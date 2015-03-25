@@ -65,4 +65,50 @@ router.post('/profile-upload', function(request, response, next) {
 
 });
 
+router.post('/profile', function(request, response, next) {
+  var id = request.session.userId;
+  var name = request.body.name;
+  var value = request.body.value;
+
+  User.findOne({_id: id}, function(error, user) {
+    if (error) {
+      return response.status(500).send("Seams your session has expired. Please login again.");
+    }
+
+    if (user) {
+      switch(name) {
+        case 'username':
+          user.username = value;
+          break;
+        case 'firstname':
+          user.name.first = value;
+          break;
+        case 'middlename':
+          user.name.middle = value;
+          break;
+        case 'lastname':
+          user.name.last = value;
+          break;
+        case 'dob':
+          user.bioData.dob = value;
+          break;
+        case 'password':
+          user.password = user.generateHash(value);
+          break;
+        case 'gender':
+          user.bioData.gender = value;
+          break;
+        case 'email':
+          user.email = value;
+          break;
+      }
+
+      user.save(function(error, user) {
+        if (error) return response.status(500).send("): Please try again.")
+        return response.status(200).send("OK");
+      })
+    }
+  })
+});
+
 module.exports = router;
