@@ -14,7 +14,20 @@ router.get('/messages', function(request, response, next) {
 });
 
 router.get('/profile', function(request, response, next) {
-  response.render('profile', {pageTitle: "User Profile"});
+  var id = request.session.userId;
+  var pageTitle = "User Profile";
+  User.findOne({_id: id}, function(error, user) {
+    if (error) {
+      request.flash("error", "Seems like your session has expired. Please login again.");
+      return response.render('profile', {pageTitle: pageTitle});
+    }
+
+    if (user) {
+      // request.flash("user", user);
+      return response.render('profile', {pageTitle: pageTitle, user: user});
+    }
+
+  });
 });
 
 router.post('/profile-upload', function(request, response, next) {
