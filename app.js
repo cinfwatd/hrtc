@@ -12,6 +12,7 @@ var helmet = require('helmet');
 var colors = require('colors');
 var methodOverride = require('method-override');
 var csrf = require('csurf');
+var multer = require('multer');
 var validator = require('express-validator');
 var mongoose = require('mongoose');
   mongoose.connect('mongodb://localhost/hrtc');
@@ -70,6 +71,12 @@ app.use(session({
 }));
 app.use(flash());
 app.use(methodOverride());
+app.use(multer({
+  dest: './public/uploads/',
+  rename: function(fieldname, filename) {
+    return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
+  }
+}));
 app.use(csrf());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
