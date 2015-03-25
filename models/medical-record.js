@@ -3,6 +3,7 @@ var mongoose = require('mongoose'),
   ObjectId = Schema.Types.ObjectId;
 
 var MedicalRecordSchema = new Schema({
+  patient: {type: ObjectId, ref: 'User'},
   dateCreated: {type: Date, default: Date.now},
   dateUpdated: Date,
   doctor: [{type: ObjectId, ref: 'User'}],
