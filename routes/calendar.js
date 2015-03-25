@@ -4,7 +4,7 @@ var express = require('express'),
 
 
 router.get('/', function(request, response, next) {
-  response.render('calendar');
+  response.render('calendar', {pageTitle: "Events Calendar"});
 });
 
 router.post('/save/:id', function(request, response, next) {

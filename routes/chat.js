@@ -3,11 +3,11 @@ var express = require('express'),
 
 //Video
 router.get('/video', function(request, response, next) {
-  response.send('video page..');
+  response.render('video', {pageTitle: "Video Conference"});
 });
 //Text
 router.get('/text', function(request, response, next) {
-  response.send('TExt Messaging');
+  response.render('text', {pageTitle: "Text Chat"});
 });
 
 module.exports = router;
