@@ -113,10 +113,10 @@
         // #section:basics/navbar.user_menu
         li.light-blue
           a.dropdown-toggle(data-toggle='dropdown', href='#')
-            img.nav-user-photo(src='/assets/avatars/user.jpg', id="profile-foto", alt="Jason's Photo")
+            img.nav-user-photo(src= Boolean(session.userPicture) ? session.userPicture : '/assets/avatars/avatar2.png', id="profile-foto", alt="#{session.username}'s Photo")
             span.user-info
               small Welcome,
-              | #{name}
+              | #{session.username}
             i.ace-icon.fa.fa-caret-down
           ul.user-menu.dropdown-menu-right.dropdown-menu.dropdown-yellow.dropdown-caret.dropdown-close
             //- li
