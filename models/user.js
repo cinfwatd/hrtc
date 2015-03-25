@@ -54,12 +54,16 @@ UserSchema.virtual('name.full').get(function() {
 });
 
 UserSchema.virtual('bioData.age').get(function() {
-  var dob = this.bioData.dob;
-  var today = new Date();
-  var age = today.getFullYear() - dob.getFullYear();
-  var months = today.getMonth() - dob.getMonth();
-  if (months < 0 || (months === 0 && today.getDate() < dob.getDate()))
-    age--;
+  try {
+    var dob = this.bioData.dob;
+    var today = new Date();
+    var age = today.getFullYear() - dob.getFullYear();
+    var months = today.getMonth() - dob.getMonth();
+    if (months < 0 || (months === 0 && today.getDate() < dob.getDate()))
+      age--;
+  } catch (error) {
+    return "Not specified";
+  }
 
   return age;
 });
