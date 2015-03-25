@@ -1,0 +1,445 @@
+extends ./layouts/default
+append pagespecificstyles
+  //- page specific styles
+  link(rel='stylesheet', href='/assets/css/jquery-ui.custom.css')
+  link(rel='stylesheet', href='/assets/css/jquery.gritter.css')
+  link(rel='stylesheet', href='/assets/css/select2.css')
+  link(rel='stylesheet', href='/assets/css/datepicker.css')
+  link(rel='stylesheet', href='/assets/css/bootstrap-editable.css')
+block settings
+block sidebar
+block topbar
+  include ./partials/dashboard-topbar
+append scripts
+  //- page specific scripts
+  script(src='/assets/js/jquery-ui.custom.js')
+  script(src='/assets/js/jquery.ui.touch-punch.js')
+  script(src='/assets/js/jquery.gritter.js')
+  script(src='/assets/js/bootbox.js')
+  script(src='/assets/js/jquery.easypiechart.js')
+  script(src='/assets/js/date-time/bootstrap-datepicker.js')
+  script(src='/assets/js/jquery.hotkeys.js')
+  script(src='/assets/js/bootstrap-wysiwyg.js')
+  script(src='/assets/js/select2.js')
+  script(src='/assets/js/fuelux/fuelux.spinner.js')
+  script(src='/assets/js/x-editable/bootstrap-editable.js')
+  script(src='/assets/js/x-editable/ace-editable.js')
+  script(src='/assets/js/jquery.maskedinput.js')
+  script(type='text/javascript').
+    jQuery(function($) {
+      //- $.ajax({
+      //-       url: "/user/profile-upload",
+      //-        type: 'POST',
+      //-   processData: false,//important
+      //-   contentType: false,//important
+      //-      dataType: 'json',//server response type
+      //-        data: "_csrf=#{csrftoken}"
+      //- })
+      //editables on first profile page
+      $.fn.editable.defaults.mode = 'inline';
+      $.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
+      $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>'+
+                                    '<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';
+
+      //editables
+
+      //text editable
+        $('#username')
+        .editable({
+          type: 'text',
+          name: 'username'
+          });
+
+
+
+        //select2 editable
+        var countries = [];
+          $.each({ "CA": "Canada", "IN": "India", "NL": "Netherlands", "TR": "Turkey", "US": "United States"}, function(k, v) {
+              countries.push({id: k, text: v});
+          });
+
+        var cities = [];
+        cities["CA"] = [];
+        $.each(["Toronto", "Ottawa", "Calgary", "Vancouver"] , function(k, v){
+          cities["CA"].push({id: v, text: v});
+        });
+        cities["IN"] = [];
+        $.each(["Delhi", "Mumbai", "Bangalore"] , function(k, v){
+          cities["IN"].push({id: v, text: v});
+        });
+        cities["NL"] = [];
+        $.each(["Amsterdam", "Rotterdam", "The Hague"] , function(k, v){
+          cities["NL"].push({id: v, text: v});
+        });
+        cities["TR"] = [];
+        $.each(["Ankara", "Istanbul", "Izmir"] , function(k, v){
+          cities["TR"].push({id: v, text: v});
+        });
+        cities["US"] = [];
+        $.each(["New York", "Miami", "Los Angeles", "Chicago", "Wysconsin"] , function(k, v){
+          cities["US"].push({id: v, text: v});
+        });
+
+        var currentValue = "NL";
+          $('#country').editable({
+          type: 'select2',
+          value : 'NL',
+          //onblur:'ignore',
+              source: countries,
+          select2: {
+            'width': 140
+          },
+          success: function(response, newValue) {
+            if(currentValue == newValue) return;
+            currentValue = newValue;
+
+            var new_source = (!newValue || newValue == "") ? [] : cities[newValue];
+
+            //the destroy method is causing errors in x-editable v1.4.6+
+            //it worked fine in v1.4.5
+            /**
+            $('#city').editable('destroy').editable({
+              type: 'select2',
+              source: new_source
+            }).editable('setValue', null);
+            */
+
+            //so we remove it altogether and create a new element
+            var city = $('#city').removeAttr('id').get(0);
+            $(city).clone().attr('id', 'city').text('Select City').editable({
+              type: 'select2',
+              value : null,
+              //onblur:'ignore',
+              source: new_source,
+              select2: {
+                'width': 140
+              }
+            }).insertAfter(city);//insert it after previous instance
+            $(city).remove();//remove previous instance
+
+          }
+          });
+
+        $('#city').editable({
+          type: 'select2',
+          value : 'Amsterdam',
+          //onblur:'ignore',
+              source: cities[currentValue],
+          select2: {
+            'width': 140
+          }
+          });
+
+
+
+        //custom date editable
+        $('#signup').editable({
+          type: 'adate',
+          date: {
+            //datepicker plugin options
+                format: 'yyyy/mm/dd',
+            viewformat: 'yyyy/mm/dd',
+             weekStart: 1
+
+            //,nativeUI: true//if true and browser support input[type=date], native browser control will be used
+            //,format: 'yyyy-mm-dd',
+            //viewformat: 'yyyy-mm-dd'
+          }
+        })
+
+          $('#age').editable({
+              type: 'spinner',
+          name : 'age',
+          spinner : {
+            min : 16,
+            max : 99,
+            step: 1,
+            on_sides: true
+            //,nativeUI: true//if true and browser support input[type=number], native browser control will be used
+          }
+        });
+
+
+          $('#login').editable({
+              type: 'slider',
+          name : 'login',
+
+          slider : {
+             min : 1,
+              max: 50,
+            width: 100
+            //,nativeUI: true//if true and browser support input[type=range], native browser control will be used
+          },
+          success: function(response, newValue) {
+            if(parseInt(newValue) == 1)
+              $(this).html(newValue + " hour ago");
+            else $(this).html(newValue + " hours ago");
+          }
+        });
+
+        $('#about').editable({
+          mode: 'inline',
+              type: 'wysiwyg',
+          name : 'about',
+
+          wysiwyg : {
+            //css : {'max-width':'300px'}
+          },
+          success: function(response, newValue) {
+          }
+        });
+
+
+
+        // *** editable avatar *** //
+        try {//ie8 throws some harmless exceptions, so let's catch'em
+
+          //first let's add a fake appendChild method for Image element for browsers that have a problem with this
+          //because editable plugin calls appendChild, and it causes errors on IE at unpredicted points
+          try {
+            document.createElement('IMG').appendChild(document.createElement('B'));
+          } catch(e) {
+            Image.prototype.appendChild = function(el){}
+          }
+
+          var last_gritter
+          $('#avatar').editable({
+            type: 'image',
+            name: 'avatar',
+            value: null,
+            image: {
+              //specify ace file input plugin's options here
+              btn_choose: 'Change Picture',
+              droppable: true,
+              maxSize: 110000,//~100Kb
+
+              //and a few extra ones here
+              name: 'avatar',//put the field name here as well, will be used inside the custom plugin
+              on_error : function(error_type) {//on_error function will be called when the selected file has a problem
+                if(last_gritter) $.gritter.remove(last_gritter);
+                if(error_type == 1) {//file format error
+                  last_gritter = $.gritter.add({
+                    title: 'File is not an image!',
+                    text: 'Please choose a jpg|gif|png image!',
+                    class_name: 'gritter-error gritter-right'
+                  });
+                } else if(error_type == 2) {//file size rror
+                  last_gritter = $.gritter.add({
+                    title: 'File too big!',
+                    text: 'Image size should not exceed 100Kb!',
+                    class_name: 'gritter-error gritter-right'
+                  });
+                }
+                else {//other error
+                }
+              },
+              on_success : function() {
+                $.gritter.removeAll();
+              }
+            },
+              url: function(params) {
+              // ***UPDATE AVATAR HERE*** //
+              //for a working upload example you can replace the contents of this function with
+              //examples/profile-avatar-update.js
+
+              //- var deferred = new $.Deferred
+              //- 
+              //- var value = $('#avatar').next().find('input[type=hidden]:eq(0)').val();
+              //- if(!value || value.length == 0) {
+              //-   deferred.resolve();
+              //-   return deferred.promise();
+              //- }
+              //- 
+              //- 
+              //- //dummy upload
+              //- setTimeout(function(){
+              //-   if("FileReader" in window) {
+              //-     //for browsers that have a thumbnail of selected image
+              //-     var thumb = $('#avatar').next().find('img').data('thumb');
+              //-     if(thumb) $('#avatar').get(0).src = thumb;
+              //-   }
+              //- 
+              //-   deferred.resolve({'status':'OK'});
+              //- 
+              //-   if(last_gritter) $.gritter.remove(last_gritter);
+              //-   last_gritter = $.gritter.add({
+              //-     title: 'Avatar Updated!',
+              //-     text: 'Uploading to server can be easily implemented. A working example is included with the template.',
+              //-     class_name: 'gritter-success gritter-right'
+              //-   });
+              //- 
+              //-  } , parseInt(Math.random() * 800 + 800))
+              //- 
+              //- return deferred.promise();
+              
+              var submit_url = '/user/profile-upload';//please modify submit_url accordingly
+              var deferred = null;
+              var avatar = '#avatar';
+              
+              //if value is empty (""), it means no valid files were selected
+              //but it may still be submitted by x-editable plugin
+              //because "" (empty string) is different from previous non-empty value whatever it was
+              //so we return just here to prevent problems
+              var value = $(avatar).next().find('input[type=hidden]:eq(0)').val();
+              if(!value || value.length == 0) {
+              	deferred = new $.Deferred
+              	deferred.resolve();
+              	return deferred.promise();
+              }
+              
+              var $form = $(avatar).next().find('.editableform:eq(0)')
+              var file_input = $form.find('input[type=file]:eq(0)');
+              var pk = $(avatar).attr('data-pk');//primary key to be sent to server
+              console.log("PK:" +pk);
+              var ie_timeout = null
+              
+              
+              if( "FormData" in window ) {
+              	var formData_object = new FormData();//create empty FormData object
+              	
+              	//serialize our form (which excludes file inputs)
+              	$.each($form.serializeArray(), function(i, item) {
+              		//add them one by one to our FormData 
+              		formData_object.append(item.name, item.value);							
+              	});
+              	//and then add files
+              	$form.find('input[type=file]').each(function(){
+              		var field_name = $(this).attr('name');
+              		var files = $(this).data('ace_input_files');
+              		if(files && files.length > 0) {
+              			formData_object.append(field_name, files[0]);
+              		}
+              	});
+              
+              	//append primary key to our formData
+              	formData_object.append('pk', pk);
+                formData_object.append('_csrf', "#{csrftoken}");
+                
+              	deferred = $.ajax({
+              				url: submit_url,
+              			   type: 'POST',
+              		processData: false,//important
+              		contentType: false,//important
+              		   dataType: 'json',//server response type
+              			   data: formData_object
+              	})
+              }
+              else {
+              	deferred = new $.Deferred
+              
+              	var temporary_iframe_id = 'temporary-iframe-'+(new Date()).getTime()+'-'+(parseInt(Math.random()*1000));
+              	var temp_iframe = 
+              			$('<iframe id="'+temporary_iframe_id+'" name="'+temporary_iframe_id+'" \
+              			frameborder="0" width="0" height="0" src="about:blank"\
+              			style="position:absolute; z-index:-1; visibility: hidden;"></iframe>')
+              			.insertAfter($form);
+              			
+              	$form.append('<input type="hidden" name="temporary-iframe-id" value="'+temporary_iframe_id+'" />');
+              	
+              	//append primary key (pk) to our form
+              	$('<input type="hidden" name="pk" />').val(pk).appendTo($form);
+                $('<input type="hidden" name="_csrf" />').val("#{csrftoken}").appendTo($form);
+              	
+              	temp_iframe.data('deferrer' , deferred);
+              	//we save the deferred object to the iframe and in our server side response
+              	//we use "temporary-iframe-id" to access iframe and its deferred object
+              
+              	$form.attr({
+              			  action: submit_url,
+              			  method: 'POST',
+              			 enctype: 'multipart/form-data',
+              			  target: temporary_iframe_id //important
+              	});
+              
+              	$form.get(0).submit();
+              
+              	//if we don't receive any response after 30 seconds, declare it as failed!
+              	ie_timeout = setTimeout(function(){
+              		ie_timeout = null;
+              		temp_iframe.attr('src', 'about:blank').remove();
+              		deferred.reject({'status':'fail', 'message':'Timeout!'});
+              	} , 30000);
+              }
+              
+              
+              //deferred callbacks, triggered by both ajax and iframe solution
+              deferred
+              .done(function(result) {//success
+              	var res = result;//the `result` is formatted by your server side response and is arbitrary
+              	if(res.status == 'OK'){
+                  $(avatar).get(0).src = res.url;
+                  $('#profile-foto').attr("src", res.url);
+                } 
+              	else alert(res.message);
+              })
+              .fail(function(result) {//failure
+              	alert("There was an error");
+              })
+              .always(function() {//called on both success and failure
+              	if(ie_timeout) clearTimeout(ie_timeout)
+              	ie_timeout = null;	
+              });
+              
+              return deferred.promise();
+
+              // ***END OF UPDATE AVATAR HERE*** //
+            },
+
+            success: function(response, newValue) {
+            }
+          })
+        }catch(e) {}
+
+        /**
+        //let's display edit mode by default?
+        var blank_image = true;//somehow you determine if image is initially blank or not, or you just want to display file input at first
+        if(blank_image) {
+          $('#avatar').editable('show').on('hidden', function(e, reason) {
+            if(reason == 'onblur') {
+              $('#avatar').editable('show');
+              return;
+            }
+            $('#avatar').off('hidden');
+          })
+        }
+        */
+      });
+block content
+  .user-profile.row
+    .col-xs-12.col-sm-2.center
+      div
+        span.profile-picture
+          img#avatar.editable.img-responsive(alt='Alex avatar', src='/assets/avatars/avatar2.png', data-pk="#{user}")
+        .space-2
+        .width-80.label.label-info.label-xlg.arrowed-in.arrowed-in-right
+          span.white Cinfwat Probity
+      .space-6
+    .col-xs-12.col-sm-10
+      .profile-user-info.profile-user-info-striped
+        .profile-info-row
+          .profile-info-name Username
+          .profile-info-value
+            span.editable#username alexdoe
+        .profile-info-row
+          .profile-info-name Location
+          .profile-info-value
+            i.fa.fa-map-marker.light-orange.bigger-110
+            span.editable#country Netherlands
+            span.editable#city Amsterdam
+        .profile-info-row
+          .profile-info-name Age
+          .profile-info-value
+            span.editable#age 38
+        .profile-info-row
+          .profile-info-name Joined
+          .profile-info-value
+            span.editable#signup 2010/06/20
+        .profile-info-row
+          .profile-info-name Last Online
+          .profile-info-value
+            span.editable#login 3 hours ago
+        .profile-info-row
+          .profile-info-name About Me
+          .profile-info-value
+            span.editable#about Editable as WYSIWYG
+        
