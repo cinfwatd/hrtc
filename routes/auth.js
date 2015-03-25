@@ -62,14 +62,14 @@ router.post('/login', function(request, response, next) {
           // request.session.user = user;
           return response.redirect('/calendar');
         }
-        request.flash('error', errors);
+        request.flash('error', "Invalid login credentials.");
         return response.render('auth/login',
           {
             username: username
           });
 
       } else {
-        request.flash('error', errors);
+        request.flash('error', "Inalid login credentials.");
         return response.render('auth/login',
           {
             username: username
