@@ -34,7 +34,7 @@ router.post('/profile-upload', function(request, response, next) {
   var id = request.session.userId;
   var url = path.join('/uploads', request.files.avatar.name);
   var deletePicture = function(url) {
-    var url = path.join(__dirname, '../public', url);
+    var url = path.join(__dirname, '..', 'public', url);
     // console.log(url);
     fs.unlink(url, function() {
       return console.log("Error: User issues. file deleted.".red);
@@ -76,18 +76,22 @@ router.post('/profile', function(request, response, next) {
     }
 
     if (user) {
+      var isNameModified = false;
       switch(name) {
         case 'username':
           user.username = value;
           break;
         case 'firstname':
           user.name.first = value;
+          isNameModified = true;
           break;
         case 'middlename':
           user.name.middle = value;
+          isNameModified = true;
           break;
         case 'lastname':
           user.name.last = value;
+          isNameModified = true;
           break;
         case 'dob':
           user.bioData.dob = value;
@@ -101,10 +105,14 @@ router.post('/profile', function(request, response, next) {
         case 'email':
           user.email = value;
           break;
+        case 'about':
+          user.bioData.about = value;
+          break;
       }
 
       user.save(function(error, user) {
         if (error) return response.status(500).send("): Please try again.")
+        if (isNameModified) request.session.username = user.name.full;
         return response.status(200).send("OK");
       })
     }
