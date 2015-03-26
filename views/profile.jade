@@ -36,6 +36,12 @@ append scripts
       //-        data: "_csrf=#{csrftoken}"
       //- })
       //editables on first profile page
+      $.fn.editable.defaults.url = '/user/profile';
+      $.fn.editable.defaults.params = function(params) {
+        params._csrf = "#{csrftoken}";
+        return params;
+      }
+      $.fn.editable.defaults.pk = 'optional';
       $.fn.editable.defaults.mode = 'inline';
       $.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
       $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>'+
@@ -47,133 +53,106 @@ append scripts
         $('#username')
         .editable({
           type: 'text',
-          name: 'username'
-          });
-
-
-
-        //select2 editable
-        var countries = [];
-          $.each({ "CA": "Canada", "IN": "India", "NL": "Netherlands", "TR": "Turkey", "US": "United States"}, function(k, v) {
-              countries.push({id: k, text: v});
-          });
-
-        var cities = [];
-        cities["CA"] = [];
-        $.each(["Toronto", "Ottawa", "Calgary", "Vancouver"] , function(k, v){
-          cities["CA"].push({id: v, text: v});
-        });
-        cities["IN"] = [];
-        $.each(["Delhi", "Mumbai", "Bangalore"] , function(k, v){
-          cities["IN"].push({id: v, text: v});
-        });
-        cities["NL"] = [];
-        $.each(["Amsterdam", "Rotterdam", "The Hague"] , function(k, v){
-          cities["NL"].push({id: v, text: v});
-        });
-        cities["TR"] = [];
-        $.each(["Ankara", "Istanbul", "Izmir"] , function(k, v){
-          cities["TR"].push({id: v, text: v});
-        });
-        cities["US"] = [];
-        $.each(["New York", "Miami", "Los Angeles", "Chicago", "Wysconsin"] , function(k, v){
-          cities["US"].push({id: v, text: v});
-        });
-
-        var currentValue = "NL";
-          $('#country').editable({
-          type: 'select2',
-          value : 'NL',
-          //onblur:'ignore',
-              source: countries,
-          select2: {
-            'width': 140
-          },
-          success: function(response, newValue) {
-            if(currentValue == newValue) return;
-            currentValue = newValue;
-
-            var new_source = (!newValue || newValue == "") ? [] : cities[newValue];
-
-            //the destroy method is causing errors in x-editable v1.4.6+
-            //it worked fine in v1.4.5
-            /**
-            $('#city').editable('destroy').editable({
-              type: 'select2',
-              source: new_source
-            }).editable('setValue', null);
-            */
-
-            //so we remove it altogether and create a new element
-            var city = $('#city').removeAttr('id').get(0);
-            $(city).clone().attr('id', 'city').text('Select City').editable({
-              type: 'select2',
-              value : null,
-              //onblur:'ignore',
-              source: new_source,
-              select2: {
-                'width': 140
-              }
-            }).insertAfter(city);//insert it after previous instance
-            $(city).remove();//remove previous instance
-
+          name: 'username',
+          //- pk: '3',
+          validate: function(value) {
+            if($.trim(value) == '') {
+              return "This field is required."
+            }
+            
+            //- if()
           }
-          });
-
-        $('#city').editable({
-          type: 'select2',
-          value : 'Amsterdam',
-          //onblur:'ignore',
-              source: cities[currentValue],
-          select2: {
-            'width': 140
+        });
+        
+        $('#firstname').editable({
+          type: 'text', 
+          name: 'firstname',
+          validate: function(value) {
+            if($.trim(value) == ''){
+              return "This field is required."
+            }
+            
+            if(value.length < 2)
+              return "First Name must be atleast 2 characters.";
           }
-          });
-
-
-
+        });
+        
+        $('#middlename').editable({
+          type: 'text', 
+          name: 'middlename',
+          validate: function(value) {
+            //- if($.trim(value) == ''){
+            //-   return "This field is required."
+            //- }
+            
+            if(value.length == 1)
+              return "Middle Name must be atleast 2 characters.";
+          }
+        });
+        
+        $('#lastname').editable({
+          type: 'text', 
+          name: 'lastname',
+          validate: function(value) {
+            if($.trim(value) == ''){
+              return "This field is required."
+            }
+            
+            if(value.length < 2)
+              return "Last Name must be atleast 2 characters.";
+          }
+        });
+        
         //custom date editable
-        $('#signup').editable({
+        $('#dob').editable({
           type: 'adate',
           date: {
             //datepicker plugin options
-                format: 'yyyy/mm/dd',
-            viewformat: 'yyyy/mm/dd',
+                format: 'dd MM yyyy',
+            viewformat: 'dd MM yyyy',
              weekStart: 1
 
             //,nativeUI: true//if true and browser support input[type=date], native browser control will be used
             //,format: 'yyyy-mm-dd',
             //viewformat: 'yyyy-mm-dd'
           }
-        })
-
-          $('#age').editable({
-              type: 'spinner',
-          name : 'age',
-          spinner : {
-            min : 16,
-            max : 99,
-            step: 1,
-            on_sides: true
-            //,nativeUI: true//if true and browser support input[type=number], native browser control will be used
+        });
+        
+        var gender = [];
+        $.each({"Male": "Male", "Female": "Female"}, function(k, v) {
+          gender.push({id: k, text: v});
+        });
+        
+        $('#gender').editable({
+          type: 'select2',
+          value : null,
+          //onblur:'ignore',
+          source: gender,
+          select2: {
+            'width': 140
           }
         });
-
-
-          $('#login').editable({
-              type: 'slider',
-          name : 'login',
-
-          slider : {
-             min : 1,
-              max: 50,
-            width: 100
-            //,nativeUI: true//if true and browser support input[type=range], native browser control will be used
-          },
-          success: function(response, newValue) {
-            if(parseInt(newValue) == 1)
-              $(this).html(newValue + " hour ago");
-            else $(this).html(newValue + " hours ago");
+          
+        $('#email').editable({
+          type: 'text',
+          name: 'email',
+          validate: function(value) {
+            var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(!re.test(value)) return "Please provide a valid email."
+          }
+        });
+        
+        $('#password').editable({
+          type: 'password',
+          name: 'password',
+          validate: function(value) {
+            if($.trim(value) == '') {
+              return "Password field cannot be empty.";
+            }
+            
+            if(value.length < 4) {
+              return "Password must be atleast 4 characters.";
+            }
           }
         });
 
@@ -183,13 +162,9 @@ append scripts
           name : 'about',
 
           wysiwyg : {
-            //css : {'max-width':'300px'}
+            css : {'max-width':'100%'}
           },
-          success: function(response, newValue) {
-          }
         });
-
-
 
         // *** editable avatar *** //
         try {//ie8 throws some harmless exceptions, so let's catch'em
@@ -239,39 +214,6 @@ append scripts
             },
               url: function(params) {
               // ***UPDATE AVATAR HERE*** //
-              //for a working upload example you can replace the contents of this function with
-              //examples/profile-avatar-update.js
-
-              //- var deferred = new $.Deferred
-              //- 
-              //- var value = $('#avatar').next().find('input[type=hidden]:eq(0)').val();
-              //- if(!value || value.length == 0) {
-              //-   deferred.resolve();
-              //-   return deferred.promise();
-              //- }
-              //- 
-              //- 
-              //- //dummy upload
-              //- setTimeout(function(){
-              //-   if("FileReader" in window) {
-              //-     //for browsers that have a thumbnail of selected image
-              //-     var thumb = $('#avatar').next().find('img').data('thumb');
-              //-     if(thumb) $('#avatar').get(0).src = thumb;
-              //-   }
-              //- 
-              //-   deferred.resolve({'status':'OK'});
-              //- 
-              //-   if(last_gritter) $.gritter.remove(last_gritter);
-              //-   last_gritter = $.gritter.add({
-              //-     title: 'Avatar Updated!',
-              //-     text: 'Uploading to server can be easily implemented. A working example is included with the template.',
-              //-     class_name: 'gritter-success gritter-right'
-              //-   });
-              //- 
-              //-  } , parseInt(Math.random() * 800 + 800))
-              //- 
-              //- return deferred.promise();
-              
               var submit_url = '/user/profile-upload';//please modify submit_url accordingly
               var deferred = null;
               var avatar = '#avatar';
@@ -417,40 +359,65 @@ append scripts
       });
 block content
   .user-profile.row
-    .col-xs-12.col-sm-2.center
+    .alert.alert-block.alert-warning.center
+      |Click on the image below or on the profile fields to edit them. 
+    if messages.error
+      .alert.alert-block.alert-danger
+        |#{messages.error}
+    .col-xs-12.col-md-2.col-md-offset-2.center
       div
         span.profile-picture
-          img#avatar.editable.img-responsive(alt='Alex avatar', src='/assets/avatars/avatar2.png', data-pk="#{b1tr13nt}")
-        .space-2
-        .width-80.label.label-info.label-xlg.arrowed-in.arrowed-in-right
-          span.white Cinfwat Probity
+          img#avatar.editable.img-responsive(alt='#{user.name.full} avatar', src= Boolean(user.picture) ? user.picture : '/assets/avatars/avatar2.png', data-pk="#{user._id}")
+        //- .space-2
+        //- .width-80.label.label-info.label-xlg.arrowed-in.arrowed-in-right
+        //-   span.white #{user.name.full}
       .space-6
-    .col-xs-12.col-sm-10
+    .col-xs-12.col-md-6
       .profile-user-info.profile-user-info-striped
         .profile-info-row
           .profile-info-name Username
           .profile-info-value
-            span.editable#username alexdoe
+            span.editable#username= user.username
         .profile-info-row
-          .profile-info-name Location
+          .profile-info-name First Name
           .profile-info-value
-            i.fa.fa-map-marker.light-orange.bigger-110
-            span.editable#country Netherlands
-            span.editable#city Amsterdam
+            span.editable#firstname= user.name.first
         .profile-info-row
-          .profile-info-name Age
+          .profile-info-name Middle Name
           .profile-info-value
-            span.editable#age 38
+            span.editable#middlename= user.name.middle
         .profile-info-row
-          .profile-info-name Joined
+          .profile-info-name Last Name
           .profile-info-value
-            span.editable#signup 2010/06/20
+            span.editable#lastname= user.name.last
         .profile-info-row
-          .profile-info-name Last Online
+          .profile-info-name Gender
           .profile-info-value
-            span.editable#login 3 hours ago
+            span.editable#gender= user.bioData.gender
+        .profile-info-row
+          .profile-info-name Date of Birth
+          .profile-info-value
+            span.editable#dob= moment(user.bioData.dob).format('D MMMM YYYY')
+        .profile-info-row
+          .profile-info-name Email
+          .profile-info-value 
+            span.editable#email= user.email
         .profile-info-row
           .profile-info-name About Me
           .profile-info-value
-            span.editable#about Editable as WYSIWYG
+            span.editable#about!= user.bioData.about
+        .profile-info-row
+          .profile-info-name Password
+          .profile-info-value
+            span.editable.editable-click#password
+              | [hidden]
+        .profile-info-row
+          .profile-info-name Joined
+          .profile-info-value
+            span.editable#dateCreated= moment(user.dateCreated).format('dddd, Do MMMM YYYY h:mm:ss a')
+        .profile-info-row
+          .profile-info-name Last Online
+          .profile-info-value
+            span.editable#lastonline= moment(session.lastLogin).format('dddd, Do MMMM YYYY h:mm:ss a')
+        
         
