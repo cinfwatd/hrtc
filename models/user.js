@@ -39,6 +39,7 @@ var UserSchema = new Schema({
   bioData: {
     dob: Date,
     gender: String,
+    about: String,
   },
   // medicalRecord: [{type: ObjectId, ref: 'MedicalRecord'}],
   hospital: [{type: ObjectId, ref: 'Hospital'}]
