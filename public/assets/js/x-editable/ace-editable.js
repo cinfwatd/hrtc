@@ -3,7 +3,7 @@ Image editable input.
 **/
 (function ($) {
     "use strict";
-    
+
     var Image = function (options) {
         this.init('image', options, Image.defaults);
 
@@ -35,8 +35,8 @@ Image editable input.
         /**
         Renders input from tpl
 
-        @method render() 
-        **/        
+        @method render()
+        **/
         render: function() {
 			var self = this;
 			this.$input = this.$tpl.find('input[type=hidden]:eq(0)');
@@ -44,12 +44,12 @@ Image editable input.
 
 			this.$file.attr({'name':this.name});
 			this.$input.attr({'name':this.name+'-hidden'});
-			
-			
+
+
 			this.options.image.allowExt = this.options.image.allowExt || ['jpg', 'jpeg', 'png', 'gif'];
 			this.options.image.allowMime = this.options.image.allowMime || ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
 			this.options.image.maxSize = self.max_size || this.options.image.maxSize || false;
-			
+
 			this.options.image.before_remove = this.options.image.before_remove || function() {
 				self.$input.val(null);
 				return true;
@@ -59,7 +59,7 @@ Image editable input.
 				var $rand = (self.$file.val() || self.$file.data('ace_input_files')) ? Math.random() + "" + (new Date()).getTime() : null;
 				self.$input.val($rand)//set a random value, so that selected file is uploaded each time, even if it's the same file, because inline editable plugin does not update if the value is not changed!
 			}).closest('.ace-file-input').css({'width':'150px'}).closest('.editable-input').addClass('editable-image');
-			
+
 			this.$file
 			.off('file.error.ace')
 			.on('file.error.ace', function(e, info) {
@@ -77,7 +77,7 @@ Image editable input.
 
     });
 
-	
+
     Image.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
         tpl: '<span><input type="hidden" /></span><span><input type="file" /></span>',
         inputclass: '',
@@ -107,11 +107,11 @@ Image editable input.
 //Wysiwyg
 (function ($) {
     "use strict";
-    
+
     var Wysiwyg = function (options) {
         this.init('wysiwyg', options, Wysiwyg.defaults);
-        
-        //extend wysiwyg manually as $.extend not recursive 
+
+        //extend wysiwyg manually as $.extend not recursive
         this.options.wysiwyg = $.extend({}, Wysiwyg.defaults.wysiwyg, options.wysiwyg);
     };
 
@@ -120,7 +120,7 @@ Image editable input.
     $.extend(Wysiwyg.prototype, {
         render: function () {
 			this.$editor = this.$input.nextAll('.wysiwyg-editor:eq(0)');
-			
+
 			this.$tpl.parent().find('.wysiwyg-editor').show().ace_wysiwyg(
 			 {
 				toolbar:
@@ -132,7 +132,7 @@ Image editable input.
 				null,
 				'foreColor',
 				null,
-				'insertImage'
+				null
 				]
 			  }
 			)
@@ -140,7 +140,7 @@ Image editable input.
 			.closest('.editable-input').addClass('editable-wysiwyg')
 			.closest('.editable-container').css({'display':'block'});//if display is inline-block, putting large images inside the editor will expand it out of bounding box!
 
-			if(this.options.wysiwyg && this.options.wysiwyg.css) 
+			if(this.options.wysiwyg && this.options.wysiwyg.css)
 				this.$tpl.closest('.editable-wysiwyg').css(this.options.wysiwyg.css);
         },
 
@@ -157,7 +157,7 @@ Image editable input.
         value2input: function(value) {
 			this.$editor.html(value);
         },
-		input2value: function() { 
+		input2value: function() {
 			return this.$editor.html();
         },
 
@@ -165,14 +165,14 @@ Image editable input.
            //this.$editor.focus().get(0).setSelectionRange(200,200);
         }
     });
-	
+
 
 
     Wysiwyg.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
 		tpl: '<input type="hidden" /><div class="wysiwyg-editor"></div>',
         inputclass: 'editable-wysiwyg',
         wysiwyg: {
-            
+
         }
     });
 
@@ -192,11 +192,11 @@ Spinner editable input.
 **/
 (function ($) {
     "use strict";
-    
+
     var Spinner = function (options) {
         this.init('spinner', options, Spinner.defaults);
 		this.initSpinner(options, Spinner.defaults);
-		
+
 		this.nativeUI = false;
 		try {
 			var tmp_inp = document.createElement('INPUT');
@@ -216,21 +216,21 @@ Spinner editable input.
         /**
         Renders input from tpl
 
-        @method render() 
-        **/        
+        @method render()
+        **/
         render: function() {
 		},
-       
+
         /**
         Activates input: sets focus on the first field.
-        
-        @method activate() 
-       **/        
+
+        @method activate()
+       **/
        activate: function() {
             if(this.$input.is(':visible')) {
 				this.$input.focus();
 				$.fn.editableutils.setCursorPosition(this.$input.get(0), this.$input.val().length);
-				
+
 				if(!this.nativeUI) {
 					var val = parseInt(this.$input.val());
 					var options = $.extend({value:val}, this.options.spinner);
@@ -246,19 +246,19 @@ Spinner editable input.
 				}
             }
        },
-       
+
        /**
         Attaches handler to submit form in case of 'showbuttons=false' mode
-        
-        @method autosubmit() 
-       **/       
+
+        @method autosubmit()
+       **/
        autosubmit: function() {
            this.$input.keydown(function (e) {
                 if (e.which === 13) {
                     $(this).closest('form').submit();
                 }
            });
-       }       
+       }
     });
 
     Spinner.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
@@ -291,11 +291,11 @@ Slider editable input.
 **/
 (function ($) {
     "use strict";
-    
+
     var Slider = function (options) {
         this.init('slider', options, Slider.defaults);
 		this.initSlider(options, Slider.defaults);
-		
+
 		this.nativeUI = false;
 		try {
 			var tmp_inp = document.createElement('INPUT');
@@ -315,14 +315,14 @@ Slider editable input.
         /**
         Renders input from tpl
 
-        @method render() 
-        **/        
+        @method render()
+        **/
         render: function() {
 		},
         /**
         Activates input: sets focus on the first field.
-        
-        @method activate() 
+
+        @method activate()
        **/
        activate: function() {
             if(this.$input.is(':visible')) {
@@ -338,7 +338,7 @@ Slider editable input.
 						slide: function( event, ui ) {
 							var val = parseInt(ui.value);
 							self.$input.val(val);
-							
+
 							if(ui.handle.firstChild == null) {//no tooltips attached to it
 								$(ui.handle).prepend("<div class='tooltip top in' style='display:none; top:-38px; left:-5px;'><div class='tooltip-arrow'></div><div class='tooltip-inner'></div></div>");
 							}
@@ -351,32 +351,32 @@ Slider editable input.
 					this.$input.get(0).type = 'range';
 					var options = ['min', 'max', 'step']
 					for(var o = 0 ; o < options.length; o++) {
-						if(options[o] in this.options.slider) {							
+						if(options[o] in this.options.slider) {
 							this.$input[0][options[o]] = this.options.slider[options[o]]
 						}
 					}
 					var width = this.options.slider.width || 200;
 					this.$input.parent().addClass('editable-slider').css('width', width+'px');
 				}
-				
+
             }
        },
-	   
+
 	   value2html: function(value, element) {
        },
 
        /**
         Attaches handler to submit form in case of 'showbuttons=false' mode
-        
-        @method autosubmit() 
-       **/       
+
+        @method autosubmit()
+       **/
        autosubmit: function() {
            this.$input.keydown(function (e) {
                 if (e.which === 13) {
                     $(this).closest('form').submit();
                 }
            });
-       }       
+       }
     });
 
     Slider.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
@@ -407,10 +407,10 @@ ADate editable input.
 **/
 (function ($) {
     "use strict";
-	
-	
 
-    
+
+
+
     var ADate = function (options) {
         this.init('adate', options, ADate.defaults);
 		this.initDate(options, ADate.defaults);
@@ -434,15 +434,15 @@ ADate editable input.
         /**
         Renders input from tpl
 
-        @method render() 
-        **/        
+        @method render()
+        **/
         render: function() {
 			this.$input = this.$tpl.find('input.date');
 		},
         /**
         Activates input: sets focus on the first field.
-        
-        @method activate() 
+
+        @method activate()
        **/
        activate: function() {
             if(this.$input.is(':visible')) {
@@ -470,9 +470,9 @@ ADate editable input.
 
        /**
         Attaches handler to submit form in case of 'showbuttons=false' mode
-        
-        @method autosubmit() 
-       **/       
+
+        @method autosubmit()
+       **/
        autosubmit: function() {
            this.$input.keydown(function (e) {
                 if (e.which === 13) {
