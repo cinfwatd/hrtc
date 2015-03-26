@@ -34,10 +34,11 @@ html(lang='en')
             div(class= errorContainer ? '' : 'login-container')
               div(class='center')
                 h1
-                  i(class='ace-icon fa fa-globe green')
-                  span(class='red') Hypertension&nbsp;
-                  span(class='grey', id='id-text2') Telemonitoring System
-                h4(class='blue') Patient / Doctor interactive portal
+                  i(class='ace-icon fa fa-stethoscope green')
+                  //- span(class='red') &nbsp;Hypertension&nbsp;
+                  span(class='grey', id='id-text2') #{siteTitle}
+                  i(class='ace-icon fa fa-stethoscope fa-flip-horizontal green')
+                h4(class='blue') #{tagLine}
               div(class='space-6')
               div(class='position-relative')
                 block boxContent

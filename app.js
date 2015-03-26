@@ -102,22 +102,12 @@ app.use(function(request, response, next) {
   response.locals.csrftoken = request.csrfToken();
   response.locals.session = request.session;
   response.locals.moment = moment;
+  response.locals.siteTitle = "Telemonitoring System";
+  response.locals.tagLine = "Patient / Doctor interactive portal";
   next();
 });
 
 app.use('/', routes);
-// app.get('/', function(request, response){
-//   if(!request.session) {
-//     console.log('something is wrong...');
-//   }
-//   console.log('Session ID: ', request.sessionID);
-// if (request.session.counter) {
-//   request.session.counter = request.session.counter +1;
-// } else {
-//   request.session.counter = 1;
-// }
-// response.send('Counter: ' + request.session.counter);
-// });
 app.use('/dashboard', authenticated, dashboard);
 app.use('/auth', auth);
 app.use('/user', authenticated, users);

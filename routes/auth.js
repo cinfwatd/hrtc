@@ -19,10 +19,10 @@ router.get('/', function(request, response, next) {
 });
 
 router.get('/login', function(request, response, next) {
-  console.log(request.get('referrer'));
+  // console.log(request.get('referrer'));
   if (request.session && request.session.authenticated)
     return response.redirect('/dashboard');
-  response.render('auth/login', { title: 'Express' });
+  response.render('auth/login', { pageTitle: 'Login' });
 });
 
 router.post('/login', function(request, response, next) {
@@ -44,7 +44,8 @@ router.post('/login', function(request, response, next) {
   if (errors) {
     // console.log(errors);
     request.flash('error', errors);
-    response.render('auth/login', {username: username });
+    request.flash('username', username);
+    response.redirect('/auth/login');
   } else {
     // var data = User.findOne({username: username, password: password});
     // response.send('form processing ...' + username+ '@' + password + ':' + remember);
@@ -66,17 +67,13 @@ router.post('/login', function(request, response, next) {
           return response.redirect('/calendar');
         }
         request.flash('error', "Invalid login credentials.");
-        return response.render('auth/login',
-          {
-            username: username
-          });
+        request.flash('username', username);
+        return response.redirect('/auth/login');
 
       } else {
         request.flash('error', "Inalid login credentials.");
-        return response.render('auth/login',
-          {
-            username: username
-          });
+        request.flash('username', username);
+        return response.redirect('auth/login');
       }
 
     });
@@ -93,7 +90,7 @@ router.get('/logout', function(request, response, next) {
 
 router.get('/forgot-password', function(request, response, next) {
   // response.send('forgot password page..');
-  response.render('auth/forgot-password');
+  response.render('auth/forgot-password', {pageTitle: "Forgot Password"});
 });
 
 router.post('/forgot-password', function(request, response, next) {
@@ -108,7 +105,8 @@ router.post('/forgot-password', function(request, response, next) {
   if (errors) {
     // console.log(errors);
     request.flash('error', errors);
-    response.render('auth/forgot-password', { email: email});
+    request.flash('email', email);
+    response.redirect('/auth/forgot-password');
   } else {
     User.findOne({email: email}, function(error, user) {
       if (error) {
@@ -143,11 +141,12 @@ router.post('/forgot-password', function(request, response, next) {
                 console.log('An error occured in sendMail'.red);
                 console.error(error);
                 request.flash('error',  'An error occured while trying to send the email. Please try again.');
-                return response.render('auth/forgot-password', {email: user.email});
+                request.flash('email', user.email);
+                return response.redirect('/auth/forgot-password');
               }
 
               request.flash('info', 'An e-mail has been sent to <b>' + user.email + '</b> with further instructions.');
-              return response.render('auth/forgot-password');
+              return response.redirect('/auth/forgot-password');
             });
           });
         });
@@ -157,7 +156,8 @@ router.post('/forgot-password', function(request, response, next) {
 
       } else {
         request.flash('error', 'No account with this email [' + email + '] exist.');
-        return response.render('auth/forgot-password', {email: email});
+        request.flash('email', email);
+        return response.redirect('auth/forgot-password');
       }
     });
   }
@@ -172,7 +172,7 @@ router.get('/reset/:token', function(request, response, next) {
         return response.redirect('/auth/forgot-password');
       } else {
         request.flash('token', request.params.token);
-        return response.render('auth/reset-password');
+        return response.render('auth/reset-password', {pageTitle: "Reset Password"});
       }
     });
 });
@@ -187,8 +187,8 @@ router.post('/reset/:token', function(request, response, next) {
 
   var errors = request.validationErrors();
   if (errors) {
-    request.flash('error', errors[0].msg);
-    response.render('auth/reset-password');
+    request.flash('error', errors);
+    response.render('auth/reset-password', {pageTitle: "Reset Password"});
   } else {
     User.findOne({'resetPassword.token': request.params.token,
       'resetPassword.expiration': {$gt: Date.now()}}, function(error, user) {
