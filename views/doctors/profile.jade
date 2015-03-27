@@ -6,18 +6,22 @@ append pagespecificstyles
   link(rel='stylesheet', href='/assets/css/select2.css')
   link(rel='stylesheet', href='/assets/css/datepicker.css')
   link(rel='stylesheet', href='/assets/css/bootstrap-editable.css')
+  link(rel='stylesheet', href='/assets/css/daterangepicker.css')
 //- block chat
 block sidebar
 block topbar
   include ../partials/dashboard-topbar
 append scripts
   //- page specific scripts
+  script(type='text/javascript').
+    var DOC = "#{doc}";
   script(src='/assets/js/jquery-ui.custom.js')
   script(src='/assets/js/jquery.ui.touch-punch.js')
   script(src='/assets/js/jquery.gritter.js')
   script(src='/assets/js/bootbox.js')
   script(src='/assets/js/jquery.easypiechart.js')
   script(src='/assets/js/date-time/bootstrap-datepicker.js')
+  script(src='/assets/js/date-time/daterangepicker.js')
   script(src='/assets/js/jquery.hotkeys.js')
   script(src='/assets/js/bootstrap-wysiwyg.js')
   script(src='/assets/js/select2.js')
@@ -25,18 +29,11 @@ append scripts
   script(src='/assets/js/x-editable/bootstrap-editable.js')
   script(src='/assets/js/x-editable/ace-editable.js')
   script(src='/assets/js/jquery.maskedinput.js')
+  script(src='/javascripts/doctors-profile.js')
   script(type='text/javascript').
     jQuery(function($) {
-      //- $.ajax({
-      //-       url: "/user/profile-upload",
-      //-        type: 'POST',
-      //-   processData: false,//important
-      //-   contentType: false,//important
-      //-      dataType: 'json',//server response type
-      //-        data: "_csrf=#{csrftoken}"
-      //- })
-      //editables on first profile page
-      $.fn.editable.defaults.url = '/user/profile';
+      
+      $.fn.editable.defaults.url = '/doctors/request';
       $.fn.editable.defaults.params = function(params) {
         params._csrf = "#{csrftoken}";
         return params;
@@ -63,338 +60,42 @@ append scripts
             //- if()
           }
         });
-        
-        $('#firstname').editable({
-          type: 'text', 
-          name: 'firstname',
-          validate: function(value) {
-            if($.trim(value) == ''){
-              return "This field is required."
-            }
-            
-            if(value.length < 2)
-              return "First Name must be atleast 2 characters.";
-          }
-        });
-        
-        $('#middlename').editable({
-          type: 'text', 
-          name: 'middlename',
-          validate: function(value) {
-            //- if($.trim(value) == ''){
-            //-   return "This field is required."
-            //- }
-            
-            if(value.length == 1)
-              return "Middle Name must be atleast 2 characters.";
-          }
-        });
-        
-        $('#lastname').editable({
-          type: 'text', 
-          name: 'lastname',
-          validate: function(value) {
-            if($.trim(value) == ''){
-              return "This field is required."
-            }
-            
-            if(value.length < 2)
-              return "Last Name must be atleast 2 characters.";
-          }
-        });
-        
-        //custom date editable
-        $('#dob').editable({
-          type: 'adate',
-          date: {
-            //datepicker plugin options
-                format: 'dd MM yyyy',
-            viewformat: 'dd MM yyyy',
-             weekStart: 1
-
-            //,nativeUI: true//if true and browser support input[type=date], native browser control will be used
-            //,format: 'yyyy-mm-dd',
-            //viewformat: 'yyyy-mm-dd'
-          }
-        });
-        
-        var gender = [];
-        $.each({"Male": "Male", "Female": "Female"}, function(k, v) {
-          gender.push({id: k, text: v});
-        });
-        
-        $('#gender').editable({
-          type: 'select2',
-          value : null,
-          //onblur:'ignore',
-          source: gender,
-          select2: {
-            'width': 140
-          }
-        });
-          
-        $('#email').editable({
-          type: 'text',
-          name: 'email',
-          validate: function(value) {
-            var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(!re.test(value)) return "Please provide a valid email."
-          }
-        });
-        
-        $('#password').editable({
-          type: 'password',
-          name: 'password',
-          validate: function(value) {
-            if($.trim(value) == '') {
-              return "Password field cannot be empty.";
-            }
-            
-            if(value.length < 4) {
-              return "Password must be atleast 4 characters.";
-            }
-          }
-        });
-
-        $('#about').editable({
-          mode: 'inline',
-              type: 'wysiwyg',
-          name : 'about',
-
-          wysiwyg : {
-            css : {'max-width':'100%'}
-          },
-        });
-
-        // *** editable avatar *** //
-        try {//ie8 throws some harmless exceptions, so let's catch'em
-
-          //first let's add a fake appendChild method for Image element for browsers that have a problem with this
-          //because editable plugin calls appendChild, and it causes errors on IE at unpredicted points
-          try {
-            document.createElement('IMG').appendChild(document.createElement('B'));
-          } catch(e) {
-            Image.prototype.appendChild = function(el){}
-          }
-
-          var last_gritter
-          $('#avatar').editable({
-            type: 'image',
-            name: 'avatar',
-            value: null,
-            image: {
-              //specify ace file input plugin's options here
-              btn_choose: 'Change Picture',
-              droppable: true,
-              maxSize: 110000,//~100Kb
-
-              //and a few extra ones here
-              name: 'avatar',//put the field name here as well, will be used inside the custom plugin
-              on_error : function(error_type) {//on_error function will be called when the selected file has a problem
-                if(last_gritter) $.gritter.remove(last_gritter);
-                if(error_type == 1) {//file format error
-                  last_gritter = $.gritter.add({
-                    title: 'File is not an image!',
-                    text: 'Please choose a jpg|gif|png image!',
-                    class_name: 'gritter-error gritter-right'
-                  });
-                } else if(error_type == 2) {//file size rror
-                  last_gritter = $.gritter.add({
-                    title: 'File too big!',
-                    text: 'Image size should not exceed 100Kb!',
-                    class_name: 'gritter-error gritter-right'
-                  });
-                }
-                else {//other error
-                }
-              },
-              on_success : function() {
-                $.gritter.removeAll();
-              }
-            },
-              url: function(params) {
-              // ***UPDATE AVATAR HERE*** //
-              var submit_url = '/user/profile-upload';//please modify submit_url accordingly
-              var deferred = null;
-              var avatar = '#avatar';
-              
-              //if value is empty (""), it means no valid files were selected
-              //but it may still be submitted by x-editable plugin
-              //because "" (empty string) is different from previous non-empty value whatever it was
-              //so we return just here to prevent problems
-              var value = $(avatar).next().find('input[type=hidden]:eq(0)').val();
-              if(!value || value.length == 0) {
-              	deferred = new $.Deferred
-              	deferred.resolve();
-              	return deferred.promise();
-              }
-              
-              var $form = $(avatar).next().find('.editableform:eq(0)')
-              var file_input = $form.find('input[type=file]:eq(0)');
-              var pk = $(avatar).attr('data-pk');//primary key to be sent to server
-              console.log("PK:" +pk);
-              var ie_timeout = null
-              
-              
-              if( "FormData" in window ) {
-              	var formData_object = new FormData();//create empty FormData object
-              	
-              	//serialize our form (which excludes file inputs)
-              	$.each($form.serializeArray(), function(i, item) {
-              		//add them one by one to our FormData 
-              		formData_object.append(item.name, item.value);							
-              	});
-              	//and then add files
-              	$form.find('input[type=file]').each(function(){
-              		var field_name = $(this).attr('name');
-              		var files = $(this).data('ace_input_files');
-              		if(files && files.length > 0) {
-              			formData_object.append(field_name, files[0]);
-              		}
-              	});
-              
-              	//append primary key to our formData
-              	formData_object.append('pk', pk);
-                formData_object.append('_csrf', "#{csrftoken}");
-                
-              	deferred = $.ajax({
-              				url: submit_url,
-              			   type: 'POST',
-              		processData: false,//important
-              		contentType: false,//important
-              		   dataType: 'json',//server response type
-              			   data: formData_object
-              	})
-              }
-              else {
-              	deferred = new $.Deferred
-              
-              	var temporary_iframe_id = 'temporary-iframe-'+(new Date()).getTime()+'-'+(parseInt(Math.random()*1000));
-              	var temp_iframe = 
-              			$('<iframe id="'+temporary_iframe_id+'" name="'+temporary_iframe_id+'" \
-              			frameborder="0" width="0" height="0" src="about:blank"\
-              			style="position:absolute; z-index:-1; visibility: hidden;"></iframe>')
-              			.insertAfter($form);
-              			
-              	$form.append('<input type="hidden" name="temporary-iframe-id" value="'+temporary_iframe_id+'" />');
-              	
-              	//append primary key (pk) to our form
-              	$('<input type="hidden" name="pk" />').val(pk).appendTo($form);
-                $('<input type="hidden" name="_csrf" />').val("#{csrftoken}").appendTo($form);
-              	
-              	temp_iframe.data('deferrer' , deferred);
-              	//we save the deferred object to the iframe and in our server side response
-              	//we use "temporary-iframe-id" to access iframe and its deferred object
-              
-              	$form.attr({
-              			  action: submit_url,
-              			  method: 'POST',
-              			 enctype: 'multipart/form-data',
-              			  target: temporary_iframe_id //important
-              	});
-              
-              	$form.get(0).submit();
-              
-              	//if we don't receive any response after 30 seconds, declare it as failed!
-              	ie_timeout = setTimeout(function(){
-              		ie_timeout = null;
-              		temp_iframe.attr('src', 'about:blank').remove();
-              		deferred.reject({'status':'fail', 'message':'Timeout!'});
-              	} , 30000);
-              }
-              
-              
-              //deferred callbacks, triggered by both ajax and iframe solution
-              deferred
-              .done(function(result) {//success
-              	var res = result;//the `result` is formatted by your server side response and is arbitrary
-              	if(res.status == 'OK'){
-                  $(avatar).get(0).src = res.url;
-                  $('#profile-foto').attr("src", res.url);
-                } 
-              	else {
-                  last_gritter = $.gritter.add({
-                    title: 'Error Uploading file!',
-                    text: 'Seems your session has expired.<br>Please try again! <hr>If it persist, logout and login.',
-                    class_name: 'gritter-error gritter-right'
-                  });
-                }
-              })
-              .fail(function(result) {//failure
-              	//- alert("There was an error");
-                last_gritter = $.gritter.add({
-                  title: 'Error Uploading file!',
-                  text: 'Seems your session has expired.<br>Please try again! <hr>If it persist, logout and login.',
-                  class_name: 'gritter-error gritter-right'
-                });
-              })
-              .always(function() {//called on both success and failure
-              	if(ie_timeout) clearTimeout(ie_timeout)
-              	ie_timeout = null;	
-              });
-              
-              return deferred.promise();
-
-              // ***END OF UPDATE AVATAR HERE*** //
-            },
-
-            success: function(response, newValue) {
-            }
-          })
-        }catch(e) {}
-
-        /**
-        //let's display edit mode by default?
-        var blank_image = true;//somehow you determine if image is initially blank or not, or you just want to display file input at first
-        if(blank_image) {
-          $('#avatar').editable('show').on('hidden', function(e, reason) {
-            if(reason == 'onblur') {
-              $('#avatar').editable('show');
-              return;
-            }
-            $('#avatar').off('hidden');
-          })
-        }
-        */
       });
 block content
   .user-profile.row
-    .alert.alert-block.alert-warning.center
-      |Click on the image below or on the profile fields to edit them. 
     if messages.error
       .alert.alert-block.alert-danger
         |#{messages.error}
+    if messages.success
+      .alert.alert-block.alert-success
+        |#{messages.success}
     .col-xs-12.col-md-2.col-md-offset-2.center
       div
         span.profile-picture
-          img#avatar.editable.img-responsive(alt='#{user.name.full} avatar', src= Boolean(user.picture) ? user.picture : '/assets/avatars/avatar2.png', data-pk="#{user._id}")
+          img.img-responsive(alt='#{user.name.full} avatar', src= Boolean(user.picture) ? user.picture : '/assets/avatars/avatar2.png', data-pk="#{user._id}")
         //- .space-2
         //- .width-80.label.label-info.label-xlg.arrowed-in.arrowed-in-right
         //-   span.white #{user.name.full}
       .space-6
     .col-xs-12.col-md-6
-      .profile-user-info.profile-user-info-striped
-        
+      .center#message
+        if found
+          span.label.label-lg.label-grey.arrowed-right Request status
+          span.label.label-lg.label-light.arrowed-in.arrowed-right Pending
+        else
+          
+          button.btn.btn-primary.btn-white#request
+            span Send Chat Request
+            i.icon-on-right.ace-icon.fa.fa-lightbulb-o
+      .profile-user-info
         .profile-info-row
-          .profile-info-name First Name
+          .profile-info-name Name
           .profile-info-value
-            span.editable#firstname= user.name.first
-        .profile-info-row
-          .profile-info-name Middle Name
-          .profile-info-value
-            span.editable#middlename= user.name.middle
-        .profile-info-row
-          .profile-info-name Last Name
-          .profile-info-value
-            span.editable#lastname= user.name.last
+            span.editable#firstname= user.name.full
         .profile-info-row
           .profile-info-name Gender
           .profile-info-value
             span.editable#gender= user.bioData.gender
-        .profile-info-row
-          .profile-info-name Date of Birth
-          .profile-info-value
-            span.editable#dob= moment(user.bioData.dob).format('D MMMM YYYY')
         .profile-info-row
           .profile-info-name Email
           .profile-info-value 
@@ -402,7 +103,7 @@ block content
         .profile-info-row
           .profile-info-name Hospital
           .profile-info-value
-            span.editable#username= user.doctor.is
+            span.editable#hospital= user.doctor.is
         .profile-info-row
           .profile-info-name About Me
           .profile-info-value
