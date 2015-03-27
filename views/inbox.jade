@@ -9,4 +9,41 @@ append scripts
   //- page specific scripts
 
 block content
-    
+  .tabbable
+    ul.nav.nav-tabs.inbox-tabs.padding-16.tab-size-bigger.tab-space-1#inbox-tabs
+      //- tab buttons
+      li.li-new-mail.pull-right
+        a.btn-new-mail(data-target='write', href='#write', data-toggel='tab')
+          span.btn.btn-purple.no-border
+            i.ace-icon.fa.fa-envelope.bigger-130
+            span Write Mail
+      li.active
+        a(data-toggle='tab', href='#inbox', data-target='inbox')
+          i.blue.ace-icon.fa.fa-inbox.bigger-130
+          span.bigger-110 Inbox
+      li
+        a(data-toggle='tab', href='#sent', data-target='sent')
+          i.orange.ace-icon.fa.fa-location-arrow.bigger-130
+          span.bigger-110 Sent
+    .tab-content.no-border.no-padding
+      //- tab/ inbox content
+      .tab-pane.in.active#inbox
+        .message-container
+          .message-navbar.clearfix#id-message-list-navbar
+            .message-bar
+              .message-infobar#id-message-infobar
+                span.blue.bigger-150 Inbox
+                span.grey.bigger-110 (2 Unread messages)
+              
+              .message-toolbar.hide
+                .inline.position-relative.align-left
+                  button.btn-white.btn-primary.btn.btn-xs.dropdown-toggle(type='button', data-toggle='dropdown')
+                    span.bigger-110 Action
+                    i.ace-icon.fa.fa-caret-down.icon-on-right
+                  
+                  ul.dropdown-menu.dropdown-lighter.dropdown-caret.dropdown-125
+                    li
+                      a(href='#')
+                        i.ace-icon.fa.fa-mail-reply.blue
+                        |Reply
+      
