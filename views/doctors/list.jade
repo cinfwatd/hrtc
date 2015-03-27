@@ -1,0 +1,14 @@
+extends ../layouts/default
+append pagespecificstyles
+  //- page specific styles
+//- block chat
+block sidebar
+block topbar
+  include ../partials/dashboard-topbar
+append scripts
+  //- page specific scripts
+
+block content
+  if messages.error
+    .alert.alert-danger.center #{messages.error}
+  | just checking it.#{session.userId}

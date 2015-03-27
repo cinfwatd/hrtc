@@ -35,6 +35,7 @@ var auth = require('./routes/auth');
 var dashboard = require('./routes/dashboard');
 var calendar = require('./routes/calendar');
 var chat = require('./routes/chat');
+var doctors = require('./routes/doctors');
 
 var app = express();
 
@@ -113,6 +114,7 @@ app.use('/auth', auth);
 app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
+app.use('/doctors', authenticated, doctors);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
