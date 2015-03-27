@@ -32,7 +32,7 @@ var UserSchema = new Schema({
     is: Boolean,
     date: Date,
     by: { type: ObjectId, ref: 'User'},
-    hospitals: [{type: ObjectId, ref: 'Hospital'}],
+    hospital: {type: ObjectId, ref: 'Hospital'},
     patients: [{type: ObjectId, ref: 'User'}]
   },
   picture: String,
