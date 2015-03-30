@@ -18,6 +18,7 @@ var mongoose = require('mongoose');
   mongoose.connect('mongodb://localhost/hrtc');
 var db = mongoose.connection;
 var moment =  require('moment');
+var momentTwitter = require('moment-twitter');
 
 db.on('error', console.error.bind(console, 'Connection Error:'.red));
 db.once('open', function(callback) {
@@ -103,6 +104,7 @@ app.use(function(request, response, next) {
   response.locals.csrftoken = request.csrfToken();
   response.locals.session = request.session;
   response.locals.moment = moment;
+  response.locals.momentTwitter = momentTwitter;
   response.locals.siteTitle = "Telemonitoring System";
   response.locals.tagLine = "Patient / Doctor interactive portal";
   next();
