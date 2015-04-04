@@ -1,15 +1,15 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
-  ObjectId = Schema.Types.ObjectId;
+  ObjectId = Schema.Types.ObjectId,
+  paginate = require('mongoose-paginate');
 
 var AppointmentSchema = new Schema({
   dateCreated: {type: Date, default: Date.now},
-  doctor: ObjectId,
-  patient: ObjectId,
+  sender: {type: ObjectId, ref: 'User'},
+  receiver: {type: ObjectId, ref: 'User'},
   message: String,
+  subject: {type: String, default: 'Request for Appointment'},
   chat: {
-    video: Boolean,
-    text: Boolean,
     start: Date,
     end: Date
   },
@@ -18,8 +18,13 @@ var AppointmentSchema = new Schema({
     expired: {type: Boolean, default: false},
     read: {type: Boolean, default: false},
     deleted: {type: Boolean, default: false}
+  },
+  attachment: {
+    attached: {type: Boolean, default: false},
+    content: [String]
   }
 });
+AppointmentSchema.plugin(paginate);
 
 var Appointment = mongoose.model('Appointment', AppointmentSchema);
 module.exports = Appointment;
