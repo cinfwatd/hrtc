@@ -6,6 +6,7 @@
         - var name = message.receiver.name.full
       else
         - var name = message.sender.name.full
+        
       .message-item(class= message.status.read ? '' : 'message-unread')
         label.inline
           input.ace(type='checkbox')
@@ -49,7 +50,7 @@
                       a(href="/message/attachment/#{atc}")
                         i.ace-icon.fa.fa-download.bigger-125.blue
   //- .message-item.message-unread
-  if messages.length > 0
+  if messages.length > 0 
     each msg in messages
       +messageItem(msg)
   else

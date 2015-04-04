@@ -1,8 +1,8 @@
 .pull-left
-  if itemCount > 1
-    |#{itemCount} messages
-  else
+  if itemCount == 1 
     |#{itemCount} message
+  else
+    |#{itemCount} messages
     
 .pull-right
   .inline.middle page #{currentPage} of #{pageCount}
