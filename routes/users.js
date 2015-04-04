@@ -9,10 +9,6 @@ router.get('/record', function(req, res, next) {
   res.render('record', {pageTitle: "Medical Record"});
 });
 
-router.get('/messages', function(request, response, next) {
-  response.render('inbox', {pageTitle: "Inbox"});
-});
-
 router.get('/profile', function(request, response, next) {
   var id = request.session.userId;
   var pageTitle = "User Profile";
