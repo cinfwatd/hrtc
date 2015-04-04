@@ -1,18 +1,14 @@
 jQuery(function($){
 
-  //handling tabs and loading/displaying relevant messages and forms
-  //not needed if using the alternative view, as described in docs
-  $('#inbox-tabs a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-    var currentTab = $(e.target).data('target');
-    if(currentTab == 'write') {
-      Inbox.show_form();
-    }
-    else if(currentTab == 'inbox') {
-      Inbox.show_list();
-    }
-  })
+  $('ul.nav li a#message').parent().addClass('active');
 
+  $('.inbox-menu a').each(function(){
+    if($($(this))[0].href==String(window.location))
+      $(this).addClass('active');
+  });
 
+  $('.chosen-select').chosen({allow_single_deselect:true,
+  max_selected_options: 1, width: '150%'});
 
   //basic initializations
   $('.message-list .message-item input[type=checkbox]').removeAttr('checked');
@@ -24,7 +20,6 @@ jQuery(function($){
       //determine number of selected messages and display/hide action toolbar accordingly
     }
   });
-
 
   //check/uncheck all messages
   $('#id-toggle-all').removeAttr('checked').on('click', function(){
@@ -57,59 +52,30 @@ jQuery(function($){
     Inbox.select_unread();
   });
 
-  /////////
+  $('#discard').on('click', function(e) {
 
-  //display first message in a new area
-  $('.message-list .message-item:eq(0) .text').on('click', function() {
-    //show the loading icon
-    $('.message-container').append('<div class="message-loading-overlay"><i class="fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+    bootbox.confirm("Are you sure to discard the message?", function(result) {
+      if (result) {
+        $('.message-list').next().removeClass('hide');
+        $('.message-list').removeClass('hide');
+        $('.message-footer').removeClass('hide');
+        $('.message-form').addClass('hide');
 
-    $('.message-inline-open').removeClass('message-inline-open').find('.message-content').remove();
+        $('.message-navbar').removeClass('hide');
+        $('#id-message-new-navbar').addClass('hide');
+        // $('a#inbox').addClass('active');
+      }
+    });
 
-    var message_list = $(this).closest('.message-list');
-
-    $('#inbox-tabs a[href="#inbox"]').parent().removeClass('active');
-    //some waiting
-    setTimeout(function() {
-
-      //hide everything that is after .message-list (which is either .message-content or .message-form)
-      message_list.next().addClass('hide');
-      $('.message-container').find('.message-loading-overlay').remove();
-
-      //close and remove the inline opened message if any!
-
-      //hide all navbars
-      $('.message-navbar').addClass('hide');
-      //now show the navbar for single message item
-      $('#id-message-item-navbar').removeClass('hide');
-
-      //hide all footers
-      $('.message-footer').addClass('hide');
-      //now show the alternative footer
-      $('.message-footer-style2').removeClass('hide');
-
-
-      //move .message-content next to .message-list and hide .message-list
-      $('.message-content').removeClass('hide').insertAfter(message_list.addClass('hide'));
-
-      //add scrollbars to .message-body
-      $('.message-content .message-body').ace_scroll({
-        size: 150,
-        mouseWheelLock: true,
-        styleClass: 'scroll-visible'
-      });
-
-    }, 500 + parseInt(Math.random() * 500));
   });
 
-
   //display second message right inside the message list
-  $('.message-list .message-item:eq(1) .text').on('click', function(){
+  $('.message-list .message-item .text, .message-list .message-item .sender').on('click', function(){
     var message = $(this).closest('.message-item');
 
     //if message is open, then close it
     if(message.hasClass('message-inline-open')) {
-      message.removeClass('message-inline-open').find('.message-content').remove();
+      message.removeClass('message-inline-open').find('.message-content').addClass('hide');
       return;
     }
 
@@ -134,23 +100,6 @@ jQuery(function($){
     }, 500 + parseInt(Math.random() * 500));
 
   });
-
-  $('a#trash').on('click', function(e) {
-    e.preventDefault();
-    Inbox.show_trash();
-  });
-
-
-  $('a#sent').on('click', function(e) {
-    e.preventDefault();
-    Inbox.show_sent();
-  });
-
-  $('a#inbox').on('click', function(e) {
-    e.preventDefault();
-    Inbox.show_list();
-  });
-
 
   //hide message list and display new message form
   //- /**
@@ -262,6 +211,10 @@ jQuery(function($){
       $('.message-navbar').addClass('hide');
       $('#id-message-new-navbar').removeClass('hide');
 
+      $('.chosen-select').each(function() {
+         var $this = $(this);
+         $this.next().css({'width': $this.parent().width()});
+      });
 
       //reset form??
       $('.message-form .wysiwyg-editor').empty();
@@ -273,7 +226,7 @@ jQuery(function($){
 
     }, 300 + parseInt(Math.random() * 300));
 
-    $('a#inbox, a#sent, a#trash').removeClass('active');
+    // $('a#inbox, a#sent, a#trash').removeClass('active');
   }
 
   Inbox.show_sent = function() {
@@ -371,5 +324,42 @@ jQuery(function($){
     });
   });
   */
+
+  if (String(window.location).indexOf('inbox') != -1) {
+    var unread = $('.message-unread input[type=checkbox]').length;
+    $('#unread-sidebar').text(unread);
+  }
+
+
+
+  if (unread > 0){
+    $('#unread').text(' (' + unread + ' unread messages)');
+  }
+
+  $('[data-rel=tooltip]').tooltip();
+
+  $('#masked').mask('9?9?9', {placeholder: " "});
+  $('#inbox-search').search();
+  $('#inbox-search').on('cleared.fu.search', function() {
+    $('.message-item').each(function() {
+      $(this).removeClass('hide');
+    });
+  });
+
+  $('#inbox-search').on('searched.fu.search', function() {
+    //- alert('search' + e);
+    var data = $(this).find('input').val().toLowerCase();
+    $('.message-item').each(function() {
+      var sender = $(this).find('span[class=sender]').text().toLowerCase();
+      var subj = $(this).find('span[class=text]').text().toLowerCase();
+      var msg = $(this).find('.message-body > p').text().toLowerCase();
+
+      if ((sender.indexOf(data) == -1) && (subj.indexOf(data) == -1) && (msg.indexOf(data) == -1)){
+        $(this).addClass('hide');
+      } else {
+        $(this).removeClass('hide');
+      }
+    });
+  });
 
 });
