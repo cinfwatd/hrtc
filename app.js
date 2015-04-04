@@ -17,6 +17,7 @@ var validator = require('express-validator');
 var mongoose = require('mongoose');
   mongoose.connect('mongodb://localhost/hrtc');
 var db = mongoose.connection;
+var paginate = require('express-paginate');
 var moment =  require('moment');
 var momentTwitter = require('moment-twitter');
 
@@ -37,6 +38,7 @@ var dashboard = require('./routes/dashboard');
 var calendar = require('./routes/calendar');
 var chat = require('./routes/chat');
 var doctors = require('./routes/doctors');
+var message = require('./routes/message');
 
 var app = express();
 
@@ -117,6 +119,8 @@ app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
 app.use('/doctors', authenticated, doctors);
+app.use(paginate.middleware(10, 50));
+app.use('/message', authenticated, message);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
