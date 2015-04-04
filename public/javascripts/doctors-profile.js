@@ -60,9 +60,9 @@ jQuery(function($) {
           data: 'start=' + start + "&end=" + end + "&msg=" + msg + "&_csrf=" + TOKEN + "&doc=" + DOC,
           success: function(data) {
             modal.modal("hide");
-            var html = '<span class="label label-lg label-grey arrowed-right">Request status</span>\
+            var ht = '<span class="label label-lg label-grey arrowed-right">Request status</span>\
               <span class="label label-lg label-right arrowed-in arrowed-right">Pending</span>';
-            $('#message').html(html);
+            $('div#message').empty().append(ht);
           }
         })
       }

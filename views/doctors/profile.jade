@@ -78,15 +78,15 @@ block content
         //-   span.white #{user.name.full}
       .space-6
     .col-xs-12.col-md-6
-      .center#message
-        if found
-          span.label.label-lg.label-grey.arrowed-right Request status
-          span.label.label-lg.label-light.arrowed-in.arrowed-right Pending
-        else
-          
-          button.btn.btn-primary.btn-white#request
-            span Send Chat Request
-            i.icon-on-right.ace-icon.fa.fa-lightbulb-o
+      .center
+        #message
+          if found
+            span.label.label-lg.label-grey.arrowed-right Request status
+            span.label.label-lg.label-light.arrowed-in.arrowed-right Pending
+          else
+            button.btn.btn-primary.btn-white#request
+              span Send Chat Request
+              i.icon-on-right.ace-icon.fa.fa-lightbulb-o
       .profile-user-info
         .profile-info-row
           .profile-info-name Name
