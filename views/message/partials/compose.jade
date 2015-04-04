@@ -1,0 +1,44 @@
+form#id-message-form.hide.form-horizontal.message-form.col-xs-12
+  // #section:pages/inbox.compose
+  div
+    .form-group
+      label.col-xs-3.control-label.no-padding-right(for="form-field-recipient") Recipient:
+      .col-xs-6
+        //- span.input-icon
+        //-   input#form-field-recipient(type="email", name="recipient", data-value="alex@doe.com", value="alex@doe.com", placeholder="Recipient(s)")
+        //-   i.ace-icon.fa.fa-user
+        select.tag-input-style.chosen-select.form-control(multiple='', data-placeholder='Choose Recipient(s) ...')
+          option(value='AL') Alabama
+          option(value='AK') Alaska
+          option(value='AR') Akansas
+          option(value='CA') California
+    .hr.hr-18.dotted
+    .form-group
+      label.col-sm-3.control-label.no-padding-right(for="form-field-subject") Subject:
+      .col-sm-6.col-xs-12
+        .input-icon.block.col-xs-12.no-padding.input-icon-right
+          input#form-field-subject.col-xs-12(type="text", maxlength="100", name="subject", placeholder="Subject")
+          i.ace-icon.fa.fa-comment-o
+    .hr.hr-18.dotted
+    .form-group
+      label.col-sm-3.control-label.no-padding-right
+        span.inline.space-24.hidden-480
+        | Message:
+      // #section:plugins/editor.wysiwyg
+      .col-sm-9
+        .wysiwyg-editor
+      // /section:plugins/editor.wysiwyg
+    .hr.hr-18.dotted
+    .form-group.no-margin-bottom
+      label.col-sm-3.control-label.no-padding-right Attachments:
+      .col-sm-9
+        #form-attachments
+          // #section:custom/file-input
+          //- input(type="file", name="attachment[]")
+          // /section:custom/file-input
+          button#id-add-attachment.btn.btn-sm.btn-danger(type="button")
+            i.ace-icon.fa.fa-paperclip.bigger-140
+            | Add Attachment
+          .space
+    .space
+  // /section:pages/inbox.compose

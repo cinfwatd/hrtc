@@ -1,0 +1,49 @@
+// #section:pages/inbox.navbar
+#id-message-list-navbar.message-navbar.clearfix
+  .message-bar
+    #id-message-infobar.message-infobar
+      span.blue.bigger-150 #{pageTitle}
+      //- span#unread.grey.bigger-110 
+    .message-toolbar.hide
+      button.btn.btn-xs.btn-white.btn-primary(type="button")
+        i.ace-icon.fa.fa-trash-o.bigger-125.orange
+        span.bigger-110 Delete
+  div
+    .messagebar-item-left
+      label.inline.middle
+        input#id-toggle-all.ace(type="checkbox")
+        span.lbl
+      .inline.position-relative
+        a.dropdown-toggle(href="#", data-toggle="dropdown")
+          i.ace-icon.fa.fa-caret-down.bigger-125.middle
+        ul.dropdown-menu.dropdown-lighter.dropdown-100
+          li
+            a#id-select-message-all(href="#") All
+          li
+            a#id-select-message-none(href="#") None
+          li.divider
+          li
+            a#id-select-message-unread(href="#") Unread
+          li
+            a#id-select-message-read(href="#") Read
+    // #section:pages/inbox.navbar-search
+    #inbox-search.nav-search.minimized.search(role='search')
+        span.input-icon
+          input.input-small.nav-search-input(type="text", autocomplete="off", placeholder="Search inbox ...")
+          i.ace-icon.fa.fa-search.nav-search-icon
+    // /section:pages/inbox.navbar-search
+#id-message-new-navbar.hide.message-navbar.clearfix
+  .message-bar
+    .message-toolbar
+      //- 
+  div
+    .messagebar-item-left
+      button#discard.btn.btn-xs.btn-white.btn-primary(type="button")
+        i.ace-icon.fa.fa-times.bigger-125.orange2
+        span.bigger-110 &nbsp;Discard
+    .messagebar-item-right
+      //- span.inline.btn-send-message
+      button.btn.btn-sm.btn-primary.no-border.btn-white(type="button")
+        span.bigger-110 Send
+        i.ace-icon.fa.fa-send-o.green.icon-on-right
+// /section:pages/inbox.navbar

@@ -1,0 +1,17 @@
+.center
+  a.btn.btn-purple.btn-new-mail.bigger-130(data-toggle="tab", href="#write", data-target="write")
+    i.ace-icon.fa.fa-envelope
+    |&nbsp;Write Mail
+.space-6
+.inbox-folders.inbox-folders-responsive
+  a#inbox.align-left.btn.btn-sm.btn-block.no-border.btn-lighter(href='/message/inbox')
+    i.ace-icon.fa.fa-inbox.blue.bigger-110
+    span.bigger-110 &nbsp;Inbox
+    span#unread-sidebar.badge.badge-primary.counter.tooltip-info(data-rel='tooltip', data-placement='bottom', data-original-title='Unread messages')
+  a#sent.align-left.btn.btn-sm.btn-block.no-border.btn-lighter(href='/message/sent')
+    i.ace-icon.fa.fa-rocket.blue.bigger-110
+    span.bigger-110 &nbsp;Sent
+  .hr.hr-10.dotted
+  a#trash.align-left.btn.btn-sm.btn-block.no-border.btn-lighter(href='/message/trash')
+    i.ace-icon.fa.fa-trash-o.red.bigger-110
+    span.bigger-110 &nbsp;Trash

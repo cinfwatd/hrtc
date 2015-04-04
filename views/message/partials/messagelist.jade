@@ -1,0 +1,58 @@
+// #section:pages/inbox.message-list
+#message-list.message-list
+  // #section:pages/inbox.message-list.item
+  mixin messageItem(message)
+      if message.sender.id == session.userId
+        - var name = message.receiver.name.full
+      else
+        - var name = message.sender.name.full
+      .message-item(class= message.status.read ? '' : 'message-unread')
+        label.inline
+          input.ace(type='checkbox')
+          span.lbl
+        span.sender(title= '#{name}')
+          |&nbsp;#{name}
+        span.time= momentTwitter(message.dateCreated).twitterLong()
+        if message.attachment.attached
+          span.attachment
+            i.ace-icon.fa.fa-paperclip
+        span.summary
+          span.text= message.subject
+        //- span.message.hide= message.message
+        #id-message-content.hide.message-content
+          // #section:pages/inbox.message-header
+          .message-header.clearfix
+            .pull-left
+              span #{name}
+            .pull-right.action-buttons
+              i.ace-icon.fa.fa-clock-o.bigger-110.orange.middle
+              |&nbsp;
+              span.time.grey= moment(message.dateCreated).format('dddd, Do MMMM YYYY h:mm:ss a')
+          // /section:pages/inbox.message-header
+          .hr.hr-double
+          // #section:pages/inbox.message-body
+          .message-body
+            p= message.message
+          if message.attachment.attached
+            .hr.hr-double
+            // #section:pages/inbox.message-attachment
+            .message-attachment.clearfix
+              .attachment-title
+                span.blue.bolder.bigger-110 Attachments
+              ul.attachment-list.pull-left.list-unstyled
+                each atc in message.attachment.content
+                  li
+                    a.attached-file(href= "/message/attachment/#{atc}")
+                      i.ace-icon.fa.fa-file-o.bigger-110
+                      span.attached-name Document
+                    span.action-buttons
+                      a(href="/message/attachment/#{atc}")
+                        i.ace-icon.fa.fa-download.bigger-125.blue
+  //- .message-item.message-unread
+  if messages.length > 0
+    each msg in messages
+      +messageItem(msg)
+  else
+    div &nbsp;
+    span &nbsp;&nbsp;There are no messages in your #{pageTitle}
+    div &nbsp;

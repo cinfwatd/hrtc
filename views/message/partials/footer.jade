@@ -1,0 +1,19 @@
+.pull-left
+  if itemCount > 1
+    |#{itemCount} messages
+  else
+    |#{itemCount} message
+    
+.pull-right
+  .inline.middle page #{currentPage} of #{pageCount}
+  |&nbsp;&nbsp;
+  if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
+    .btn-group.btn-corner
+      if paginate.hasPreviousPages
+        a.btn.btn-white.btn-sm.btn-primary(href=paginate.href(true)).prev
+          i.fa.fa-arrow-circle-left
+          | &nbsp;Previous
+      if paginate.hasNextPages(pageCount)
+        a.btn.btn-white.btn-sm.btn-primary(href=paginate.href()).next
+          | Next&nbsp;
+          i.fa.fa-arrow-circle-right

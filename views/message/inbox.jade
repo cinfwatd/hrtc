@@ -1,0 +1,36 @@
+extends ../layouts/default
+append pagespecificstyles
+  //- page specific styles
+  //- link(rel='stylesheet', href='/assets/css/jquery-ui.custom.css')
+  link(rel='stylesheet', href='/assets/css/chosen.css')
+//- block doctors
+block sidebar
+block topbar
+  include ../partials/dashboard-topbar
+append scripts
+  //- page specific scripts
+  script(src='/assets/js/bootstrap-tag.js')
+  script(src='/assets/js/jquery.hotkeys.js')
+  script(src='/assets/js/bootstrap-wysiwyg.js')
+  script(src='/assets/js/bootbox.js')
+  script(src='/assets/js/chosen.jquery.js')
+  script(src='/assets/js/jquery.maskedinput.js')
+  script(src='/assets/js/fuelux/search.js')
+  script(src='/javascripts/inbox.js')
+    
+block content
+  .row
+    .col-xs-2.inbox-menu
+      include partials/sidebar
+    .col-xs-9
+      .tab-content.no-border.no-padding
+        #inbox.tab-pane.in.active
+          .message-container.message-condensed
+            include partials/navbars
+            .message-list-container
+              include partials/messagelist
+            .message-footer.clearfix
+              include partials/footer
+                        
+  
+  include partials/compose
