@@ -17,7 +17,8 @@ var AppointmentSchema = new Schema({
     granted: {type: Boolean, default: false},
     expired: {type: Boolean, default: false},
     read: {type: Boolean, default: false},
-    deleted: {type: Boolean, default: false}
+    softDeleted: [ObjectId],
+    hardDeleted: [ObjectId]
   },
   attachment: {
     attached: {type: Boolean, default: false},
