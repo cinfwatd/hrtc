@@ -23,29 +23,18 @@ var UserSchema = new Schema({
   },
   dateCreated: {type: Date, default: Date.now},
   dateUpdated: Date,
-  admin: {
-    is: Boolean,
-    date: Date,
-    by: { type: ObjectId, ref: 'User'}
-  },
-  doctor: {
-    is: Boolean,
-    date: Date,
-    by: { type: ObjectId, ref: 'User'},
-    hospital: {type: ObjectId, ref: 'Hospital'},
-    patients: [{type: ObjectId, ref: 'User'}]
-  },
+  groups: [String],
   picture: String,
   bioData: {
     dob: Date,
     gender: String,
     about: String,
   },
-  // medicalRecord: [{type: ObjectId, ref: 'MedicalRecord'}],
-  hospital: [{type: ObjectId, ref: 'Hospital'}]
-});
+  doctors: [ObjectId],
 
-// var User = mongoose.model('User', UserSchema);
+  // only doctors are affiliated to a hospital
+  hospital: {type: ObjectId, ref: 'Hospital'}
+});
 
 UserSchema.virtual('name.full').get(function() {
   var name = this.name.last;
