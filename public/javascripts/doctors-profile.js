@@ -26,7 +26,7 @@ jQuery(function($) {
            <div class="form-group">\
              <label class="col-sm-3 control-label no-padding-right" for="form-field-2">Message</label>\
              <div class="col-sm-9">\
-               <textarea id="form-field-2" maxlength="50" name="message" placeholder=" Message" class="col-xs-10 col-sm-10">' + '</textarea>\
+               <textarea id="form-field-2" maxlength="140" name="message" placeholder=" Message" class="col-xs-10 col-sm-10">' + '</textarea>\
              </div>\
            </div>\
           </form>\
@@ -39,7 +39,6 @@ jQuery(function($) {
      </div>\
     </div>';
 
-    //get event color and autoselect the color.
     var modal = $(modal).appendTo('body');
     $('.input-daterange').datepicker({autoclose:true});
 
