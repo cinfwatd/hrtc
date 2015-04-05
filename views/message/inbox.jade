@@ -3,12 +3,14 @@ append pagespecificstyles
   //- page specific styles
   //- link(rel='stylesheet', href='/assets/css/jquery-ui.custom.css')
   link(rel='stylesheet', href='/assets/css/chosen.css')
+  link(rel='stylesheet', href='/assets/css/jquery.gritter.css')
 //- block doctors
 block sidebar
 block topbar
   include ../partials/dashboard-topbar
 append scripts
   //- page specific scripts
+  script(src='/assets/js/jquery.gritter.js')
   script(src='/assets/js/bootstrap-tag.js')
   script(src='/assets/js/jquery.hotkeys.js')
   script(src='/assets/js/bootstrap-wysiwyg.js')
