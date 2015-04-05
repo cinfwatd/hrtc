@@ -69,6 +69,36 @@ jQuery(function($){
 
   });
 
+  $('#delete').on('click', function() {
+    bootbox.confirm("Are you sure to move message to trash?", function(result) {
+      if (result) {
+        var keys = [];
+
+        $('.selected').each(function(){
+          var value = $(this).find('input[type=checkbox]').val();
+          keys.push(value);
+        });
+
+        var numbMsg = parseInt($('#numberOfMessages').text());
+        var newNumbMsg = numbMsg - keys.length;
+
+        if (newNumbMsg == 0) {
+          var data = '<div>&nbsp;</div>\
+          <span>&nbsp;&nbsp;There are no messages to display.</span>\
+          <div>&nbsp;</div>';
+          $('#message-list').html(data);
+        } else {
+          $('.selected').remove();
+        }
+
+        $('#numberOfMessages').text(newNumbMsg);
+
+        Inbox.display_bar(0);
+        alert(keys);
+      }
+    });
+  });
+
   //display second message right inside the message list
   $('.message-list .message-item .text, .message-list .message-item .sender').on('click', function(){
     var message = $(this).closest('.message-item');
@@ -108,11 +138,6 @@ jQuery(function($){
     Inbox.show_form();
   });
   //- */
-
-  $('#inbox-more').on('click', function(e) {
-    $(this).find('i').removeClass('fa-refresh').addClass('fa-spinner fa-spin fa-pulse');
-  });
-
 
   var Inbox = {
     //displays a toolbar according to the number of selected messages

@@ -1,8 +1,10 @@
 .pull-left
   if itemCount == 1 
-    |#{itemCount} message
+    span#numberOfMessages #{itemCount}
+    |&nbsp;message
   else
-    |#{itemCount} messages
+    span#numberOfMessages #{itemCount}
+    |&nbsp;messages
     
 .pull-right
   .inline.middle page #{currentPage} of #{pageCount}

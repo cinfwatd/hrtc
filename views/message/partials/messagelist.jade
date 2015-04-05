@@ -15,7 +15,7 @@
         
       .message-item(class= message.status.read ? '' : 'message-unread')
         label.inline
-          input.ace(type='checkbox')
+          input.ace(type='checkbox', value= message.id)
           span.lbl
         span.sender(title= '#{name}')
           |&nbsp;#{name}
