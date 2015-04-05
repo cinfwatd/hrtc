@@ -2,10 +2,16 @@
 #message-list.message-list
   // #section:pages/inbox.message-list.item
   mixin messageItem(message)
-      if message.sender.id == session.userId
-        - var name = message.receiver.name.full
+      if typeof(message.sender).toString() == 'object'
+        if message.sender.id == session.userId
+          - var name = message.receiver.name.full
+        else
+          - var name = message.sender.name.full
       else
-        - var name = message.sender.name.full
+        if message.sender == session.userId
+          - var name = message.receiver.name.full
+        else
+          - var name = message.sender.name.full
         
       .message-item(class= message.status.read ? '' : 'message-unread')
         label.inline
