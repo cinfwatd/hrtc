@@ -13,7 +13,10 @@ router.get('/', function(request, response, next) {
 
 router.get('/inbox', function(request, response, next) {
   var currentPage = request.query.page;
-  Appointment.paginate({}, currentPage, request.query.limit,
+  Appointment.paginate({
+    receiver: request.session.userId,
+    'status.softDeleted': {$ne: request.session.userId},
+  }, currentPage, request.query.limit,
     function(error, pageCount, appointments, itemCount) {
       // if (error) return next(error);
       if (error) {
@@ -27,22 +30,25 @@ router.get('/inbox', function(request, response, next) {
           messages: appointments,
           pageCount: pageCount,
           itemCount: itemCount,
-          currentPage: currentPage
+          currentPage: currentPage,
         });
       }
-    }, {columns: {}, populate: 'receiver', populate: 'sender', sortBy: {title: -1}});
+    }, {columns: {}, populate: 'sender', sortBy: {title: -1}});
 });
 
 router.get('/sent', function(request, response, next) {
   var currentPage = request.query.page;
-  Appointment.paginate({}, currentPage, request.query.limit,
+  Appointment.paginate({
+    sender: request.session.userId,
+    'status.softDeleted': {$ne: request.session.userId}
+  }, currentPage, request.query.limit,
     function(error, pageCount, appointments, itemCount) {
       // if (error) return next(error);
       if (error) {
          return console.log('ERRRRRRRRRR'.red);
       } else {
         // console.log('Pages: ', pageCount);
-        // console.log(appointments);
+        console.log(appointments);
         return response.render('message/inbox',
         {
           pageTitle: "Sent",
@@ -52,12 +58,16 @@ router.get('/sent', function(request, response, next) {
           currentPage: currentPage
         });
       }
-    }, {columns: {}, populate: 'sender', populate: 'receiver', sortBy: {title: -1}});
+    }, {columns: {}, populate: 'receiver', sortBy: {title: -1}});
 });
 
 router.get('/trash', function(request, response, next) {
   var currentPage = request.query.page;
-  Appointment.paginate({}, currentPage, request.query.limit,
+  Appointment.paginate({
+    'status.softDeleted': request.session.userId,
+    'status.hardDeleted': {$ne: request.session.userId},
+    $or: [{sender: request.session.userId}, {receiver: request.session.userId}]
+  }, currentPage, request.query.limit,
     function(error, pageCount, appointments, itemCount) {
       // if (error) return next(error);
       if (error) {
@@ -74,7 +84,7 @@ router.get('/trash', function(request, response, next) {
           currentPage: currentPage
         });
       }
-    }, {columns: {}, populate: 'receiver', populate: 'sender', sortBy: {title: -1}});
+    }, {columns: {}, populate: ['receiver', 'sender'], sortBy: {title: -1}});
 });
 
 module.exports = router;
