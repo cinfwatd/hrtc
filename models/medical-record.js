@@ -4,9 +4,9 @@ var mongoose = require('mongoose'),
 
 var MedicalRecordSchema = new Schema({
   patient: {type: ObjectId, ref: 'User'},
+  doctor: {type: ObjectId, ref: 'User'},
   dateCreated: {type: Date, default: Date.now},
   dateUpdated: Date,
-  doctor: [{type: ObjectId, ref: 'User'}],
   symptoms: String,
   admissionStatus: String,
   pulseRate: String,
