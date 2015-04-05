@@ -14,7 +14,10 @@ router.get('/:id', function(request, response, next) {
   // make sure user is a MD
   async.waterfall([
     function(callback) {
-      User.findOne({_id: id}).exec(function(error, user) {
+      User.findOne({
+        _id: id,
+        groups: 'Doctor'
+      }).exec(function(error, user) {
         callback(error, user);
       });
     },
@@ -34,6 +37,7 @@ router.get('/:id', function(request, response, next) {
       }
     }
   ], function(error, user, appoint) {
+// console.log(appoint);
     var pageTitle = "Dr. " + user.name.full + "'s Profile", found = false;
     if (appoint) {
       found = true;
