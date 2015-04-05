@@ -59,9 +59,22 @@ jQuery(function($) {
           data: 'start=' + start + "&end=" + end + "&msg=" + msg + "&_csrf=" + TOKEN + "&doc=" + DOC,
           success: function(data) {
             modal.modal("hide");
+            last_gritter = $.gritter.add({
+              title: 'Success!',
+              text: 'A request has been sent.',
+              class_name: 'gritter-success gritter-right'
+            });
+
             var ht = '<span class="label label-lg label-grey arrowed-right">Request status</span>\
               <span class="label label-lg label-right arrowed-in arrowed-right">Pending</span>';
             $('div#message').empty().append(ht);
+          },
+          error: function(data) {
+            last_gritter = $.gritter.add({
+              title: ')-: Well, this is embarrassing!',
+              text: 'Please try again. If it persist let us know.',
+              class_name: 'gritter-success gritter-right'
+            });
           }
         })
       }
