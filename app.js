@@ -20,6 +20,7 @@ var db = mongoose.connection;
 var paginate = require('express-paginate');
 var moment =  require('moment');
 var momentTwitter = require('moment-twitter');
+var app = express();
 
 db.on('error', console.error.bind(console, 'Connection Error:'.red));
 db.once('open', function(callback) {
@@ -40,7 +41,7 @@ var chat = require('./routes/chat');
 var doctors = require('./routes/doctors');
 var message = require('./routes/message');
 
-var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
