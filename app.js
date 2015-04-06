@@ -81,7 +81,8 @@ app.use(multer({
   dest: './public/uploads/',
   rename: function(fieldname, filename) {
     return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
-  }
+  },
+  putSingleFilesInArray: true
 }));
 app.use(csrf());
 app.use(helmet());

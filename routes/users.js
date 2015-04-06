@@ -28,7 +28,8 @@ router.get('/profile', function(request, response, next) {
 
 router.post('/profile-upload', function(request, response, next) {
   var id = request.session.userId;
-  var url = path.join('/uploads', request.files.avatar.name);
+  // console.log(request.files.avatar);
+  var url = path.join('/uploads', request.files.avatar[0].name);
   var deletePicture = function(url) {
     var url = path.join(__dirname, '..', 'public', url);
     // console.log(url);
@@ -48,8 +49,9 @@ router.post('/profile-upload', function(request, response, next) {
       user.picture = url;
       user.save(function(error, user) {
         if (error){
+          console.log(error);
           deletePicture(url);
-          return response.send("Error uploading file.");
+          return response.send("Error uploading file. g");
         } else {
           request.session.userPicture = url;
           deletePicture(oldPictureUrl);
