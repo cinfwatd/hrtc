@@ -6,11 +6,12 @@ router.get('/', function(request, response, next) {
   var User = require('../models/user');
   var newUser = User();
 
-  newUser.username = 'solo';
+  newUser.username = 'docky';
   newUser.password = newUser.generateHash('pass');
-  newUser.name.first = 'Solomon';
-  newUser.name.last = 'Bariya';
-  newUser.email = 'solman@mailinator.com';
+  newUser.name.first = 'Bulleier';
+  newUser.name.last = 'Jerulsa';
+  newUser.email = 'jbulle@mailinator.com';
+  newUser.groups.push('Doctor');
 
   newUser.save(function (err, user) {
     if (err) return console.error(err.red);
