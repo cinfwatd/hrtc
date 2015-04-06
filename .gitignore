@@ -2,6 +2,9 @@
 public/uploads/*.png
 public/uploads/*jpg
 public/uploads/*.jpeg
+public/uploads/*.doc
+public/uploads/*gif
+public/uploads/*.pdf
 # Logs
 logs
 *.log
