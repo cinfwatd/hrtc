@@ -73,7 +73,7 @@ router.post('/login', function(request, response, next) {
       } else {
         request.flash('error', "Inalid login credentials.");
         request.flash('username', username);
-        return response.redirect('auth/login');
+        return response.redirect('/auth/login');
       }
 
     });
