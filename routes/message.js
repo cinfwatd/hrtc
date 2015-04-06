@@ -85,11 +85,18 @@ router.get('/trash', function(request, response, next) {
     }, {columns: {}, populate: ['receiver', 'sender'], sortBy: {title: -1}});
 });
 
-router.post('/softdelete', function(request, response, next) {
+router.post('/delete', function(request, response, next) {
   var messages = request.body.messages.split(','),
+  soft = request.body.soft,
   conditions = {_id: {$in: messages}},
-  update = {$push: {'status.softDeleted': request.session.userId}},
   option = {multi: true};
+
+
+  if (parseInt(soft)){
+    update = {$push: {'status.softDeleted': request.session.userId}};
+  } else {
+    update = {$push: {'status.hardDeleted': request.session.userId}};
+  }
 
   async.waterfall([
     function(callback) {
@@ -104,10 +111,6 @@ router.post('/softdelete', function(request, response, next) {
     if (error) return response.sendStatus(500).send('Failed');
     else return response.sendStatus(200).send(result);
   });
-
-});
-
-router.post('/harddelete', function(request, response, next) {
 
 });
 

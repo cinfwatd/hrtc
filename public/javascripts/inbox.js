@@ -80,9 +80,10 @@ jQuery(function($){
           keys.push(value);
         });
 
-        var path = '/message/softdelete';
+        var path = '/message/delete';
+        var soft = 1;
         if (location.pathname == '/message/trash') {
-          var path = '/message/harddelete';
+          soft = 0;
         }
 
         var numbMsg = parseInt($('#numberOfMessages').text());
@@ -92,7 +93,7 @@ jQuery(function($){
         $.ajax({
           type: 'POST',
           url: path,
-          data: 'messages=' + keys+'&_csrf=' + TOKEN,
+          data: 'messages=' + keys+'&_csrf=' + TOKEN + '&soft=' + soft,
           success: function(data) {
 
             if (newNumbMsg == 0) {
@@ -156,7 +157,7 @@ jQuery(function($){
           .addClass('message-inline-open')
           .append('<div class="message-content" />')
         var content = message.find('.message-content:last').html(data);
-        
+
         message.removeClass('message-unread');
         //remove scrollbar elements
         content.find('.scroll-track').remove();
