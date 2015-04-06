@@ -54,7 +54,8 @@ router.post('/profile-upload', function(request, response, next) {
           return response.send("Error uploading file. g");
         } else {
           request.session.userPicture = url;
-          deletePicture(oldPictureUrl);
+          if (oldPictureUrl)
+            deletePicture(oldPictureUrl);
           return response.send({status: "OK", url: url});
         }
       })
