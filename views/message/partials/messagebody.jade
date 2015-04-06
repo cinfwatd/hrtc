@@ -1,0 +1,29 @@
+//- #id-message-content.message-content
+// #section:pages/inbox.message-header
+.message-header.clearfix
+  .pull-left
+    span #{name}
+  .pull-right.action-buttons
+    i.ace-icon.fa.fa-clock-o.bigger-110.orange.middle
+    |&nbsp;
+    span.time.grey= moment(message.dateCreated).format('dddd, Do MMMM YYYY h:mm:ss a')
+// /section:pages/inbox.message-header
+.hr.hr-double
+// #section:pages/inbox.message-body
+.message-body
+  p= message.message
+if message.attachment.attached
+  .hr.hr-double
+  // #section:pages/inbox.message-attachment
+  .message-attachment.clearfix
+    .attachment-title
+      span.blue.bolder.bigger-110 Attachments
+    ul.attachment-list.pull-left.list-unstyled
+      each atc in message.attachment.content
+        li
+          a.attached-file(href= "/message/attachment/#{atc}")
+            i.ace-icon.fa.fa-file-o.bigger-110
+            span.attached-name Document
+          span.action-buttons
+            a(href="/message/attachment/#{atc}")
+              i.ace-icon.fa.fa-download.bigger-125.blue

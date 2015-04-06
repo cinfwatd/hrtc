@@ -73,28 +73,62 @@ jQuery(function($){
     bootbox.confirm("Are you sure to move message to trash?", function(result) {
       if (result) {
         var keys = [];
+        // console.log(location.pathname);
 
         $('.selected').each(function(){
           var value = $(this).find('input[type=checkbox]').val();
           keys.push(value);
         });
 
-        var numbMsg = parseInt($('#numberOfMessages').text());
-        var newNumbMsg = numbMsg - keys.length;
-
-        if (newNumbMsg == 0) {
-          var data = '<div>&nbsp;</div>\
-          <span>&nbsp;&nbsp;There are no messages to display.</span>\
-          <div>&nbsp;</div>';
-          $('#message-list').html(data);
-        } else {
-          $('.selected').remove();
+        var path = '/message/softdelete';
+        if (location.pathname == '/message/trash') {
+          var path = '/message/harddelete';
         }
 
-        $('#numberOfMessages').text(newNumbMsg);
+        var numbMsg = parseInt($('#numberOfMessages').text());
+        var msgToDel = keys.length;
+        var newNumbMsg = numbMsg - msgToDel;
+// console.log(typeof(keys));
+        $.ajax({
+          type: 'POST',
+          url: path,
+          data: 'messages=' + keys+'&_csrf=' + TOKEN,
+          success: function(data) {
 
-        Inbox.display_bar(0);
-        alert(keys);
+            if (newNumbMsg == 0) {
+              var data = '<div>&nbsp;</div>\
+              <span>&nbsp;&nbsp;There are no messages to display.</span>\
+              <div>&nbsp;</div>';
+              $('#message-list').html(data);
+            } else {
+              $('.selected').remove();
+            }
+
+            $('#numberOfMessages').text(newNumbMsg);
+
+            // remove the delete header
+            Inbox.display_bar(0);
+
+            // announce it
+            last_gritter = $.gritter.add({
+              title: 'Success!',
+              text: msgToDel + ((msgToDel == 1) ? ' message' : ' messages') + ' has been moved to trash.',
+              class_name: 'gritter-success gritter-right'
+            });
+          },
+          error: function(data) {
+            last_gritter = $.gritter.add({
+              title: ')-: This is embarrassing!',
+              text: 'Please try again! If it persist contact us.',
+              class_name: 'gritter-error gritter-right'
+            });
+          }
+        });
+
+
+
+
+        // alert(keys);
       }
     });
   });
@@ -102,6 +136,7 @@ jQuery(function($){
   //display second message right inside the message list
   $('.message-list .message-item .text, .message-list .message-item .sender').on('click', function(){
     var message = $(this).closest('.message-item');
+    var id = message.find('input[type=checkbox]').val();
 
     //if message is open, then close it
     if(message.hasClass('message-inline-open')) {
@@ -110,24 +145,34 @@ jQuery(function($){
     }
 
     $('.message-container').append('<div class="message-loading-overlay"><i class="fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
-    setTimeout(function() {
-      $('.message-container').find('.message-loading-overlay').remove();
-      message
-        .addClass('message-inline-open')
-        .append('<div class="message-content" />')
-      var content = message.find('.message-content:last').html( $('#id-message-content').html() );
 
-      //remove scrollbar elements
-      content.find('.scroll-track').remove();
-      content.find('.scroll-content').children().unwrap();
+    $.ajax({
+      type: 'POST',
+      url: '/message/getmessage',
+      data: 'id=' + id + '&_csrf=' + TOKEN,
+      success: function(data) {
+        $('.message-container').find('.message-loading-overlay').remove();
+        message
+          .addClass('message-inline-open')
+          .append('<div class="message-content" />')
+        var content = message.find('.message-content:last').html(data);
+        
+        message.removeClass('message-unread');
+        //remove scrollbar elements
+        content.find('.scroll-track').remove();
+        content.find('.scroll-content').children().unwrap();
 
-      content.find('.message-body').ace_scroll({
-        size: 150,
-        mouseWheelLock: true,
-        styleClass: 'scroll-visible'
-      });
-
-    }, 500 + parseInt(Math.random() * 500));
+        content.find('.message-body').ace_scroll({
+          size: 150,
+          mouseWheelLock: true,
+          styleClass: 'scroll-visible'
+        });
+      },
+      error: function(data) {
+        $('.message-container').find('.message-loading-overlay').remove();
+        alert("errroooor");
+      }
+    })
 
   });
 

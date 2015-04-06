@@ -2,10 +2,8 @@ var express = require('express'),
   router = express.Router(),
   path = require('path'),
   User = require('../models/user'),
+  async = require('async'),
   Appointment = require('../models/appointment');
-  // paginate = require('mongoose-paginate');
-
-// Appointment.plugin(paginate);
 
 router.get('/', function(request, response, next) {
   return response.redirect('/message/inbox');
@@ -85,6 +83,64 @@ router.get('/trash', function(request, response, next) {
         });
       }
     }, {columns: {}, populate: ['receiver', 'sender'], sortBy: {title: -1}});
+});
+
+router.post('/softdelete', function(request, response, next) {
+  var messages = request.body.messages.split(','),
+  conditions = {_id: {$in: messages}},
+  update = {$push: {'status.softDeleted': request.session.userId}},
+  option = {multi: true};
+
+  async.waterfall([
+    function(callback) {
+      Appointment.update(conditions, update, option, function(error, numbAffected) {
+        callback(error, numbAffected);
+      });
+    }
+  ],
+  function(error, result) {
+    console.log(error);
+    console.log(result);
+    if (error) return response.sendStatus(500).send('Failed');
+    else return response.sendStatus(200).send(result);
+  });
+
+});
+
+router.post('/harddelete', function(request, response, next) {
+
+});
+
+router.post('/getmessage', function(request, response, next) {
+  var id = request.body.id;
+  async.waterfall([
+    function(callback) {
+      Appointment.findOne({
+        _id: id
+      }, function(error, appoint) {
+        callback(error, appoint);
+        // response.app.render('message/partials/messagebody', {message: appoint})
+      });
+    },
+    function(appoint, callback2) {
+      if (appoint.status.read) {
+        callback2(null, appoint);
+      } else {
+        appoint.status.read = true;
+        appoint.save(function(error, appoint) {
+          callback2(error, appoint);
+        });
+      }
+    },
+    function(appoint, callback3) {
+      response.app.render('message/partials/messagebody', {message: appoint},
+      function(error, html) {
+        callback3(error, html);
+      });
+    }
+  ], function(error, result) {
+    return response.send(result);
+  });
 });
 
 module.exports = router;
