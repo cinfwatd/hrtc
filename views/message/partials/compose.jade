@@ -7,7 +7,7 @@ form#id-message-form.hide.form-horizontal.message-form.col-xs-12
         //- span.input-icon
         //-   input#form-field-recipient(type="email", name="recipient", data-value="alex@doe.com", value="alex@doe.com", placeholder="Recipient(s)")
         //-   i.ace-icon.fa.fa-user
-        select.tag-input-style.chosen-select.form-control(multiple='', data-placeholder='Choose Recipient(s) ...')
+        select#form-field-recipient.required.tag-input-style.chosen-select.form-control(name='recipient', multiple='', data-placeholder='Choose Recipient(s) ...')
           option(value='AL') Alabama
           option(value='AK') Alaska
           option(value='AR') Akansas
@@ -17,7 +17,7 @@ form#id-message-form.hide.form-horizontal.message-form.col-xs-12
       label.col-sm-3.control-label.no-padding-right(for="form-field-subject") Subject:
       .col-sm-6.col-xs-12
         .input-icon.block.col-xs-12.no-padding.input-icon-right
-          input#form-field-subject.col-xs-12(type="text", maxlength="100", name="subject", placeholder="Subject")
+          input#form-field-subject.required.col-xs-12(type="text", maxlength="100", name="subject", placeholder="Subject")
           i.ace-icon.fa.fa-comment-o
     .hr.hr-18.dotted
     .form-group
@@ -26,6 +26,7 @@ form#id-message-form.hide.form-horizontal.message-form.col-xs-12
         | Message:
       // #section:plugins/editor.wysiwyg
       .col-sm-9
+        input#message(type='hidden', name='message')
         .wysiwyg-editor
       // /section:plugins/editor.wysiwyg
     .hr.hr-18.dotted
