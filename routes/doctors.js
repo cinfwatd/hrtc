@@ -2,10 +2,15 @@ var express = require('express'),
   router = express.Router(),
   User = require('../models/user'),
   Appointment = require('../models/appointment'),
+  Hospital = require('../models/hospital'),
   async = require('async');
 
 router.get('/', function(request, response, next) {
-  response.render('doctors/list', {pageTitle: "Doctors"})
+  User.find({
+    groups: 'Doctor'
+  }, function(error, docs) {
+    response.render('doctors/list', {pageTitle: "Doctors", doctors: docs})
+  }).populate('hospital');
 });
 
 router.get('/:id', function(request, response, next) {
@@ -17,7 +22,9 @@ router.get('/:id', function(request, response, next) {
       User.findOne({
         _id: id,
         groups: 'Doctor'
-      }).exec(function(error, user) {
+      })
+      .populate('hospital')
+      .exec(function(error, user) {
         callback(error, user);
       });
     },
