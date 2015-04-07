@@ -13,16 +13,16 @@
       .widget-body
         .widget-main.padding-4.no-padding-right.scrollable(data-size='200')
           .profile-user-info
-            .profile-info-row
-              .profile-info-name
-                .fa.fa-forumbee.green
-                a.undecorated.title-case(href='#') &nbsp;&nbsp;james tom cavantani
-              .profile-info-value Southampton Medical Center, USA
-            .profile-info-row
-              .profile-info-name
-                .fa.fa-circle-o-notch.darkgray
-                a.undecorated.title-case(href='#') &nbsp;&nbsp;james tom cavantani
-              .profile-info-value Southampton Medical Center, USA
+            if (session.doctors).length > 0
+              each doc in session.doctors
+                .profile-info-row
+                  .profile-info-name
+                    .fa.fa-tint.green
+                    a.undecorated.title-case(href='/doctors/' + doc.id) &nbsp;&nbsp;#{doc.name}
+                  .profile-info-value #{doc.hospital}
+            else 
+              div(style='width: 200px') No personal doctors to display. 
+              .space-4
           .center
             a.btn.btn-sm.btn-primary.btn-white.btn-round(href='/doctors')
               //- i.ace-icon.fa.fa-search.bigger-150.middle.orange2
