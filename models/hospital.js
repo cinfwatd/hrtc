@@ -3,10 +3,9 @@ var mongoose = require('mongoose')
   ObjectId = Schema.Types.ObjectId;
 
 var HospitalSchema = new Schema({
-  name: {type: string, index: true},
-  active: Boolean,
+  name: {type: String},
+  active: {type:Boolean, default: true},
   address: String,
-  doctors: [{type: ObjectId, ref: 'User'}]
 });
 
 var Hospital = mongoose.model('Hospital', HospitalSchema);
