@@ -62,6 +62,7 @@ router.post('/login', function(request, response, next) {
           request.session.userPicture = user.picture;
           // request.session.user = user;
           request.session.lastLogin = user.lastLogin;
+          request.session.doctors = user.doctors;
           user.lastLogin = Date.now();
           user.save();
           return response.redirect('/calendar');
