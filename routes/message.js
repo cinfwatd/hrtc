@@ -3,6 +3,7 @@ var express = require('express'),
   path = require('path'),
   User = require('../models/user'),
   async = require('async'),
+  path = require('path'),
   Appointment = require('../models/appointment');
 
 router.get('/', function(request, response, next) {
@@ -144,6 +145,56 @@ router.post('/getmessage', function(request, response, next) {
   ], function(error, result) {
     return response.send(result);
   });
+});
+
+router.post('/compose', function(request, response, next) {
+  var id = request.session.userId;
+  var recipient = request.body.recipient;
+  var subject = request.body.subject;
+  var message = request.body.message;
+
+  console.log("recipient: ", recipient);
+  console.log("subject: ", subject);
+  console.log("message: ", message);
+
+  var attachments = request.files.attachment;
+
+  var msg = Appointment();
+  msg.sender = id;
+  msg.receiver = recipient;
+  msg.message = message;
+  msg.subject = subject;
+
+  if (attachments) {
+    var urls = [];
+    for (var i = 0; i < attachments.length; i++) {
+      urls.push(path.join('/uploads', attachments[i].name));
+    }
+    msg.attachment.attached = true;
+    msg.attachment.content = urls;
+  }
+
+  msg.save(function(error, message) {
+    if (error) return response.sendStatus(500);
+    else return response.sendStatus(200);
+  });
+});
+
+router.get('/uploads/:file', function(request, response, next) {
+  var f = request.params.file;
+  var file = path.join(__dirname, '..', 'public', 'uploads', f);
+
+  // return console.log(file);
+  // var filename = path.basename(file);
+  // var mimetype = mime.lookup(file);
+  //
+  // response.setHeader('Content-disposition', 'attachment; filename=' + filename);
+  // response.setHeader('Content-type', mimetype);
+  //
+  // var filestream = fs.createReadStream(file);
+  // filestream.pipe(response);
+  // console.log(file);
+  return response.download(file);
 });
 
 module.exports = router;

@@ -4,14 +4,12 @@ form#id-message-form.hide.form-horizontal.message-form.col-xs-12
     .form-group
       label.col-xs-3.control-label.no-padding-right(for="form-field-recipient") Recipient:
       .col-xs-6
-        //- span.input-icon
-        //-   input#form-field-recipient(type="email", name="recipient", data-value="alex@doe.com", value="alex@doe.com", placeholder="Recipient(s)")
-        //-   i.ace-icon.fa.fa-user
-        select#form-field-recipient.required.tag-input-style.chosen-select.form-control(name='recipient', multiple='', data-placeholder='Choose Recipient(s) ...')
-          option(value='AL') Alabama
-          option(value='AK') Alaska
-          option(value='AR') Akansas
-          option(value='CA') California
+        select#form-field-recipient.required.tag-input-style.chosen-select.form-control(name='recipient', multiple='', data-placeholder='Choose Recipient ...')
+          if (session.doctors).length > 0
+            each doc in session.doctors
+              option(value= doc.id) #{doc.name}
+          else
+            option(value= '') No Recipients found (Please request for Appointment)
     .hr.hr-18.dotted
     .form-group
       label.col-sm-3.control-label.no-padding-right(for="form-field-subject") Subject:
@@ -27,6 +25,7 @@ form#id-message-form.hide.form-horizontal.message-form.col-xs-12
       // #section:plugins/editor.wysiwyg
       .col-sm-9
         input#message(type='hidden', name='message')
+        input(type='hidden', name='_csrf', value= csrftoken)
         .wysiwyg-editor
       // /section:plugins/editor.wysiwyg
     .hr.hr-18.dotted

@@ -56,17 +56,32 @@ jQuery(function($){
 
     bootbox.confirm("Are you sure to discard the message?", function(result) {
       if (result) {
-        $('.message-list').next().removeClass('hide');
-        $('.message-list').removeClass('hide');
-        $('.message-footer').removeClass('hide');
-        $('.message-form').addClass('hide');
-
-        $('.message-navbar').removeClass('hide');
-        $('#id-message-new-navbar').addClass('hide');
-        // $('a#inbox').addClass('active');
+        Inbox.hide_form();
       }
     });
 
+  });
+
+  $('button#send').on('click', function() {
+    $('input#message').val($('.message-form .wysiwyg-editor').html());
+
+    $('#id-message-form').ajaxSubmit({
+      beforeSubmit: validate,
+      success: successFunc,
+      url: '/message/compose',
+      type: 'post'
+    });
+
+
+    // var message = $('input#message').val();
+    // var subject = $('#form-field-subject').val();
+    // var recipient = $('#form-field-recipient').val();
+    // var attachment = $('input[type=file]').val();
+    //
+    // console.log("message: " + message);
+    // console.log("subject: " + subject);
+    // console.log("recipient: " + recipient);
+    // console.log("attachment: " + attachment);
   });
 
   $('#delete').on('click', function() {
@@ -125,10 +140,6 @@ jQuery(function($){
             });
           }
         });
-
-
-
-
         // alert(keys);
       }
     });
@@ -171,7 +182,11 @@ jQuery(function($){
       },
       error: function(data) {
         $('.message-container').find('.message-loading-overlay').remove();
-        alert("errroooor");
+        last_gritter = $.gritter.add({
+          title: ')-: This is embarrassing!',
+          text: 'Please try again! If it persist contact us.',
+          class_name: 'gritter-error gritter-right'
+        });
       }
     })
 
@@ -295,9 +310,19 @@ jQuery(function($){
 
       $('.message-form').get(0).reset();
 
-    }, 300 + parseInt(Math.random() * 300));
+    }, 0);
 
     // $('a#inbox, a#sent, a#trash').removeClass('active');
+  }
+
+  Inbox.hide_form = function() {
+    $('.message-list').next().removeClass('hide');
+    $('.message-list').removeClass('hide');
+    $('.message-footer').removeClass('hide');
+    $('.message-form').addClass('hide');
+
+    $('.message-navbar').removeClass('hide');
+    $('#id-message-new-navbar').addClass('hide');
   }
 
   Inbox.show_sent = function() {
@@ -353,8 +378,37 @@ jQuery(function($){
     //the button to add a new file input
     $('#id-add-attachment')
     .on('click', function(){
-      var file = $('<input type="file" name="attachment[]" />').appendTo('#form-attachments');
-      file.ace_file_input();
+      var file = $('<input type="file" name="attachment" />').appendTo('#form-attachments');
+      file.ace_file_input({
+        no_file:'No File ...',
+        // allowExt:'png|jpg|jpeg|doc|docx|pdf',
+        maxSize: 1048576,//2mb in bytes
+        allowExt: ["jpeg", "jpg", "png", "gif", "doc", "pdf"],
+        allowMime: ["image/jpg", "image/jpeg", "image/png", "image/gif", "application/pdf", "application/msword"]
+      });
+
+      file.on('file.error.ace', function(ev, info) {
+        if(info.error_count['ext'] || info.error_count['mime']) {
+          last_gritter = $.gritter.add({
+            title: ')-: Invalid file type!',
+            text: 'Only JPG, JPEG, PNG, GIF, DOC, PDF files are allowed.',
+            class_name: 'gritter-error gritter-right'
+          });
+          // alert('Invalid file type! Please select an image!');
+        }
+        if(info.error_count['size']) {
+          last_gritter = $.gritter.add({
+            title: ')-: Invalid file size!',
+            text: 'Maximum file size is 1MB.',
+            class_name: 'gritter-error gritter-right'
+          });
+          // alert('Invalid file size! Maximum 1MB');
+        }
+
+        //you can reset previous selection on error
+        //ev.preventDefault();
+        //file_input.ace_file_input('reset_input');
+      });
 
       file.closest('.ace-file-input')
       .addClass('width-90 inline')
@@ -432,5 +486,52 @@ jQuery(function($){
       }
     });
   });
-
 });
+
+function successFunc(formData, jqForm, options) {
+  $('.message-list').next().removeClass('hide');
+  $('.message-list').removeClass('hide');
+  $('.message-footer').removeClass('hide');
+  $('.message-form').addClass('hide');
+
+  $('.message-navbar').removeClass('hide');
+  $('#id-message-new-navbar').addClass('hide');
+
+  last_gritter = $.gritter.add({
+    title: 'Success!',
+    text: 'Message was sent successfully.',
+    class_name: 'gritter-success gritter-right'
+  });
+}
+
+function validate(formData, jqForm, options) {
+  var form = jqForm[0];
+  if (!form.recipient.value) {
+    last_gritter = $.gritter.add({
+      title: ')-: Validation error!',
+      text: 'Please select the message Recipient.',
+      class_name: 'gritter-error gritter-right'
+    });
+    return false;
+  }
+
+  if (!form.subject.value) {
+    last_gritter = $.gritter.add({
+      title: ')-: Validation error!',
+      text: 'Please provide the message Subject.',
+      class_name: 'gritter-error gritter-right'
+    });
+    return false;
+  }
+
+  if (!form.message.value) {
+    last_gritter = $.gritter.add({
+      title: ')-: Validation error!',
+      text: 'Please provide the Message.',
+      class_name: 'gritter-error gritter-right'
+    });
+    return false;
+  }
+
+  return true;
+}

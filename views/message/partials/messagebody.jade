@@ -21,9 +21,9 @@ if message.attachment.attached
     ul.attachment-list.pull-left.list-unstyled
       each atc in message.attachment.content
         li
-          a.attached-file(href= "/message/attachment/#{atc}")
+          a.attached-file(href= "/message#{atc}")
             i.ace-icon.fa.fa-file-o.bigger-110
             span.attached-name Document
           span.action-buttons
-            a(href="/message/attachment/#{atc}")
+            a(href="/message#{atc}")
               i.ace-icon.fa.fa-download.bigger-125.blue
