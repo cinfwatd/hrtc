@@ -250,6 +250,8 @@ block content
               th
           tbody
             each doc in doctors
+              if doc._id == session.userId
+                - continue
               tr
                 td.center
                   label.pos-rel
