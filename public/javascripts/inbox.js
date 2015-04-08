@@ -69,7 +69,8 @@ jQuery(function($){
       beforeSubmit: validate,
       success: successFunc,
       url: '/message/compose',
-      type: 'post'
+      type: 'post',
+      dataType: 'json'
     });
 
 
@@ -488,7 +489,7 @@ jQuery(function($){
   });
 });
 
-function successFunc(formData, jqForm, options) {
+function successFunc(data) {
   $('.message-list').next().removeClass('hide');
   $('.message-list').removeClass('hide');
   $('.message-footer').removeClass('hide');
@@ -502,6 +503,8 @@ function successFunc(formData, jqForm, options) {
     text: 'Message was sent successfully.',
     class_name: 'gritter-success gritter-right'
   });
+  // console.log(data);
+  socket.emit('message', data);
 }
 
 function validate(formData, jqForm, options) {

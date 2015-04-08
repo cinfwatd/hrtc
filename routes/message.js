@@ -176,7 +176,12 @@ router.post('/compose', function(request, response, next) {
 
   msg.save(function(error, message) {
     if (error) return response.sendStatus(500);
-    else return response.sendStatus(200);
+    else {
+      message.populate('receiver', 'name _id').populate('sender', 'name _id')
+      .populate(function(error, message) {
+        return response.status(200).send(message);
+      });
+    }
   });
 });
 

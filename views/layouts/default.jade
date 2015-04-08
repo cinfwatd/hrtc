@@ -16,6 +16,7 @@ html(lang='en')
       link(rel='stylesheet', href='/assets/css/ace-fonts.css')
       // ace styles
       link#main-ace-style.ace-main-stylesheet(rel='stylesheet', href='/assets/css/ace.css')
+      link(rel='stylesheet', href='/assets/css/jquery.gritter.css')
       <!--[if lte IE 9]>
       <link rel="stylesheet" href="/assets/css/ace-part2.css" class="ace-main-stylesheet" />
       <![endif]-->
@@ -30,8 +31,21 @@ html(lang='en')
     <script src="/assets/js/html5shiv.js"></script>
     <script src="/assets/js/respond.js"></script>
     <![endif]-->
-    script(type='text/javascript')
-      |var TOKEN = "#{csrftoken}"
+    script(src='/socket.io/socket.io.js')
+    script(type='text/javascript').
+      var TOKEN = "#{csrftoken}"
+      var socket = io.connect();
+      socket.emit('join', {user: "#{session.userId}"})
+      
+      socket.on('new_msg', function(data) {
+        //- console.log(data);
+        last_gritter = $.gritter.add({
+          title: 'Notification!',
+          text: 'Message from '+ data.sender.name.last + ' ' + data.sender.name.first,
+          image: '/assets/images/envelope.png',
+          class_name: 'gritter-light gritter-right'
+        });
+      });
   body.no-skin
     // #section:basics/navbar.layout
     block navbar
