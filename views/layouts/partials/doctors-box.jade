@@ -18,7 +18,7 @@
                 .profile-info-row
                   .profile-info-name
                     .fa.fa-tint.green
-                    a.undecorated.title-case(href='/doctors/' + doc.id) &nbsp;&nbsp;#{doc.name}
+                    a.undecorated.title-case(target='__doctor', href='/doctors/' + doc.id) &nbsp;&nbsp;#{doc.name}
                   .profile-info-value #{doc.hospital}
             else 
               div(style='width: 200px') No personal doctors to display. 
