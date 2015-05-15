@@ -11,7 +11,7 @@
 .hr.hr-double
 // #section:pages/inbox.message-body
 .message-body
-  p= message.message
+  p!= message.message
 if message.attachment.attached
   .hr.hr-double
   // #section:pages/inbox.message-attachment
