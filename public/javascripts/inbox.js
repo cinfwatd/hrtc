@@ -167,7 +167,7 @@ jQuery(function($){
         $('.message-container').find('.message-loading-overlay').remove();
         message
           .addClass('message-inline-open')
-          .append('<div class="message-content" />')
+          .append('<div class="message-content" />');
         var content = message.find('.message-content:last').html(data);
 
         message.removeClass('message-unread');

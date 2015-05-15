@@ -47,7 +47,7 @@ router.get('/sent', function(request, response, next) {
          return console.log('ERRRRRRRRRR'.red);
       } else {
         // console.log('Pages: ', pageCount);
-        console.log(appointments);
+        // console.log(appointments);
         return response.render('message/inbox',
         {
           pageTitle: "Sent",
@@ -127,7 +127,7 @@ router.post('/getmessage', function(request, response, next) {
       });
     },
     function(appoint, callback2) {
-      if (appoint.status.read) {
+      if (appoint.status.read || (appoint.sender == request.session.userId)) {
         callback2(null, appoint);
       } else {
         appoint.status.read = true;
@@ -143,6 +143,7 @@ router.post('/getmessage', function(request, response, next) {
       });
     }
   ], function(error, result) {
+    console.log(result);
     return response.send(result);
   });
 });
