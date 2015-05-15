@@ -4,6 +4,7 @@ var express = require('express'),
   crypto = require('crypto');
 
 var User = require('../models/user');
+var redirectTo = '/calendar';
 
 var smtpTransport = nodemailer.createTransport({
   service: 'mandrill',
@@ -21,7 +22,7 @@ router.get('/', function(request, response, next) {
 router.get('/login', function(request, response, next) {
   // console.log(request.get('referrer'));
   if (request.session && request.session.authenticated)
-    return response.redirect('/dashboard');
+    return response.redirect(redirectTo);
   response.render('auth/login', { pageTitle: 'Login' });
 });
 
@@ -74,7 +75,7 @@ router.post('/login', function(request, response, next) {
           // request.session.doctors = user.doctors;
           user.lastLogin = Date.now();
           user.save();
-          return response.redirect('/calendar');
+          return response.redirect(redirectTo);
         }
         request.flash('error', "Invalid login credentials.");
         request.flash('username', username);
