@@ -33,8 +33,8 @@ router.get('/:id', function(request, response, next) {
         Appointment.findOne({
           receiver: user.id,
           sender: request.session.userId,
-          'status.expired' : false,
-          'status.granted': false
+          'status.read' : false,
+          // 'status.granted': false
         }).exec(function(error, appoint) {
           callback2(error, user, appoint);
         });
@@ -63,15 +63,38 @@ router.post('/request', function(request, response, next) {
   var newRequest = Appointment();
   newRequest.receiver = doc;
   newRequest.sender = request.session.userId;
+  if (start == end)
+    message = message + "<hr style='margin:0px' /><Appointment Date: " + start;
+  else
+    message = message + "<hr style='margin:0px' />Appointment Date: (" + start + " - " + end+ ")";
+  //accept request.
+  // set user patient and doctor respectively
+  message = message + "<hr style='margin:0px' /><a href='/doctors/accept/" + request.session.userId + "/" + encodeURIComponent(request.session.username) + "'>Accept Request</a><hr style='margin:0px' />";
+  message = message + "<small>Accepting request simply associates the Patient with you. (Required for Patients sidebar)</small>"
+
   newRequest.message = message;
   newRequest.chat.start = start;
   newRequest.chat.end = end;
+
+  // put message as already softdeleted and harddeleted
+  // by sender so as not to show on the senders page.
+  newRequest.softDeleted.push(request.session.userId);
+  newRequest.hardDeleted.push(request.session.userId);
+
   newRequest.save(function(error, appointment) {
     if (error) return response.status(500).send("Not Ok");
     else return response.status(200).send("OK");
   });
   // newRequest.
   // return response.status(200).send("OK");
+});
+
+router.get('/accept/:id/:name', function(request, response, next) {
+  var patient = request.params.id;
+  var name = request.params.name;
+
+  // console.log("Id: " + patient + " Name: " + name);
+
 });
 
 module.exports = router;
