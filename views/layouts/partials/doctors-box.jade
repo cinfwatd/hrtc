@@ -6,25 +6,44 @@
       .widget-header
         h4.widget-title.lighter
           //- i.fa.fa-empire
-          |&nbsp;Doctors
+          if (session.isDoctor)
+            |&nbsp;Patients
+          else
+            |&nbsp;Doctors
         .widget-toolbar.no-border
           //- a(href="#", data-action="reload")
           //-   i.ace-icon.fa.fa-refresh
       .widget-body
         .widget-main.padding-4.no-padding-right.scrollable(data-size='200')
           .profile-user-info
-            if (session.doctors).length > 0
-              each doc in session.doctors
-                .profile-info-row
-                  .profile-info-name
-                    .fa.fa-tint.green
-                    a.undecorated.title-case(target='__doctor', href='/doctors/' + doc.id) &nbsp;&nbsp;#{doc.name}
-                  .profile-info-value #{doc.hospital}
-            else 
-              div(style='width: 200px') No personal doctors to display. 
-              .space-4
-          .center
-            a.btn.btn-sm.btn-primary.btn-white.btn-round(href='/doctors')
-              //- i.ace-icon.fa.fa-search.bigger-150.middle.orange2
-              span.bigger-110 View all Doctors&nbsp;
-              i.icon-on-right.ace-icon.fa.fa-search.bigger-150.middle
+            if (session.isDoctor)
+              if (session.patients).length > 0
+                each patient in session.patients
+                  .profile-info-row
+                    .profile-info-name
+                      .fa.fa-tint.green
+                      a.undecorated.title-case(target='__patient', href='/patients/' + patient.id) &nbsp;&nbsp;#{patient.name}
+              else 
+                div(style='width: 200px') No patients to display. 
+                .space-4
+              .center
+                a.btn.btn-sm.btn-primary.btn-white.btn-round(href='/patients')
+                  //- i.ace-icon.fa.fa-search.bigger-150.middle.orange2
+                  span.bigger-110 View Patients&nbsp;
+                  i.icon-on-right.ace-icon.fa.fa-search.bigger-150.middle
+            else
+              if (session.doctors).length > 0
+                each doc in session.doctors
+                  .profile-info-row
+                    .profile-info-name
+                      .fa.fa-tint.green
+                      a.undecorated.title-case(target='__doctor', href='/doctors/' + doc.id) &nbsp;&nbsp;#{doc.name}
+                    //- .profile-info-value #{doc.hospital}
+              else 
+                div(style='width: 200px') No personal doctors to display. 
+                .space-4
+              .center
+                a.btn.btn-sm.btn-primary.btn-white.btn-round(href='/doctors')
+                  //- i.ace-icon.fa.fa-search.bigger-150.middle.orange2
+                  span.bigger-110 View all Doctors&nbsp;
+                  i.icon-on-right.ace-icon.fa.fa-search.bigger-150.middle
