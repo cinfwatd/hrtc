@@ -8,11 +8,22 @@ button.pull-left.navbar-toggle.collapsed(data-target='#sidebar2', data-toggle='c
     //-     i.menu-icon.fa.fa-tachometer
     //-     span.menu-text  Dashboard 
     //-   b.arrow
+    //- li.hover
+    //-   a(href='/user/record')
+    //-     i.menu-icon.fa.fa-heartbeat
+    //-     span.menu-text Medical Record
+    //-   b.arrow
     li.hover
-      a(href='/user/record')
-        i.menu-icon.fa.fa-heartbeat
-        span.menu-text Medical Record
-      b.arrow
+      if (session.isDoctor)
+        a(href='/patients')
+          i.menu-icon.fa.fa-user-md
+          span.menu-text Patients
+        b.arrow
+      else
+        a(href='/doctors')
+          i.menu-icon.fa.fa-user-md
+          span.menu-text Doctors
+        b.arrow
     li.hover
       a(href='/calendar')
         i.menu-icon.fa.fa-calendar
