@@ -39,6 +39,7 @@ var dashboard = require('./routes/dashboard');
 var calendar = require('./routes/calendar');
 var chat = require('./routes/chat');
 var doctors = require('./routes/doctors');
+var patients = require('./routes/patients');
 var message = require('./routes/message');
 
 
@@ -121,6 +122,7 @@ app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
 app.use('/doctors', authenticated, doctors);
+app.use('/patients', authenticated, patients);
 app.use(paginate.middleware(10, 50));
 app.use('/message', authenticated, message);
 
