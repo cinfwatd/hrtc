@@ -4,21 +4,33 @@
   mixin messageItem(message)
       if (message.sender).toString().indexOf(',') !== -1
         if message.sender.id == session.userId
+          //- check if user is a doctor or patient
           - var name = message.receiver.name.full
+          - var userId = message.receiver.id;
+          - var isPatient = message.receiver.groups.indexOf("Patient");
         else
-          - var name = message.sender.name.full 
+          - var name = message.sender.name.full
+          - var userId = message.sender.id; 
+          - var isPatient = message.sender.groups.indexOf("Patient");
       else
         if message.sender == session.userId
           - var name = message.receiver.name.full
+          - var userId = message.receiver.id;
+          - var isPatient = message.receiver.groups.indexOf("Patient");
         else
           - var name = message.sender.name.full
+          - var userId = message.sender.id;
+          - var isPatient = message.sender.groups.indexOf("Patient");
         
       .message-item(class= message.status.read ? '' : 'message-unread')
         label.inline
           input.ace(type='checkbox', value= message.id)
           span.lbl
         span.sender(title= '#{name}')
-          |&nbsp;#{name}
+          if (isPatient >= 0) 
+            a(href='/patients/#{userId}', target='__patient') &nbsp;#{name}
+          else
+            a(href='/doctors/#{userId}', target='__doctor') &nbsp;#{name}
         span.time= momentTwitter(message.dateCreated).twitterLong()
         if message.attachment.attached
           span.attachment
