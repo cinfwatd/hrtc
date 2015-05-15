@@ -147,7 +147,7 @@ jQuery(function($){
   });
 
   //display second message right inside the message list
-  $('.message-list .message-item .text, .message-list .message-item .sender').on('click', function(){
+  $('.message-list .message-item .text').on('click', function(){
     var message = $(this).closest('.message-item');
     var id = message.find('input[type=checkbox]').val();
 
