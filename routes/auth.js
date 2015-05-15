@@ -62,7 +62,16 @@ router.post('/login', function(request, response, next) {
           request.session.userPicture = user.picture;
           // request.session.user = user;
           request.session.lastLogin = user.lastLogin;
-          request.session.doctors = user.doctors;
+          if (user.groups.indexOf("Patient") >= 0) {
+            request.session.doctors = user.doctors;
+            request.session.isDoctor = false;
+            request.session.patients = [];
+          } else if (user.groups.indexOf("Doctor") >= 0) {
+            request.session.doctors = [];
+            request.session.patients = user.patients;
+            request.session.isDoctor = true;
+          }
+          // request.session.doctors = user.doctors;
           user.lastLogin = Date.now();
           user.save();
           return response.redirect('/calendar');
