@@ -73,7 +73,7 @@ router.get('/trash', function(request, response, next) {
          return console.log('ERRRRRRRRRR'.red);
       } else {
         // console.log('Pages: ', pageCount);
-        console.log(appointments);
+        // console.log(appointments);
         return response.render('message/inbox',
         {
           pageTitle: "Trash",
@@ -143,7 +143,7 @@ router.post('/getmessage', function(request, response, next) {
       });
     }
   ], function(error, result) {
-    console.log(result);
+    // console.log(result);
     return response.send(result);
   });
 });
