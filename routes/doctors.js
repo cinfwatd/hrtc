@@ -69,7 +69,7 @@ router.post('/request', function(request, response, next) {
     message = message + "<hr style='margin:0px' />Appointment Date: (" + start + " - " + end+ ")";
   //accept request.
   // set user patient and doctor respectively
-  message = message + "<hr style='margin:0px' /><a href='/doctors/accept/" + request.session.userId + "'>Accept Request</a><hr style='margin:0px' />";
+  message = message + "<hr style='margin:0px' /><button class='btn btn-xs btn-white btn-primary' id='accept' data-href='/doctors/accept/" + request.session.userId + "'>Accept Request</button><hr style='margin:0px' />";
   message = message + "<small>Accepting request simply associates the Patient with you. (Required for Patients sidebar)</small>"
 
   newRequest.message = message;
@@ -78,8 +78,8 @@ router.post('/request', function(request, response, next) {
 
   // put message as already softdeleted and harddeleted
   // by sender so as not to show on the senders page.
-  newRequest.softDeleted.push(request.session.userId);
-  newRequest.hardDeleted.push(request.session.userId);
+  newRequest.status.softDeleted.push(request.session.userId);
+  newRequest.status.hardDeleted.push(request.session.userId);
 
   newRequest.save(function(error, appointment) {
     if (error) return response.status(500).send("Not Ok");
@@ -103,17 +103,33 @@ router.get('/accept/:id', function(request, response, next) {
         if (user) {
           user.doctors.push({
             name: request.session.username,
-            id: request.session.userId});
-          user.save()
+            id: request.session.userId
+          });
+          user.save(callback(error, user));
         } else {
-
+          return response.status(500).send("Exists");
+        }
+      });
+    }, function(patient, callback2){
+      User.findOne({
+        _id: request.session.userId,
+        groups: 'Doctor',
+        "patients.id": {$ne: patientId}
+      }, function(error, user){
+        if (user) {
+          user.patients.push({
+            name: patient.name.full,
+            id: patient.id
+          });
+          user.save(callback2(error, user));
+        } else {
+          return response.status(500).send("Exists");
         }
       });
     }
-
-  ], function(error) {
-    // request.flash('accepted', name);
-    // return response.redirect('/message/inbox');
+  ], function(error, result) {
+    if (error) return response.status(500); // not sure of error
+    return response.status(200).send("OK");
   });
 });
 

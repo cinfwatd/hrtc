@@ -72,17 +72,6 @@ jQuery(function($){
       type: 'post',
       dataType: 'json'
     });
-
-
-    // var message = $('input#message').val();
-    // var subject = $('#form-field-subject').val();
-    // var recipient = $('#form-field-recipient').val();
-    // var attachment = $('input[type=file]').val();
-    //
-    // console.log("message: " + message);
-    // console.log("subject: " + subject);
-    // console.log("recipient: " + recipient);
-    // console.log("attachment: " + attachment);
   });
 
   $('#delete').on('click', function() {
@@ -189,9 +178,33 @@ jQuery(function($){
           class_name: 'gritter-error gritter-right'
         });
       }
-    })
+    });
 
   });
+
+  $(document).on('click', 'button#accept', function(e) {
+    var href = $(this).attr("data-href");
+    // console.log(hreff);
+    $.ajax({
+      type: "GET",
+      url: href,
+      success: function(data) {
+        last_gritter = $.gritter.add({
+          title: ')-: Success!',
+          text: 'Request successfully accepted.',
+          class_name: 'gritter-success gritter-right'
+        });
+      },
+      error: function(data) {
+        last_gritter = $.gritter.add({
+          title: ')-: Oops!.',
+          text: 'The request has already been accepted.',
+          class_name: 'gritter-error gritter-right'
+        });
+      }
+    });
+  });
+
 
   //hide message list and display new message form
   //- /**
