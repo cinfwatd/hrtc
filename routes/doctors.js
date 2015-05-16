@@ -69,7 +69,7 @@ router.post('/request', function(request, response, next) {
     message = message + "<hr style='margin:0px' />Appointment Date: (" + start + " - " + end+ ")";
   //accept request.
   // set user patient and doctor respectively
-  message = message + "<hr style='margin:0px' /><a href='/doctors/accept/" + request.session.userId + "/" + encodeURIComponent(request.session.username) + "'>Accept Request</a><hr style='margin:0px' />";
+  message = message + "<hr style='margin:0px' /><a href='/doctors/accept/" + request.session.userId + "'>Accept Request</a><hr style='margin:0px' />";
   message = message + "<small>Accepting request simply associates the Patient with you. (Required for Patients sidebar)</small>"
 
   newRequest.message = message;
@@ -89,12 +89,32 @@ router.post('/request', function(request, response, next) {
   // return response.status(200).send("OK");
 });
 
-router.get('/accept/:id/:name', function(request, response, next) {
-  var patient = request.params.id;
-  var name = request.params.name;
+router.get('/accept/:id', function(request, response, next) {
+  var patientId = request.params.id;
 
   // console.log("Id: " + patient + " Name: " + name);
+  async.waterfall([
+    function(callback) {
+      User.findOne({
+        _id: patientId,
+        groups: 'Patient',
+        "doctors.id": {$ne: request.session.userId}
+      }, function(error, user) {
+        if (user) {
+          user.doctors.push({
+            name: request.session.username,
+            id: request.session.userId});
+          user.save()
+        } else {
 
+        }
+      });
+    }
+
+  ], function(error) {
+    // request.flash('accepted', name);
+    // return response.redirect('/message/inbox');
+  });
 });
 
 module.exports = router;
