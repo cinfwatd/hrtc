@@ -70,11 +70,22 @@ jQuery(function($) {
             $('div#message').empty().append(ht);
           },
           error: function(data) {
+            var title = "Well, this is embarrassing!";
+            var msg = "Please try, again. If it persist let us know.";
+
+            // console.log(data.responseText);
+            if (data.responseText == 'Exists') {
+              modal.modal("hide");
+              title = "Oops!";
+              msg = "Please use the message menu to send the Doctor an email. You have already been link with this doctor.";
+            }
             last_gritter = $.gritter.add({
-              title: ')-: Well, this is embarrassing!',
-              text: 'Please try again. If it persist let us know.',
+              title: ')-: '+title,
+              text: msg,
               class_name: 'gritter-error gritter-right'
             });
+
+            $('div#message').empty();
           }
         })
       }

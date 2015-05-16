@@ -55,38 +55,51 @@ router.get('/:id', function(request, response, next) {
 });
 
 router.post('/request', function(request, response, next) {
+
   var start = request.body.start;
   var end = request.body.end;
   var message = request.body.msg;
   var doc = request.body.doc;
 
-  var newRequest = Appointment();
-  newRequest.receiver = doc;
-  newRequest.sender = request.session.userId;
-  if (start == end)
-    message = message + "<hr style='margin:0px' /><Appointment Date: " + start;
-  else
-    message = message + "<hr style='margin:0px' />Appointment Date: (" + start + " - " + end+ ")";
-  //accept request.
-  // set user patient and doctor respectively
-  message = message + "<hr style='margin:0px' /><button class='btn btn-xs btn-white btn-primary' id='accept' data-href='/doctors/accept/" + request.session.userId + "'>Accept Request</button><hr style='margin:0px' />";
-  message = message + "<small>Accepting request simply associates the Patient with you. (Required for Patients sidebar)</small>"
+  async.waterfall([
+    function(callback) {
+      User.findOne({
+        _id: request.session.userId,
+        groups: 'Patient',
+        "doctors.id": {$ne: doc}
+      }, function(error, user) {
+        if (user) {
+          var newRequest = Appointment();
+          newRequest.receiver = doc;
+          newRequest.sender = request.session.userId;
+          if (start == end)
+            message = message + "<hr style='margin:0px' /><Appointment Date: " + start;
+          else
+            message = message + "<hr style='margin:0px' />Appointment Date: (" + start + " - " + end+ ")";
+          //accept request.
+          // set user patient and doctor respectively
+          message = message + "<hr style='margin:0px' /><button class='btn btn-xs btn-white btn-primary' id='accept' data-href='/doctors/accept/" + request.session.userId + "'>Accept Request</button><hr style='margin:0px' />";
+          message = message + "<small>Accepting request simply associates the Patient with you. (Required for Patients sidebar)</small>"
 
-  newRequest.message = message;
-  newRequest.chat.start = start;
-  newRequest.chat.end = end;
+          newRequest.message = message;
+          newRequest.chat.start = start;
+          newRequest.chat.end = end;
 
-  // put message as already softdeleted and harddeleted
-  // by sender so as not to show on the senders page.
-  newRequest.status.softDeleted.push(request.session.userId);
-  newRequest.status.hardDeleted.push(request.session.userId);
+          // put message as already softdeleted and harddeleted
+          // by sender so as not to show on the senders page.
+          newRequest.status.softDeleted.push(request.session.userId);
+          newRequest.status.hardDeleted.push(request.session.userId);
 
-  newRequest.save(function(error, appointment) {
+          newRequest.save(callback(error, user));
+        } else {
+          return response.status(500).send("Exists");
+        }
+      });
+    }
+  ], function(error, result) {
     if (error) return response.status(500).send("Not Ok");
     else return response.status(200).send("OK");
   });
-  // newRequest.
-  // return response.status(200).send("OK");
 });
 
 router.get('/accept/:id', function(request, response, next) {
