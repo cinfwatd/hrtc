@@ -73,7 +73,7 @@ jQuery(function($) {
             last_gritter = $.gritter.add({
               title: ')-: Well, this is embarrassing!',
               text: 'Please try again. If it persist let us know.',
-              class_name: 'gritter-success gritter-right'
+              class_name: 'gritter-error gritter-right'
             });
           }
         })
