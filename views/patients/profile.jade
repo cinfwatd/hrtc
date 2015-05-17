@@ -1,0 +1,43 @@
+extends ../layouts/default
+append pagespecificstyles
+  //- page specific styles
+//- block chat
+block sidebar
+block topbar
+  include ../partials/dashboard-topbar
+append scripts
+  //- page specific scripts
+block content
+  .user-profile.row
+    .col-xs-12.col-md-2.col-md-offset-2.center
+      div
+        span.profile-picture
+          img.img-responsive(alt='#{user.name.full} avatar', src= Boolean(user.picture) ? user.picture : '/assets/avatars/avatar2.png', data-pk="#{user._id}")
+        //- .space-2
+        //- .width-80.label.label-info.label-xlg.arrowed-in.arrowed-in-right
+        //-   span.white #{user.name.full}
+      .space-6
+    .col-xs-12.col-md-6
+      .profile-user-info
+        .profile-info-row
+          .profile-info-name Name
+          .profile-info-value
+            span.editable#firstname= user.name.full
+        .profile-info-row
+          .profile-info-name Gender
+          .profile-info-value
+            span.editable#gender= user.bioData.gender
+        .profile-info-row
+          .profile-info-name Email
+          .profile-info-value 
+            span.editable#email= user.email
+        .profile-info-row
+          .profile-info-name About Me
+          .profile-info-value
+            span.editable#about!= user.bioData.about
+        .profile-info-row
+          .profile-info-name Last Online
+          .profile-info-value
+            span.editable#lastonline= moment(session.lastLogin).format('dddd, Do MMMM YYYY h:mm:ss a')
+        
+        
