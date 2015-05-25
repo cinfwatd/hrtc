@@ -95,14 +95,17 @@ var authenticated = function(request, response, next) {
   if (request.session && request.session.authenticated) {
     return next();
   } else {
-    // var errors = {
-    //   error: {
-    //     msg: 'Permission Error, Please Login'
-    //   }
-    // };
-    // not a good idea use flash
     console.log('setting flash message');
     request.flash('error', 'Permission Error, Please login');
+    return response.redirect('/auth/login');
+  }
+}
+
+var adminAuth = function(request, response, next){
+  if (request.session.userGroup === 'Admin' ) {
+    return next();
+  } else {
+    request.flash('error', 'Invalid user credentials. Please login');
     return response.redirect('/auth/login');
   }
 }
@@ -119,7 +122,11 @@ app.use(function(request, response, next) {
 
 app.use('/', routes);
 app.use('/dashboard', authenticated, dashboard);
-app.use('/admin', authenticated, admin);
+// admin middlewares
+app.use('/admin', authenticated);
+app.use('/admin', adminAuth);
+// --
+app.use('/admin', admin);
 app.use('/auth', auth);
 app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
