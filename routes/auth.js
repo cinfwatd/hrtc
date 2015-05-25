@@ -62,6 +62,9 @@ router.post('/login', function(request, response, next) {
           request.session.username = user.name.full;
           request.session.userPicture = user.picture;
           // request.session.user = user;
+          var userGroup = user.groups[0];
+          request.session.userGroup = userGroup;
+
           request.session.lastLogin = user.lastLogin;
           if (user.groups.indexOf("Patient") >= 0) {
             request.session.doctors = user.doctors;
@@ -75,6 +78,10 @@ router.post('/login', function(request, response, next) {
           // request.session.doctors = user.doctors;
           user.lastLogin = Date.now();
           user.save();
+
+          // if admin
+          if (userGroup === 'Admin') return response.redirect("/admin");
+
           return response.redirect(redirectTo);
         }
         request.flash('error', "Invalid login credentials.");
