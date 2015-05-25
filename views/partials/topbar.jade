@@ -2,50 +2,47 @@ button.pull-left.navbar-toggle.collapsed(data-target='#sidebar2', data-toggle='c
   span.sr-only Toggle sidebar
   i.ace-icon.fa.fa-dashboard.white.bigger-125
 #sidebar2.sidebar.h-sidebar.navbar-collapse.collapse
+  
   ul.nav.nav-list
-    //- li.hover
-    //-   a(href='/dashboard')
-    //-     i.menu-icon.fa.fa-tachometer
-    //-     span.menu-text  Dashboard 
-    //-   b.arrow
-    //- li.hover
-    //-   a(href='/user/record')
-    //-     i.menu-icon.fa.fa-heartbeat
-    //-     span.menu-text Medical Record
-    //-   b.arrow
-    
-    li.hover
-      if (session.isDoctor)
-        a(href='/patients')
-          i.menu-icon.fa.fa-user-md
-          span.menu-text Patients
+    if (session.userGroup === 'Admin')
+      li.hover
+        a(href='/admin')
+          i.menu-icon.fa.fa-tachometer
+          span.menu-text  Dashboard 
         b.arrow
-      else
-        a(href='/doctors')
-          i.menu-icon.fa.fa-user-md
-          span.menu-text Doctors
+    else
+      li.hover
+        if (session.isDoctor)
+          a(href='/patients')
+            i.menu-icon.fa.fa-user-md
+            span.menu-text Patients
+          b.arrow
+        else
+          a(href='/doctors')
+            i.menu-icon.fa.fa-user-md
+            span.menu-text Doctors
+          b.arrow
+      li.hover
+        a(href='/calendar')
+          i.menu-icon.fa.fa-calendar
+          span.menu-text
+            | Events Calendar
         b.arrow
-    li.hover
-      a(href='/calendar')
-        i.menu-icon.fa.fa-calendar
-        span.menu-text
-          | Events Calendar
-      b.arrow
-    li.hover
-      a(href='/chat/video')
-        i.menu-icon.fa.fa-camera-retro
-        span.menu-text  Video conference
-      b.arrow
-    //- li.hover
-    //-   a(href='/chat/text')
-    //-     i.menu-icon.fa.fa-comments-o
-    //-     span.menu-text Text Chat
-    //-   b.arrow
-    li.hover
-      a#message(href='/message')
-        i.menu-icon.fa.fa-envelope-o
-        span.menu-text
-          | Messages
-      b.arrow
-  // /.nav-list
-// .sidebar
+      li.hover
+        a(href='/chat/video')
+          i.menu-icon.fa.fa-camera-retro
+          span.menu-text  Video conference
+        b.arrow
+      //- li.hover
+      //-   a(href='/chat/text')
+      //-     i.menu-icon.fa.fa-comments-o
+      //-     span.menu-text Text Chat
+      //-   b.arrow
+      li.hover
+        a#message(href='/message')
+          i.menu-icon.fa.fa-envelope-o
+          span.menu-text
+            | Messages
+        b.arrow
+    // /.nav-list
+  // .sidebar
