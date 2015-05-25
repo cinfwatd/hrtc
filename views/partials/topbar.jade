@@ -6,9 +6,14 @@ button.pull-left.navbar-toggle.collapsed(data-target='#sidebar2', data-toggle='c
   ul.nav.nav-list
     if (session.userGroup === 'Admin')
       li.hover
-        a(href='/admin')
-          i.menu-icon.fa.fa-tachometer
-          span.menu-text  Dashboard 
+        a(href='/admin/hospitals')
+          i.menu-icon.fa.fa-hospital-o
+          span.menu-text  Hospitals 
+        b.arrow
+      li.hover
+        a(href='/admin/patients')
+          i.menu-icon.fa.fa-heartbeat
+          span.menu-text  Patients 
         b.arrow
     else
       li.hover

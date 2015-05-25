@@ -4,10 +4,14 @@ var express = require('express'),
   router = express.Router();
 
 router.get('/', function(request, response, next) {
-  response.render('admin/hospitals', {pageTitle: 'Dashboard'});
+  response.redirect('/admin/hospitals');
 });
 
-router.get('/hospital', function(request, response, next) {
+router.get('/hospitals', function(request, response, next) {
+  response.render('admin/hospitals', {pageTitle: 'Hospitals'});
+});
+
+router.get('/hospital/fetch', function(request, response, next) {
   var limit = request.query.rows,
     page = request.query.page,
     sortIndex = request.query.sidx,
@@ -120,7 +124,7 @@ router.get('/hospital', function(request, response, next) {
   });
 });
 
-router.post('/hospital', function(request, response, next) {
+router.post('/hospital/push', function(request, response, next) {
   var operation = request.body.oper,
     name = request.body.name,
     address = request.body.address,

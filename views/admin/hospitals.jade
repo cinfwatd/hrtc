@@ -65,7 +65,7 @@ append scripts
     
     
         //- data: grid_data,
-        url: "/admin/hospital",
+        url: "/admin/hospital/fetch",
         mtype: "GET",
         datatype: "JSON",
         jsonReader: {
@@ -132,7 +132,7 @@ append scripts
           }, 0);
         },
     
-        editurl: "/admin/hospital?_csrf=#{csrftoken}",//nothing is saved
+        editurl: "/admin/hospital/push?_csrf=#{csrftoken}",//nothing is saved
         caption: "Hospital List"
     
         //,autowidth: true,
