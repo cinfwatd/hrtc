@@ -4,7 +4,7 @@ var express = require('express'),
   router = express.Router();
 
 router.get('/', function(request, response, next) {
-  response.render('dashboard', {pageTitle: 'Dashboard'});
+  response.render('admin/hospitals', {pageTitle: 'Dashboard'});
 });
 
 router.get('/hospital', function(request, response, next) {
