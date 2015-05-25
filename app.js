@@ -33,14 +33,16 @@ db.once('open', function(callback) {
 });
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
-var auth = require('./routes/auth');
-var dashboard = require('./routes/dashboard');
-var calendar = require('./routes/calendar');
-var chat = require('./routes/chat');
-var doctors = require('./routes/doctors');
-var patients = require('./routes/patients');
-var message = require('./routes/message');
+  users = require('./routes/users'),
+  auth = require('./routes/auth'),
+  dashboard = require('./routes/dashboard'),
+  calendar = require('./routes/calendar'),
+  chat = require('./routes/chat'),
+  doctors = require('./routes/doctors'),
+  patients = require('./routes/patients'),
+  message = require('./routes/message')
+  admin = require('./routes/admin');
+
 
 
 
@@ -117,6 +119,7 @@ app.use(function(request, response, next) {
 
 app.use('/', routes);
 app.use('/dashboard', authenticated, dashboard);
+app.use('/admin', authenticated, admin);
 app.use('/auth', auth);
 app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
