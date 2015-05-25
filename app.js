@@ -35,7 +35,6 @@ db.once('open', function(callback) {
 var routes = require('./routes/index');
   users = require('./routes/users'),
   auth = require('./routes/auth'),
-  dashboard = require('./routes/dashboard'),
   calendar = require('./routes/calendar'),
   chat = require('./routes/chat'),
   doctors = require('./routes/doctors'),
@@ -121,7 +120,6 @@ app.use(function(request, response, next) {
 });
 
 app.use('/', routes);
-app.use('/dashboard', authenticated, dashboard);
 // admin middlewares
 app.use('/admin', authenticated);
 app.use('/admin', adminAuth);
