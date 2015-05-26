@@ -78,18 +78,9 @@ append scripts
         },
         autowidth: true,
         height: 250,
-        colNames:['Name','Address'],
+        colNames:['Name','Address', ' '],
         colModel:[
-          //- {name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
-          //-   formatter:'actions', 
-          //-   formatoptions:{ 
-          //-     keys:true,
-          //-     //delbutton: false,//disable delete button
-          //-     
-          //-     delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
-          //-     //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
-          //-   }
-          //- },
+          
           {
             name:'name', index:'name', width: '90', 
             editable: true, sortable: false, 
@@ -105,7 +96,17 @@ append scripts
             searchoptions: {
               sopt: ['bw', 'bn', 'ew', 'en', 'cn', 'nc']
             }
-          }
+          },
+          {name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
+            formatter:'actions', 
+            formatoptions:{ 
+              keys:true,
+              //delbutton: false,//disable delete button
+              
+              delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
+              //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
+            }
+          },
         ], 
     
         viewrecords : true,
