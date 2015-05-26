@@ -81,6 +81,7 @@ router.post('/login', function(request, response, next) {
 
           // if admin
           if (userGroup === 'Admin') return response.redirect("/admin");
+          if (userGroup === 'Hospital') return response.redirect("/admin/doctors");
 
           return response.redirect(redirectTo);
         }

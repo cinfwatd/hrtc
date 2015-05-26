@@ -101,10 +101,25 @@ var authenticated = function(request, response, next) {
 }
 
 var adminAuth = function(request, response, next){
+  var _ = require('underscore'),
+    nonAdminPaths = ['/admin/doctors'];
+
+  // skip the admin middleware if the route requested is the hospital doctors
+  if (_.contains(nonAdminPaths, request.path)) return next();
+
   if (request.session.userGroup === 'Admin' ) {
     return next();
   } else {
     request.flash('error', 'Invalid user credentials. Please login');
+    return response.redirect('/auth/login');
+  }
+}
+
+var hospAuth = function(request, response, next) {
+  if (request.session.userGroup === 'Hospital') {
+    return next();
+  } else {
+    request.flash('error', 'Invalid user credentials. Hospital Only Aceess');
     return response.redirect('/auth/login');
   }
 }
@@ -123,6 +138,7 @@ app.use('/', routes);
 // admin middlewares
 app.use('/admin', authenticated);
 app.use('/admin', adminAuth);
+app.use('/admin/doctors', hospAuth);
 // --
 app.use('/admin', admin);
 app.use('/auth', auth);

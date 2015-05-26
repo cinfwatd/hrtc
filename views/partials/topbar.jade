@@ -20,6 +20,12 @@ button.pull-left.navbar-toggle.collapsed(data-target='#sidebar2', data-toggle='c
           i.menu-icon.fa.fa-heartbeat
           span.menu-text  Patients 
         b.arrow
+    else if (session.userGroup === 'Hospital')
+      li.hover
+        a(href='/admin/doctors')
+          i.menu-icon.fa.fa-user-md
+          span.menu-text Doctors
+        b.arrow
     else
       li.hover
         if (session.isDoctor)
