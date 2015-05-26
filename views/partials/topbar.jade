@@ -6,6 +6,11 @@ button.pull-left.navbar-toggle.collapsed(data-target='#sidebar2', data-toggle='c
   ul.nav.nav-list
     if (session.userGroup === 'Admin')
       li.hover
+        a(href='/admin')
+          i.menu-icon.fa.fa-users
+          span.menu-text Administrators
+        b.arrow
+      li.hover
         a(href='/admin/hospitals')
           i.menu-icon.fa.fa-hospital-o
           span.menu-text  Hospitals 

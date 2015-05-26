@@ -1,5 +1,6 @@
 var express = require('express'),
   Hospital = require('../models/hospital'),
+  User = require('../models/user'),
   async = require('async'),
   router = express.Router();
 
@@ -162,6 +163,10 @@ router.post('/hospital/push', function(request, response, next) {
       return response.status(200).send("Added.");
     });
   }
+});
+
+router.get('/patients/fetch', function(request, response, next) {
+
 });
 
 router.get('ss/:hospital', function(request, response, next) {
