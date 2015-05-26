@@ -4,6 +4,7 @@ var express = require('express'),
   crypto = require('crypto');
 
 var User = require('../models/user');
+//set where the page redirects to on login by default
 var redirectTo = '/calendar';
 
 var smtpTransport = nodemailer.createTransport({
@@ -22,7 +23,7 @@ router.get('/', function(request, response, next) {
 router.get('/login', function(request, response, next) {
   // console.log(request.get('referrer'));
   if (request.session && request.session.authenticated)
-    return response.redirect(redirectTo);
+    return response.redirect(request.session.redirectTo);
   response.render('auth/login', { pageTitle: 'Login' });
 });
 
@@ -79,9 +80,12 @@ router.post('/login', function(request, response, next) {
           user.lastLogin = Date.now();
           user.save();
 
+
           // if admin
-          if (userGroup === 'Admin') return response.redirect("/admin");
-          if (userGroup === 'Hospital') return response.redirect("/admin/doctors");
+          if (userGroup === 'Admin') redirectTo = "/admin";
+          if (userGroup === 'Hospital') redirecTo = "/admin/doctors";
+
+          request.session.redirectTo = redirectTo;
 
           return response.redirect(redirectTo);
         }
