@@ -82,10 +82,20 @@ router.post('/login', function(request, response, next) {
 
 
           // if admin
-          if (userGroup === 'Admin') redirectTo = "/admin";
-          if (userGroup === 'Hospital') redirecTo = "/admin/doctors";
+          if (userGroup === 'Admin') {
+            redirectTo = "/admin";
+
+            console.log("YESSSS ADMIN ....".blue);
+          }
+
+          if (userGroup === 'Hospital') {
+            redirectTo = "/admin/doctors";
+
+            console.log("YESSSSS HOSP".blue)
+          }
 
           request.session.redirectTo = redirectTo;
+          console.log(redirectTo);
 
           return response.redirect(redirectTo);
         }
