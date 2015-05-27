@@ -34,7 +34,8 @@ var UserSchema = new Schema({
   patients: [{name: String, id:ObjectId}],
 
   // only doctors are affiliated to a hospital
-  hospital: {type: ObjectId, ref: 'Hospital'}
+  hospital: {type: ObjectId, ref: 'Hospital'},
+  active: {type:Boolean, default: true},
 });
 
 UserSchema.virtual('name.full').get(function() {
