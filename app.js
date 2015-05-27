@@ -124,6 +124,14 @@ var hospAuth = function(request, response, next) {
   }
 }
 
+var nonAdmin = function(request, response, next) {
+  if ((request.session.userGroup === 'Admin') ||
+    (request.session.userGroup === 'Hospital')) {
+      request.flash('error', 'Access to non Admin section is restricted.');
+      return response.redirect('/auth/login');
+  } else next();
+}
+
 app.use(function(request, response, next) {
   response.locals.csrftoken = request.csrfToken();
   response.locals.session = request.session;
@@ -142,6 +150,10 @@ app.use('/admin/doctors', hospAuth);
 // --
 app.use('/admin', admin);
 app.use('/auth', auth);
+
+// Restrict Access to non admin sections for admins
+app.use('/', nonAdmin);
+// --
 app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
