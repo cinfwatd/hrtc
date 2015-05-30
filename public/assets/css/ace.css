@@ -9232,7 +9232,7 @@ input[type=checkbox].ace.ace-switch.ace-switch-5 + .lbl::before {
   background-color: #8b9aa3;
   border: 1px solid #8b9aa3;
   color: #FFF;
-  width: 56px;
+  width: 80px;
   text-indent: -25px;
   text-shadow: 0 0 0 #FFF;
   display: inline-block;
@@ -9263,17 +9263,17 @@ input[type=checkbox].ace.ace-switch.ace-switch-5 + .lbl::after {
 input[type=checkbox].ace.ace-switch.ace-switch-4:checked + .lbl::before,
 input[type=checkbox].ace.ace-switch.ace-switch-5:checked + .lbl::before {
   text-indent: 9px;
-  background-color: #468fcc;
-  border-color: #468FCC;
+  background-color: #82AF6F;
+  border-color: #82AF6F;
 }
 input[type=checkbox].ace.ace-switch.ace-switch-4:checked + .lbl::after,
 input[type=checkbox].ace.ace-switch.ace-switch-5:checked + .lbl::after {
-  left: 34px;
+  left: 59px;
   background-color: #FFF;
   color: #848484;
 }
 input[type=checkbox].ace.ace-switch.ace-switch-5 + .lbl::before {
-  content: "YES\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0NO";
+  content: "ACTIVE\a0\a0\a0INACTIVE";
 }
 input[type=checkbox].ace.ace-switch.ace-switch-5:checked + .lbl::before {
   text-indent: 8px;
@@ -9412,11 +9412,11 @@ input[type=checkbox].ace.ace-switch.btn-flat + .lbl::after {
 }
 input[type=checkbox].ace.ace-switch.ace-switch-4 + .lbl::before,
 input[type=checkbox].ace.ace-switch.ace-switch-5 + .lbl::before {
-  text-indent: -24px;
+  text-indent: -26px;
 }
 input[type=checkbox].ace.ace-switch.ace-switch-4:checked + .lbl::before,
 input[type=checkbox].ace.ace-switch.ace-switch-5:checked + .lbl::before {
-  text-indent: 7px;
+  text-indent: 10px;
 }
 input.ace + .lbl.padding-16::before {
   margin-right: 16px;
