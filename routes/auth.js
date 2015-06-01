@@ -50,6 +50,15 @@ router.post('/login', function(request, response, next) {
 
       if(user) {
         if (user.validatePassword(password)) {
+
+          // check active status
+          if (!user.active) {
+            console.log("INACTIVE".red)
+            request.flash('error', "Sorry, your account is inactive. Please contact admin.");
+            request.flash('username', username);
+            return response.redirect('/auth/login');
+          }
+
           request.session.authenticated = true;
           request.session.userId = user._id;
           request.session.username = user.name.full;
