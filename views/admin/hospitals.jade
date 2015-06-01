@@ -78,7 +78,7 @@ append scripts
         },
         autowidth: true,
         height: 250,
-        colNames:['Name','Address', ' '],
+        colNames:['Name','Address', 'Status'],
         colModel:[
           
           {
@@ -97,16 +97,25 @@ append scripts
               sopt: ['bw', 'bn', 'ew', 'en', 'cn', 'nc']
             }
           },
-          {name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
-            formatter:'actions', 
-            formatoptions:{ 
-              keys:true,
-              //delbutton: false,//disable delete button
-              
-              delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
-              //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
-            }
+          {
+            name:'active', index: 'active', width:'100',
+            fixed: true, resize: false,
+            editable: true, sortable: true,
+            search: false, edittype:'checkbox',
+            editoptions:{value:"true:false"},
+            unformat: aceSwitch,
+            formatter: statusFormatter
           },
+          //- {name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
+          //-   formatter:'actions', 
+          //-   formatoptions:{ 
+          //-     keys:true,
+          //-     //delbutton: false,//disable delete button
+          //-     
+          //-     delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
+          //-     //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
+          //-   }
+          //- },
         ], 
     
         viewrecords : true,
@@ -164,7 +173,15 @@ append scripts
           $(cell) .find('input[type=checkbox]')
             .addClass('ace ace-switch ace-switch-5')
             .after('<span class="lbl"></span>');
+            //- console.log("dsfdsfdsfdsf")
         }, 0);
+        
+        //- console.log($(cell).find('input[type=checkbox]'))
+        //- unformatting
+        if (cellvalue === 'active')
+          return "true";
+        else
+          return "false";
       }
       //enable datepicker
       function pickDate( cellvalue, options, cell ) {
@@ -173,7 +190,22 @@ append scripts
               .datepicker({format:'yyyy-mm-dd' , autoclose:true}); 
         }, 0);
       }
-    
+      
+      //- format status
+      function statusFormatter( cellvalue, options, rowObject) {
+        var data = "<span class='label label-sm ",
+          value = 'active';
+          //- console.log(cellvalue);
+        if (cellvalue === true) {
+          data += "label-success ";
+        } else {
+          value = 'inactive';
+          data += "label-grey ";
+        }
+        data += "arrowed arrowed-right'>" + value + "</span>";
+        return data;
+      }
+      
       //navButtons
       jQuery(grid_selector).jqGrid('navGrid', "#grid-table_toppager",
         { 	//navbar options
@@ -264,7 +296,7 @@ append scripts
         //enable datepicker on "sdate" field and switches for "stock" field
         form.find('input[name=sdate]').datepicker({format:'yyyy-mm-dd' , autoclose:true})
         
-        form.find('input[name=stock]').addClass('ace ace-switch ace-switch-5').after('<span class="lbl"></span>');
+        form.find('input[name=active]').addClass('ace ace-switch ace-switch-5').after('<span class="lbl"></span>');
                //don't wrap inside a label element, the checkbox value won't be submitted (POST'ed)
               //.addClass('ace ace-switch ace-switch-5').wrap('<label class="inline" />').after('<span class="lbl"></span>');
     
