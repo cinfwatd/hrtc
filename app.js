@@ -151,10 +151,10 @@ app.use('/admin/doctors', hospAuth);
 app.use('/admin', admin);
 app.use('/auth', auth);
 
+app.use('/user', authenticated, users);
 // Restrict Access to non admin sections for admins
 app.use('/', nonAdmin);
 // --
-app.use('/user', authenticated, users);
 app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
 app.use('/doctors', authenticated, doctors);
