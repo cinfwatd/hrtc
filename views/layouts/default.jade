@@ -64,7 +64,7 @@ html(lang='en')
             block doctors
               include ./partials/doctors-box
             .page-header
-              h1= pageTitle ? pageTitle : 'Page Title' 
+              h1!= pageTitle ? pageTitle : 'Page Title' 
                 small
                   block small
             .row
