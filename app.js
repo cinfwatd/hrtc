@@ -102,7 +102,7 @@ var authenticated = function(request, response, next) {
 
 var adminAuth = function(request, response, next){
   var _ = require('underscore'),
-    nonAdminPaths = ['/doctors'];
+    nonAdminPaths = ['/doctors', '/doctors/fetch', '/doctors/push'];
 
   // skip the admin middleware if the route requested is the hospital doctors
   if (_.contains(nonAdminPaths, request.path)) return next();
