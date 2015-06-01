@@ -1,19 +1,13 @@
 var express = require('express'),
   router = express.Router(),
-  nodemailer = require('nodemailer'),
+  postmark = require('postmark'),
   crypto = require('crypto');
 
 var User = require('../models/user');
 //set where the page redirects to on login by default
 var redirectTo = '/calendar';
 
-var smtpTransport = nodemailer.createTransport({
-  service: 'mandrill',
-  auth: {
-    user: 'czprobity@gmail.com',
-    pass: 'jhCGwCscVOcZonkYgUqZBg'
-  }
-});
+var postmarkClient = new postmark.Client("d8734f2f-e5fa-4b9c-a5d8-6645ad8b6696");
 
 /* GET users listing. */
 router.get('/', function(request, response, next) {
@@ -158,10 +152,10 @@ router.post('/forgot-password', function(request, response, next) {
 
           user.save(function(error, user) {
             var mailOptions = {
-              to: user.email,
-              from: 'passwordreset@telemonitor.com',
-              subject: 'Password Reset',
-              text: 'You are receiving this because you (or someone else) '
+              'To': user.email,
+              'From': 'passwordreset@telemonitor.com',
+              'Subject': 'Password Reset',
+              'TextBody': 'You are receiving this because you (or someone else) '
               + 'have requested the reset of the password for your account.\n\n'
               + 'Please click on the following link, or paste this into your browser '
               + 'to complete the process: \n\nhttp://' + request.headers.host
@@ -169,7 +163,7 @@ router.post('/forgot-password', function(request, response, next) {
               + 'ignore this email and your password will remain unchanged.\n'
             };
 
-            smtpTransport.sendMail(mailOptions, function(error) {
+            postmarkClient.sendEmail(mailOptions, function(error) {
               if (error) {
                 console.log('An error occured in sendMail'.red);
                 console.error(error);
@@ -237,14 +231,14 @@ router.post('/reset/:token', function(request, response, next) {
       user.save(function(error) {
         // response.redirect('/auth/login');
         var mailOptions = {
-          to: user.email,
-          from: 'passwordreset@telemonitor.com',
-          subject: 'Your Password Has Been Changed',
-          text: 'Hello '+ user.name.full +',\n\nThis is a confirmation that the password for your account '
+          'To': user.email,
+          'From': 'passwordreset@telemonitor.com',
+          'Subject': 'Your Password Has Been Changed',
+          'TextBody': 'Hello '+ user.name.full +',\n\nThis is a confirmation that the password for your account '
             + user.email + ' has been changed.\n'
         };
 
-        smtpTransport.sendMail(mailOptions, function(error) {
+        postmarkClient.sendEmail(mailOptions, function(error) {
           if (error) {
             console.log('An error occured while sending the confirmation mail.'.red);
           }
