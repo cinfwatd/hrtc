@@ -4,8 +4,6 @@ var express = require('express'),
   crypto = require('crypto');
 
 var User = require('../models/user');
-//set where the page redirects to on login by default
-var redirectTo = '/calendar';
 
 var postmarkClient = new postmark.Client("d8734f2f-e5fa-4b9c-a5d8-6645ad8b6696");
 
@@ -74,18 +72,16 @@ router.post('/login', function(request, response, next) {
           user.lastLogin = Date.now();
           user.save();
 
+          //set where the page redirects to on login by default
+          var redirectTo = '/calendar';
 
           // if admin
           if (userGroup === 'Admin') {
             redirectTo = "/admin";
-
-            console.log("YESSSS ADMIN ....".blue);
           }
 
           if (userGroup === 'Hospital') {
             redirectTo = "/admin/doctors";
-
-            console.log("YESSSSS HOSP".blue)
           }
 
           request.session.redirectTo = redirectTo;
