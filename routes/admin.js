@@ -21,6 +21,17 @@ router.get('/patients', function(request, response, next) {
   response.render('admin/patients', {pageTitle: 'Patients'});
 });
 
+router.get('/doctors', function(request, response, next) {
+  User.findOne({_id: request.session.userId}, function(error, user) {
+    console.log(user);
+
+    response.render('admin/doctors', {
+      pageTitle: 'Doctors', hospitalName: user.hospital.name,
+      hospitalId: user.hospital.id
+    });
+  }).populate('hospital');
+});
+
 router.get('/patients/fetch', function(request, response, next) {
   var limit = request.query.rows,
     page = request.query.page,
@@ -248,7 +259,7 @@ router.post('/patients/push', function(request, response, next) {
         function(error, username, password){
           if (error) return response.status(500).send("Please try again. Server error.");
 
-          console.log(username, password);
+          // console.log(username, password);
           var mailOptions = {
             'From': 'Telemonitoring <info@bitrient.com>',
             'To': email,
@@ -259,7 +270,7 @@ router.post('/patients/push', function(request, response, next) {
             + 'Please change yout login details from your profile page. Thanks.'
           };
 
-          console.log(mailOptions)
+          // console.log(mailOptions)
 
           postmarkClient.sendEmail(mailOptions,
           function(error, success) {
@@ -357,7 +368,7 @@ router.get('/hospital/fetch', function(request, response, next) {
 
               optionsArray.push(option);
             }
-            console.log(optionsArray)
+            // console.log(optionsArray)
 
           // console.log(groupOp);
           if (groupOp === 'AND') {
@@ -667,7 +678,7 @@ router.post('/admins/push', function(request, response, next) {
         function(error, username, password){
           if (error) return response.status(500).send("Please try again. Server error.");
 
-          console.log(username, password);
+          // console.log(username, password);
           var mailOptions = {
             'From': 'Telemonitoring <info@bitrient.com>',
             'To': email,
@@ -678,7 +689,7 @@ router.post('/admins/push', function(request, response, next) {
             + 'Please change yout login details from your profile page. Thanks.'
           };
 
-          console.log(mailOptions)
+          // console.log(mailOptions)
 
           postmarkClient.sendEmail(mailOptions,
           function(error, success) {
@@ -692,9 +703,257 @@ router.post('/admins/push', function(request, response, next) {
     }
 });
 
-router.get('/doctors', function(request, response, next) {
+router.get('/doctors/fetch', function(request, response, next) {
+  var limit = request.query.rows,
+    page = request.query.page,
+    sortIndex = request.query.sidx,
+    isSearch = request.query._search;
+    sortOrder = request.query.sord,
+    hospital = request.query.hospitalId,
+    group = 'Doctor';
 
-  response.send("Hospital Doctors ");
+    // console.log(isSearch);
+  async.waterfall([
+    function(callback) {
+      User.count({groups: group, hospital: hospital}, function(error, count) {
+        callback(error, count);
+      });
+    },
+    function(count, callback2) {
+      // console.log("Count".red);
+      // console.log(count);
+      if (count > 0 && limit > 0) {
+        totalPages = Math.ceil(count/limit);
+      } else {
+        totalPages = 0;
+      }
+
+      // if for some reason the requested page is > total
+      // set requested page to total page
+      if (page > totalPages) page = totalPages;
+
+      // calculate the starting position of the rows
+      var start = limit * page - limit;
+
+      // if for some reason start position is < 0, set it to 0
+      // typical case is that the user typed 0 for the requested page
+      if (start < 0) start = 0;
+      // console.log(limit, start);
+
+      var query = User.find({groups: group, hospital: hospital})
+        .limit(limit)
+        .skip(start);
+
+        if (isSearch === 'true') {
+          // console.log("YES".green)
+          var filters = JSON.parse(request.query.filters),
+            groupOp = filters.groupOp,
+            rules = filters.rules;
+
+            var optionsArray = [];
+
+            for (var rule of rules) {
+              var field = rule.field,
+                operator = rule.op,
+                data = rule.data,
+                option = {};
+
+                // console.log(field, operator, data)
+
+              switch(operator) {
+                case 'bw':
+                // begins with
+                  option[field] = new RegExp('^' + data, "i");
+                  break;
+                case 'bn':
+                // does not begin with
+                  option[field] = new RegExp('^(?!' + data + ').*$', "i");
+                  break;
+                case 'ew':
+                // ends with
+                  option[field] = new RegExp(data + '$', "i");
+                  break;
+                case 'en':
+                // does not ends with
+                  option[field] = new RegExp('^(?!.*' + data + '$)', "i");
+                  break;
+                case 'cn':
+                // contains
+                  option[field] = new RegExp(data, "i");
+                  break;
+                case 'nc':
+                // does not contsin
+                  option[field] = new RegExp('^((?!' + data + ').)*$', "i");
+                  break;
+                case 'eq':
+                  option[field] = data;
+                  break;
+                case 'ne':
+                  option[field] = {$ne: data};
+                  break;
+                case 'gt':
+                  option[field] = {$gt: data};
+                  break;
+                case 'ge':
+                  option[field] = {$gte: data};
+                  break;
+                case 'lt':
+                  option[field] = {$lt: data};
+                  break;
+                case 'le':
+                  option[field] = {$lte: data};
+              }
+
+              optionsArray.push(option);
+            }
+            // console.log(optionsArray)
+
+          // console.log(groupOp);
+          if (groupOp === 'AND') {
+            query.and(optionsArray);
+          } else {
+            // OR
+            query.or(optionsArray);
+          }
+        }
+
+        // just to make sure sort field is set
+        if (sortIndex.length > 2) {
+          var sortObj = {};
+          sortObj[sortIndex] = sortOrder;
+          // console.log(sortObj);
+          query.sort(sortObj);
+        }
+
+        query.populate('hospital');
+        query
+        .exec(function(error, users) {
+          var data = {
+            "page": page,
+            "total": totalPages,
+            "records": count,
+            "rows": users
+          }
+          callback2(error, data)
+        });
+    }
+  ], function(error, data) {
+    if (error) return response.send(500);
+    // console.log(data);
+
+    return response.json(data);
+  });
+});
+
+router.post('/doctors/push', function(request, response, next) {
+  var operation = request.body.oper,
+    email = request.body.email,
+    first = request.body['name.first'],
+    last = request.body['name.last'],
+    status = request.body.active,
+    id = request.body.id,
+    hospital = request.body.hospitalId,
+    group = 'Doctor';
+
+    // workaroound for cast exception when empty
+    if (id == '_empty') id = 'asdfjklqwerty12345678900'; // dummy 24 byte hex string
+
+    // console.log(email, hospital, id);
+    if (operation == 'del') {
+      // this is destructive and can cause a myriad of problems
+      // User.findByIdAndRemove(id, function(error) {
+      //   if (error) return response.status(500).send("Error deleting record.");
+      //   return response.status(200).send("HardDeleted.");
+      // });
+      User.findByIdAndUpdate(id, {active: false},
+      function(error, hosp) {
+        if (error) return response.status(500).send("Error deleting record.");
+        return response.status(200).send("SoftDeleted.");
+      });
+
+    } else if (operation == 'add' || operation == 'edit') {
+      // check if an entry already exist.
+
+      async.waterfall([
+        function(callback) {
+          User.count({_id: {$ne: id}, email: email, groups: group},
+          function(error, count) {
+            callback(error, count);
+          });
+        },
+        function(count, callback2) {
+          if (count >= 1) {
+            // it exists
+            return response.status(500).send("Email already in use.");
+          }
+          // console.log("here", count)
+          var user = new User(),
+            passwordGenerator = rndm.create("password"),
+            usernameGenerator = rndm.create("username"),
+            rawPassword = passwordGenerator(4),
+            password = user.generateHash(rawPassword),
+            username = usernameGenerator(5);
+
+          if (operation == 'add') {
+            user.email = email;
+            user.name.first = first;
+            user.name.last = last;
+            user.username = username;
+            user.password = password;
+            user.groups.push(group);
+            user.active = status;
+            user.hospital = hospital;
+
+            user.save(function(error) {
+              if (error) return response.status(500).send("Error adding new Hospital Administrator.");
+            })
+          }
+
+          else if (operation == 'edit') {
+            User.findByIdAndUpdate(id, {
+              email: email,
+              'name.first': first,
+              'name.last': last,
+              username: username,
+              password: password,
+              active: status,
+              dateUpdated: Date.now()
+
+            }, function(error, user) {
+              if (error) return response.status(500).send("Error editing Hospital Administrator.");
+            })
+          }
+
+          // callback
+          callback2(null, username, rawPassword);
+
+        }],
+        function(error, username, password){
+          if (error) return response.status(500).send("Please try again. Server error.");
+
+          // console.log(username, password);
+          var mailOptions = {
+            'From': 'Telemonitoring <info@bitrient.com>',
+            'To': email,
+            'Subject': 'Account Details',
+            'TextBody': 'Your account has been successfully created with the following details: \n\n'
+            + 'Username: ' + username + '\n'
+            + 'Password: ' + password + '\n\n'
+            + 'Please change yout login details from your profile page. Thanks.'
+          };
+
+          // console.log(mailOptions)
+
+          postmarkClient.sendEmail(mailOptions,
+          function(error, success) {
+            if (error) {
+              return response.status(500).send("Unable to send via postmark: " + error.message);
+            }
+            return response.status(200).send("Send to postmark for delivery.");
+          });
+        }
+      )
+    }
 });
 
 module.exports = router;
