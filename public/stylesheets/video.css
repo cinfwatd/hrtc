@@ -1,0 +1,23 @@
+.video {
+  background-color: #eee;
+  text-align: center;
+}
+
+#localVideo {
+  width: 300px;
+  height: auto;
+}
+
+#remoteVideo {
+  width: 100%;
+  height: 75%;
+  max-height: 480px;
+}
+
+.hide-step {
+  display: none;
+}
+
+.calling {
+  font-weight: bold;
+}
