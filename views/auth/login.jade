@@ -29,7 +29,7 @@ block boxContent
             input(type='hidden', name='_csrf', value=csrftoken)
             label(class='block clearfix')
               span(class='block input-icon input-icon-right')
-                input(type='text', class='form-control', placeholder='Username', name='username', value= messages.username ? messages.username : '')
+                input(type='text', class='form-control', placeholder='Username', name='username', value= messages.username ? messages.username : '', autofocus)
                 i(class='ace-icon fa fa-user')
             label(class='block clearfix')
               span(class='block input-icon input-icon-right')
