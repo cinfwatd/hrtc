@@ -85,7 +85,7 @@ app.use(session({
   store: new redisStore({
     client: redisClient
   }),
-  secret: 'r00t-b1tr13nt',
+  secret: process.env.CLIENT_SECRET || 'r00t-b1tr13nt',
   cookie: { path: '/', maxAge: 3600000 }
 }));
 app.use(flash());
