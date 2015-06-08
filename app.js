@@ -67,12 +67,23 @@ app.use(validator({
   }
 }));
 app.use(cookieParser());
+
+
+// heroku redis setup
+if (process.env.REDISTOGO_URL) {
+  var rtg = require('url').parse(process.env.REDISTOGO_URL);
+  var redisClient = require('redis').createClient(rtg.port, rtg.hostname);
+
+  redisClient.auth(rtg.auth.split(':')[1]);
+} else {
+  redisClient = require('redis').createClient();
+}
+
 app.use(session({
   resave: true,
   saveUninitialized: true,
   store: new redisStore({
-    host: 'localhost',
-    port: 6379
+    client: redisClient
   }),
   secret: 'r00t-b1tr13nt',
   cookie: { path: '/', maxAge: 3600000 }
