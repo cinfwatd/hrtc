@@ -14,8 +14,9 @@ var methodOverride = require('method-override');
 var csrf = require('csurf');
 var multer = require('multer');
 var validator = require('express-validator');
-var mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/hrtc');
+var mongoose = require('mongoose'),
+  uriString = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/hrtc';
+  mongoose.connect(uriString);
 var db = mongoose.connection;
 var paginate = require('express-paginate');
 var moment =  require('moment');
