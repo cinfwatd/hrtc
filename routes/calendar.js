@@ -60,7 +60,7 @@ router.get('/fetch', function(request, response, next) {
   var start = request.query.start;
   var end = request.query.end;
   Events.find({user: user, start: {$gte: start}, end: {$lte: end}}, function(error, events) {
-    if (error) return console.log('Error trying to fetch events for user.'.red);
+    // if (error) return console.log('Error trying to fetch events for user.'.red);
     // console.log(events);
     response.send(events);
   });
@@ -69,15 +69,15 @@ router.get('/fetch', function(request, response, next) {
 router.post('/delete/:id', function(request, response, next) {
   var id = request.params.id;
   Events.findOne({_id: id}, function(error, evt) {
-    if (error) {
-      console.log('error finding events.'.red)
-    }
+    // if (error) {
+    //   console.log('error finding events.'.red)
+    // }
 
     if (evt) {
       evt.remove(function(error) {
-        if (error) {
-          console.log('error deleting event.'.red);
-        }
+        // if (error) {
+        //   console.log('error deleting event.'.red);
+        // }
         response.send("done");
       });
     }

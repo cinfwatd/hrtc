@@ -23,7 +23,7 @@ router.get('/patients', function(request, response, next) {
 
 router.get('/doctors', function(request, response, next) {
   User.findOne({_id: request.session.userId}, function(error, user) {
-    console.log(user);
+    // console.log(user);
 
     response.render('admin/doctors', {
       pageTitle: 'Doctors', hospitalName: user.hospital.name,
@@ -181,8 +181,6 @@ router.post('/patients/push', function(request, response, next) {
     status = request.body.active,
     id = request.body.id,
     group = 'Patient';
-
-    console.log("PATIENTS JONAH GOODLUCK".red)
 
     // workaroound for cast exception when empty
     if (id == '_empty') id = 'asdfjklqwerty12345678900'; // dummy 24 byte hex string
@@ -653,7 +651,7 @@ router.post('/admins/push', function(request, response, next) {
             // default name
             user.name.first = 'Admin';
             user.name.last = 'Admin';
-            
+
             user.groups.push('Hospital');
             user.active = status;
 

@@ -34,7 +34,8 @@ router.post('/profile-upload', function(request, response, next) {
     var url = path.join(__dirname, '..', 'public', url);
     // console.log(url);
     fs.unlink(url, function() {
-      return console.log("Error: User issues. file deleted.".red);
+      // return console.log("Error: User issues. file deleted.".red);
+      return true;
     });
   }
   //find
@@ -49,9 +50,9 @@ router.post('/profile-upload', function(request, response, next) {
       user.picture = url;
       user.save(function(error, user) {
         if (error){
-          console.log(error);
+          // console.log(error);
           deletePicture(url);
-          return response.send("Error uploading file. g");
+          return response.send("Error uploading file.");
         } else {
           request.session.userPicture = url;
           if (oldPictureUrl)

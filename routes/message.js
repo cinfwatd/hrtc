@@ -107,8 +107,8 @@ router.post('/delete', function(request, response, next) {
     }
   ],
   function(error, result) {
-    console.log(error);
-    console.log(result);
+    // console.log(error);
+    // console.log(result);
     if (error) return response.sendStatus(500).send('Failed');
     else return response.sendStatus(200).send(result);
   });
@@ -154,9 +154,9 @@ router.post('/compose', function(request, response, next) {
   var subject = request.body.subject;
   var message = request.body.message;
 
-  console.log("recipient: ", recipient);
-  console.log("subject: ", subject);
-  console.log("message: ", message);
+  // console.log("recipient: ", recipient);
+  // console.log("subject: ", subject);
+  // console.log("message: ", message);
 
   var attachments = request.files.attachment;
 

@@ -44,9 +44,9 @@ router.post('/login', function(request, response, next) {
     // var data = User.findOne({username: username, password: password});
     // response.send('form processing ...' + username+ '@' + password + ':' + remember);
     User.findOne({username: username}, function(error, user) {
-      if(error){
-        console.log(error.red);
-      }
+      // if(error){
+      //   console.log(error.red);
+      // }
 
       if(user) {
         if (user.validatePassword(password)) {
@@ -141,9 +141,9 @@ router.post('/forgot-password', function(request, response, next) {
     response.redirect('/auth/forgot-password');
   } else {
     User.findOne({email: email}, function(error, user) {
-      if (error) {
-        console.log('An error occured when checking for user to reset password.');
-      }
+      // if (error) {
+      //   console.log('An error occured when checking for user to reset password.');
+      // }
 
       if (user) {
         crypto.randomBytes(20, function(error, buffer) {
@@ -245,7 +245,8 @@ router.post('/reset/:token', function(request, response, next) {
 
         postmarkClient.sendEmail(mailOptions, function(error) {
           if (error) {
-            console.log('An error occured while sending the confirmation mail.'.red);
+            request.flash('error', '<b>Error!</b> Failed to send email.');
+            response.redirect('/auth/login');
           }
           request.flash('success', '<b>Success!</b> Your password has been changed.');
           response.redirect('/auth/login');
