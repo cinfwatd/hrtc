@@ -649,6 +649,11 @@ router.post('/admins/push', function(request, response, next) {
             user.hospital = hospital;
             user.username = username;
             user.password = password;
+
+            // default name
+            user.name.first = 'Admin';
+            user.name.last = 'Admin';
+            
             user.groups.push('Hospital');
             user.active = status;
 
