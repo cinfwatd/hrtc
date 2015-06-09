@@ -58,17 +58,20 @@ block content
                 .user
                   - var target = '__patient';
                   a(href='/patients/#{user.id}', target= target)
-                    img(alt='#{user.name.full} avatar' src= Boolean(user.picture) ? user.picture : '/assets/avatars/avatar2.png')
+                    img(alt='#{user.name} avatar' src= Boolean(user.picture) ? user.picture : '/assets/avatars/avatar2.png')
                 .body
                   .name
                     a(href='/patients/#{user.id}', target= target)
                       span.user-status.status-online
-                      |&nbsp;#{user.name.full}
+                      |&nbsp;#{user.name}
                 .popover
                   .arrow
                   .popover-content
                     .bolder About me ...
-                    .time!= user.bioData.about
+                    if (user.about)
+                      .time!= user.about
+                    else
+                      .time Not provided
                     .hr.dotted.hr-8
                     .tools.action-buttons
                       a(href='/chat/video')

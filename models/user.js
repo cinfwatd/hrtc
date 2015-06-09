@@ -31,7 +31,7 @@ var UserSchema = new Schema({
     about: String,
   },
   doctors: [{name: String, id: ObjectId}],
-  patients: [{name: String, id:ObjectId}],
+  patients: [{name: String, about: String, picture: String, id:ObjectId}],
 
   // only doctors are affiliated to a hospital
   hospital: {type: ObjectId, ref: 'Hospital'},

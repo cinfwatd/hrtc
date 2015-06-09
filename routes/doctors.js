@@ -134,6 +134,8 @@ router.get('/accept/:id', function(request, response, next) {
         if (user) {
           user.patients.push({
             name: patient.name.full,
+            about: patient.bioData.about,
+            picture: patient.picture,
             id: patient.id
           });
           user.save(function(error, user) {
