@@ -194,6 +194,7 @@ app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
 app.use('/doctors', loadContacts);
 app.use('/doctors', authenticated, doctors);
+app.use('/patients', loadContacts);
 app.use('/patients', authenticated, patients);
 app.use(paginate.middleware(10, 50));
 app.use('/message', loadContacts);

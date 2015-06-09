@@ -6,12 +6,7 @@ var express = require('express'),
 
 router.get('/', function(request, response, next) {
   // response.send("patients page")
-  User.find({
-    groups: 'Patient',
-    'doctors.id': request.session.userId
-  }, function(error, patients) {
-    response.render('patients/list', {pageTitle: "Patients", patients: patients})
-  });
+  response.render('patients/list', {pageTitle: "Patients"})
 });
 
 router.get('/:id', function(request, response, next) {
