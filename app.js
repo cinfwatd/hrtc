@@ -144,6 +144,28 @@ var nonAdmin = function(request, response, next) {
   } else next();
 }
 
+// load patients for doctors and vice versa
+var User = require('./models/user');
+var loadContacts = function(request, response, next) {
+  User.findById(request.session.userId, function(error, user) {
+    if (user) {
+      if (request.session.userGroup === 'Doctor') {
+        // get patients list and send
+        request.session.doctors = [];
+        request.session.patients = user.patients;
+      } else if (request.session.userGroup === 'Patient') {
+        // get doctors list and send
+        request.session.doctors = user.doctors;
+        request.session.patients = [];
+      }
+      next();
+    } else {
+      request.flash('error', 'Access to this section is restricted. Please login.');
+      return response.redirect('/auth/login');
+    }
+  })
+}
+
 app.use(function(request, response, next) {
   response.locals.csrftoken = request.csrfToken();
   response.locals.session = request.session;
@@ -167,11 +189,14 @@ app.use('/user', authenticated, users);
 // Restrict Access to non admin sections for admins
 app.use('/', nonAdmin);
 // --
+app.use('/chat', loadContacts);
 app.use('/chat', authenticated, chat);
 app.use('/calendar', authenticated, calendar);
+app.use('/doctors', loadContacts);
 app.use('/doctors', authenticated, doctors);
 app.use('/patients', authenticated, patients);
 app.use(paginate.middleware(10, 50));
+app.use('/message', loadContacts);
 app.use('/message', authenticated, message);
 
 // catch 404 and forward to error handler

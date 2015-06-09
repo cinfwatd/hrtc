@@ -69,12 +69,12 @@ router.post('/login', function(request, response, next) {
 
           request.session.lastLogin = user.lastLogin;
           if (user.groups.indexOf("Patient") >= 0) {
-            request.session.doctors = user.doctors;
+            // request.session.doctors = user.doctors;
             request.session.isDoctor = false;
-            request.session.patients = [];
+            // request.session.patients = [];
           } else if (user.groups.indexOf("Doctor") >= 0) {
-            request.session.doctors = [];
-            request.session.patients = user.patients;
+            // request.session.doctors = [];
+            // request.session.patients = user.patients;
             request.session.isDoctor = true;
           }
           // request.session.doctors = user.doctors;
