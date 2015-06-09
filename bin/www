@@ -7,10 +7,6 @@
 var app = require('../app');
 var debug = require('debug')('hrtc:server');
 var http = require('http');
-var ExpressPeer = require('peer').ExpressPeerServer;
-var options = {
-    debug:true
-  };
 
 /**
  * Get port from environment and store in Express.
@@ -24,7 +20,6 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-var expressPeerServer = ExpressPeer(server, options);
 
 /**
  * Socket.io
@@ -33,32 +28,12 @@ var io = require('socket.io').listen(server);
 require('../sockets/base')(io);
 
 /**
- * PeerJS
- */
-app.use('/peer', function(request, response, next) {
-  return response.send("Yesssss")
-})
-app.use('/peer-server', expressPeerServer);
-
-/**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/**
- * PeerJS Events
- */
-expressPeerServer.on('connection', function(id) {
-  console.log("User has connected: ".blue, id);
-});
-
-expressPeerServer.on('disconnect', function(id) {
-  console.log("user has disconnected: ".red, id);
-});
-
 
 /**
  * Normalize a port into a number, string, or false.
