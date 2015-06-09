@@ -118,7 +118,9 @@ router.get('/accept/:id', function(request, response, next) {
             name: request.session.username,
             id: request.session.userId
           });
-          user.save(callback(error, user));
+          user.save(function(error, user) {
+            callback(error, user);
+          });
         } else {
           return response.status(500).send("Exists");
         }
@@ -134,7 +136,9 @@ router.get('/accept/:id', function(request, response, next) {
             name: patient.name.full,
             id: patient.id
           });
-          user.save(callback2(error, user));
+          user.save(function(error, user) {
+            callback2(error, user)
+          });
         } else {
           return response.status(500).send("Exists");
         }
